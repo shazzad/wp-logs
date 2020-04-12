@@ -7,7 +7,7 @@ A WordPress plugin that can store & display log.
 
 Call the function `do_action` with appropriate parameter to store a log.
 
-```
+```php
 do_action(
 	'w4_loggable_log',
 	// string, usually a name from where you are storing this log
