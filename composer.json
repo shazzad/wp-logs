@@ -1,0 +1,11 @@
+{
+	"name" : "w4dev/loggable",
+  	"require": {
+		"mustache/mustache": "^2.12"
+	},
+	"autoload": {
+        "psr-4": {
+            "W4dev\\Loggable\\": "includes"
+        }
+    }
+}
