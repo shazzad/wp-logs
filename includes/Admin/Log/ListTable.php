@@ -24,11 +24,12 @@ class ListTable extends \WP_List_Table {
 	function get_columns() {
 		$columns = [
 			'cb' 					=> '<input type="checkbox" id="cb-select-all-1">',
-			'title' 				=> __('ID', 'w4-loggable'),
+			#'title' 				=> __('ID', 'w4-loggable'),
+			'title' 				=> __('Message', 'w4-loggable'),
 			'level' 				=> __('Level', 'w4-loggable'),
-			'message' 				=> __('Message', 'w4-loggable'),
 			'source'	  			=> __('Source', 'w4-loggable'),
-			'timestamp' 			=> __('Date', 'w4-loggable')
+			'timestamp' 			=> __('Date', 'w4-loggable'),
+			'id' 					=> __('Id', 'w4-loggable')
 		];
 
 		foreach ($this->get_queryable_columns() as $qr => $qc) {
@@ -54,7 +55,7 @@ class ListTable extends \WP_List_Table {
 	# Sortable Columns
 	function get_sortable_columns() {
 		return [
-			'title'						=> array('id'),
+			'id'						=> array('id'),
 			'level'						=> array('level'),
 			'source'					=> array('source'),
 			'time'						=> array('timestamp')
@@ -201,18 +202,18 @@ class ListTable extends \WP_List_Table {
 		do_action("manage_W4_Loggable_custom_column", $column, $log->get_id());
 	}
 	function column_title($log) {
-		printf(
-			'<strong><a class="row-title" href="%s">%d</a></strong>',
-			admin_url('admin.php?page=w4-loggable-logs&action=view&id='. $log->get_id()),
-			$log->get_id()
-		);
+		echo apply_filters('w4_loggable_format_message', $log->get_message(), $log->get_context());
 
 		$actions = array();
 		$actions['delete'] = '<a href="'. add_query_arg(['action' => 'delete', 'id' => $log->get_id()]) .'">Delete</a>';
+		$actions['view'] = '<a href="'. add_query_arg(['action' => 'view', 'id' => $log->get_id()]) .'">View</a>';
 
 		echo $this->row_actions($actions);
 	}
 
+	function column_id($log) {
+		echo $log->get_id();
+	}
 	function column_level($log) {
 		echo $log->get_level();
 	}
