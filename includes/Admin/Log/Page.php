@@ -18,6 +18,16 @@ class Page implements PageInterface
 	function __construct()
 	{
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 15 );
+		add_filter( 'set-screen-option', [ $this, 'set_screen_option' ], 10, 3);
+		add_filter( 'set_screen_option_w4_loggable_logs_per_page', [ $this, 'set_screen_option' ], 10, 3);
+	}
+
+	public function set_screen_option( $status, $option, $value ) {
+		if ( 'w4_loggable_logs_per_page' == $option ) {
+			return $value;
+		}
+
+		return $status;
 	}
 
 	public function handle_actions()
@@ -79,15 +89,22 @@ class Page implements PageInterface
 		?><div class="wrap w4_loggable_wrap"><?php
 
 		if ( in_array( $req_action, array( 'view' ) ) && isset( $_REQUEST['id'] ) ) {
-			$log = new LogData( ( int ) $_REQUEST['id'] );
-			printf( '<h2>%s : # <strong>%d</strong></h2>', __( 'Edit Log' ), $log->get_id() );
-
-			do_action( 'w4_loggable/admin_page/notices' );
+			$log = new LogData( (int) $_REQUEST['id'] );
 			?>
-			<br />
-			<div class="W4_Loggable_admin_content">
+			<h1 class="wp-heading-inline"><?php _e( 'View Log' ); ?> : # <strong><?php echo $log->get_id(); ?></strong></h1>
+			<a class="page-title-action" href="<?php echo admin_url( 'tools.php?page=w4-loggable-logs'); ?>">Back to logs</a>
+			<hr class="wp-header-end">
+
+			<?php do_action( 'w4_loggable/admin_page/notices' ); ?>
+
+			<div class="w4_loggable_admin_content">
 				<div class="box"><?php
-				echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() );
+					echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() );
+					if ( $log->get_context() ) {
+						echo '<pre>';
+						print_r( $log->get_context() );
+						echo '</pre>';
+					}
 				?></div>
 			</div><?php
 		} else if ( empty( $req_action ) || -1 == $req_action ) {
