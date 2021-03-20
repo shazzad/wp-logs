@@ -149,6 +149,7 @@ class ListTable extends \WP_List_Table {
 				'paged',
 				'id',
 				'ok',
+				'message',
 				'error',
 				's'
 			 )

@@ -80,12 +80,10 @@ class Page implements PageInterface
 	{
 		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
-		if ( isset( $_REQUEST['menu_item'] ) ) {
-			$menu_item = Utils::get_menu_item( $_REQUEST['menu_item'] );
-		}
-
 		$page_title = __( 'Logs' );
-		if ( $menu_item ) {
+
+		if ( isset( $_REQUEST['menu_item'] ) && Utils::get_menu_item( $_REQUEST['menu_item'] ) ) {
+			$menu_item = Utils::get_menu_item( $_REQUEST['menu_item'] );
 			$page_title = $menu_item['page_title'];
 		}
 
