@@ -6,7 +6,6 @@ namespace W4dev\Loggable;
  * @package W4dev\Loggable
  */
 
-
 class Hooks
 {
 	function __construct()

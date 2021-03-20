@@ -9,12 +9,15 @@ namespace W4dev\Loggable\Admin\Logs;
 use W4dev\Loggable\Admin\PageInterface;
 use W4dev\Loggable\Log\Data as LogData;
 use W4dev\Loggable\Log\Api as LogApi;
+use W4dev\Loggable\Utils;
 
 class Page implements PageInterface
 {
 	function __construct()
 	{
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 15 );
+		add_action( 'admin_menu', array( $this, 'add_submenus' ), 100 );
+		add_filter( 'parent_file', array( $this, 'highlight_submenu' ) );
 		add_filter( 'set-screen-option', [ $this, 'set_screen_option' ], 10, 3);
 		add_filter( 'set_screen_option_w4_loggable_logs_per_page', [ $this, 'set_screen_option' ], 10, 3);
 	}
@@ -75,13 +78,24 @@ class Page implements PageInterface
 
 	public function render_page()
 	{
-		$req_action = isset( $_GET['action'] ) ? $_GET['action'] : '';
+		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
+
+		if ( isset( $_REQUEST['menu_item'] ) ) {
+			$menu_item = Utils::get_menu_item( $_REQUEST['menu_item'] );
+		}
+
+		$page_title = __( 'Logs' );
+		if ( $menu_item ) {
+			$page_title = $menu_item['page_title'];
+		}
+
 		?>
 
 		<div class="wrap w4_loggable_wrap">
 			<?php
 
 			if ( in_array( $req_action, array( 'view' ) ) && isset( $_REQUEST['id'] ) ) {
+
 				$log = new LogData( intval( $_REQUEST['id'] ) );
 
 				?>
@@ -90,13 +104,13 @@ class Page implements PageInterface
 					<?php printf( __( 'View Log: # %d', 'w4-loggable' ), $log->get_id() ); ?>
 				</h1>
 
-				<a class="page-title-action" href="<?php echo admin_url( 'tools.php?page=w4-loggable-logs'); ?>">Back to logs</a>
+				<a class="page-title-action" href="<?php echo remove_query_arg( array( 'id', 'action' ) ); ?>">Back to logs</a>
 
 				<hr class="wp-header-end">
 
 				<?php do_action( 'w4_loggable/admin_page/notices' ); ?>
 
-				<div class="w4_loggable_admin_content">
+				<div class="w4-loggable-admin-content">
 					<div class="box">
 						<?php
 						echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() );
@@ -111,11 +125,11 @@ class Page implements PageInterface
 
 			<?php } else if ( empty( $req_action ) || -1 == $req_action ) { ?>
 
-				<h1><?php _e( 'Logs', 'w4-loggable' ); ?></h1>
+				<h1><?php echo $page_title; ?></h1>
 
 				<?php do_action( 'w4_loggable/admin_page/notices' ); ?>
 
-				<div class="W4_Loggable_admin_content">
+				<div class="w4-loggable-admin-content">
 					<?php include __DIR__ . '/views/list-table.php'; ?>
 				</div>
 
@@ -129,18 +143,61 @@ class Page implements PageInterface
 
 	public function admin_menu() {
 		$access_cap = apply_filters( 'w4_loggable/page_access_cap/logs', 'manage_options' );
-		$admin_page = add_submenu_page(
-			'tools.php',
+		$admin_page = add_menu_page(
 			__( 'Logs', 'w4-loggable' ),
 			__( 'Logs', 'w4-loggable' ),
 			$access_cap,
-			'w4-loggable-logs',
-			[$this, 'render_page']
+			'w4-loggable',
+			[$this, 'render_page'],
+			'dashicons-info-outline'
 		 );
 
 		add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
 		add_action( "load-{$admin_page}", array( $this, 'load_page' ) );
 		add_action( "load-{$admin_page}", array( $this, 'handle_actions' ) );
+	}
+
+	public function add_submenus() {
+		global $menu, $submenu;
+
+		$menu_items = Utils::get_menu_items();
+		if ( empty( $menu_items ) ) {
+			return;
+		}
+
+		$access_cap = apply_filters( 'w4_loggable/page_access_cap/logs', 'manage_options' );
+
+		if ( ! isset( $submenu['w4-loggable'] ) ) {
+			$submenu['w4-loggable'] = array();
+		}
+
+		$submenu['w4-loggable'][] = array(
+			__( 'All Logs' ),
+			$access_cap,
+			'admin.php?page=w4-loggable'
+		);
+
+		foreach ( $menu_items as $key => $menu_item ) {
+			$submenu['w4-loggable'][] = array(
+				$menu_item['menu_title'],
+				$access_cap,
+				'admin.php?page=w4-loggable&menu_item=' . $key
+			);
+		}
+	}
+
+	public function highlight_submenu( $parent_file ) {
+		global $submenu_file;
+
+		if ( 'w4-loggable' === $parent_file ) {
+			$submenu_file = 'admin.php?page=w4-loggable';
+
+			if ( isset( $_REQUEST['menu_item'] ) && Utils::get_menu_item( $_REQUEST['menu_item'] ) ) {
+				$submenu_file = 'admin.php?page=w4-loggable&menu_item=' . wp_unslash( $_REQUEST['menu_item'] );
+			}
+		}
+
+		return $parent_file;
 	}
 
 	public function print_scripts() {

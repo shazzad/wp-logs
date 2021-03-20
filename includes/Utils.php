@@ -9,6 +9,19 @@ namespace W4dev\Loggable;
 
 class Utils
 {
+	public static function get_menu_items() {
+		return apply_filters( 'w4_loggable_menu_items', array() );
+	}
+
+	public static function get_menu_item( $key ) {
+		$menu_items = self::get_menu_items();
+		if ( isset( $menu_items[ $key ] ) ) {
+			return $menu_items[ $key ];
+		}
+
+		return false;
+	}
+
 	public static function choice_name( $choice, $choices = array() )
 	{
 		if ( isset( $choices[$choice] ) ) {

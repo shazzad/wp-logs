@@ -119,8 +119,9 @@ textarea.w4_loggable_small_text{
 /* List table */
 @media (min-width: 768px) {
 	.wp-list-table.w4-loggable-logs .column-timestamp{
-		width: 120px;
+		width: 100px;
 	}
+	.wp-list-table.w4-loggable-logs .column-level,
 	.wp-list-table.w4-loggable-logs .column-id{
 		width: 80px;
 	}

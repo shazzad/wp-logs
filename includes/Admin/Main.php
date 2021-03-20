@@ -39,7 +39,7 @@ class Main
 
 	public function plugin_action_links( $links )
 	{
-		$links['logs'] = '<a href="'. admin_url( 'tools.php?page=w4-loggable' ) .'">' . __( 'W4 Logs', 'w4-loggable' ). '</a>';
+		$links['logs'] = '<a href="'. admin_url( 'admin.php?page=w4-loggable' ) .'">' . __( 'Logs', 'w4-loggable' ). '</a>';
 		return $links;
 	}
 }
