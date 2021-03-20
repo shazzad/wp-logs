@@ -3,11 +3,8 @@ namespace W4dev\Loggable;
 
 /**
  * Database query abstractor
- * @package WordPress
- * @subpackage SERVED Admin
- * @author Shazzad Hossain Khan
- * @url https://shazzad.me
-**/
+ * @package W4dev\Loggable
+ */
 
 
 class DbAdapter
@@ -35,7 +32,7 @@ class DbAdapter
 		global $wpdb;
 		return $wpdb->delete( $table, $where );
 	}
-	public static function insert_id(  ){
+	public static function insert_id( ){
 		global $wpdb;
 	return $wpdb->insert_id;
 	}
@@ -59,9 +56,9 @@ class DbAdapter
 		global $wpdb;
 		return $wpdb->query( $query );
 	}
-	public static function get_found_rows(  ){
+	public static function get_found_rows( ){
 		global $wpdb;
-		return $wpdb->get_var( 'SELECT FOUND_ROWS(  )' );
+		return $wpdb->get_var( 'SELECT FOUND_ROWS( )' );
 	}
 	public static function esc_like( $query ){
 		global $wpdb;

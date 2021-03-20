@@ -1,5 +1,5 @@
 <?php
-namespace W4dev\Loggable\Admin\Log;
+namespace W4dev\Loggable\Admin\Logs;
 
 use W4dev\Loggable\Log\Data as LogData;
 use W4dev\Loggable\Log\Query as LogQuery;
@@ -13,23 +13,22 @@ class ListTable extends \WP_List_Table {
 	# Construct
 	function __construct() {
 		 parent::__construct([
-			'singular'	=> 'w4_log',
-			'plural' 	  => 'W4_loggable',
-			'screen'	  => get_current_screen()->id,
-			'ajax'		  => false
+			'singular' => 'w4-loggable-log',
+			'plural'   => 'w4-loggable-logs',
+			'screen'   => get_current_screen()->id,
+			'ajax'	   => false
 		]);
 	}
 
 	# Columns
 	function get_columns() {
 		$columns = [
-			'cb' 					=> '<input type="checkbox" id="cb-select-all-1">',
-			#'title' 				=> __('ID', 'w4-loggable'),
-			'title' 				=> __('Message', 'w4-loggable'),
-			'level' 				=> __('Level', 'w4-loggable'),
-			'source'	  			=> __('Source', 'w4-loggable'),
-			'timestamp' 			=> __('Date', 'w4-loggable'),
-			'id' 					=> __('Id', 'w4-loggable')
+			'cb' 		=> '<input type="checkbox" id="cb-select-all-1">',
+			'title' 	=> __('Message', 'w4-loggable'),
+			'level' 	=> __('Level', 'w4-loggable'),
+			'source'    => __('Source', 'w4-loggable'),
+			'timestamp' => __('Created', 'w4-loggable'),
+			'id' 		=> __('UID', 'w4-loggable')
 		];
 
 		foreach ($this->get_queryable_columns() as $qr => $qc) {
@@ -37,7 +36,7 @@ class ListTable extends \WP_List_Table {
 				unset($columns[$qc[0]]);
 		}
 
-		$columns = apply_filters('manage_W4_Loggable_columns', $columns);
+		$columns = apply_filters('manage_w4_loggable_columns', $columns);
 
 		return $columns;
 	}
@@ -85,14 +84,12 @@ class ListTable extends \WP_List_Table {
 			}
 		}
 
-		#\W4dev\Loggable\Utils::d($query_args);
-
 		$query_args = stripslashes_deep($query_args);
 		$query = new LogQuery($query_args);
 		$query->query();
 
 		$resuts = $query->get_results();
-		foreach ($resuts as $resut) {
+		foreach ( $resuts as $resut ) {
 		  $this->items[] = LogData::load($resut);
 		}
 		# \W4dev\Loggable\Utils::d($this->items);
@@ -108,33 +105,44 @@ class ListTable extends \WP_List_Table {
 	function register_screen_options() {
 		$option = 'per_page';
 		$args = array(
-			'label' 	=> __('Number of items per page:'),
+			'label' 	=> __( 'Number of items per page:' ),
 			'default' 	=> 10,
 			'option' 	=> 'w4_loggable_logs_per_page'
 		);
 
-		add_screen_option($option, $args);
+		add_screen_option( $option, $args );
 	}
 
 	function display_tablenav($which) {
-		?><div class="tablenav <?php echo esc_attr($which); ?>"><?php
-		if ('top' == $which) {
-			?>
-			<div class="alignleft actions bulkactions">
-				<select name="action">
-					<option selected="selected" value="-1"><?php _e('Bulk Actions', 'w4-loggable'); ?></option>
-					<option value="bulk_delete"><?php _e('Delete', 'w4-loggable'); ?></option>
-				</select>
-				<input type="submit" value="<?php _e('Apply', 'w4-loggable'); ?>" class="button action" id="doaction" name="">
-	  		</div><?php
-		}
-		$this->pagination($which); ?>
-		<br class="clear" />
-		</div><?php
+		?>
+		<div class="tablenav <?php echo esc_attr($which); ?>">
+			<?php if ('top' == $which) { ?>
+				<div class="alignleft actions bulkactions">
+					<select name="action">
+						<option selected="selected" value="-1"><?php _e( 'Bulk Actions', 'w4-loggable' ); ?></option>
+						<option value="bulk_delete"><?php _e( 'Delete', 'w4-loggable' ); ?></option>
+					</select>
+					<input type="submit" value="<?php _e( 'Apply', 'w4-loggable' ); ?>" class="button action" id="doaction" name="">
+				</div>
+			<?php } ?>
+			<?php $this->pagination($which); ?>
+			<br class="clear" />
+		</div>
+		<?php
 	}
 
 	function get_views() {
-		$base_url = remove_query_arg(array('action', 'filter_action', 'paged', 'id', 'ok', 'error', 's', 'status', 'step', 'customer_id', 'level', 'subscription_status'));
+		$base_url = remove_query_arg(
+			array(
+				'action',
+				'filter_action',
+				'paged',
+				'id',
+				'ok',
+				'error',
+				's'
+			)
+		);
 
 		$view_active = false;
 		$links = array(
@@ -153,8 +161,6 @@ class ListTable extends \WP_List_Table {
 				$column = $qc[0];
 				$name = $qc[1];
 				$value = urlencode($_GET[$qr]);
-
-				#echo $qr; die();
 
 				$count = urldecode($_GET[$qr]);
 
@@ -194,14 +200,18 @@ class ListTable extends \WP_List_Table {
 		return $_links;
 	}
 
-	# === Columns ======
-	function column_cb($log) {
+	/**
+	 * Checkbox column
+	 */
+	function column_cb( $log ) {
 		printf('<input id="cb-select-%1$d" type="checkbox" name="ids[]" value="%1$d" />', $log->get_id());
 	}
-	function column_default($log, $column) {
-		do_action("manage_W4_Loggable_custom_column", $column, $log->get_id());
+
+	function column_default( $log, $column ) {
+		do_action( "manage_W4_Loggable_custom_column", $column, $log->get_id() );
 	}
-	function column_title($log) {
+
+	function column_title( $log ) {
 		echo apply_filters('w4_loggable_format_message', $log->get_message(), $log->get_context());
 
 		$actions = array();
@@ -211,36 +221,45 @@ class ListTable extends \WP_List_Table {
 		echo $this->row_actions($actions);
 	}
 
-	function column_id($log) {
+	function column_id( $log ) {
 		echo $log->get_id();
 	}
-	function column_level($log) {
+	
+	function column_level( $log ) {
 		echo $log->get_level();
 	}
-	function column_source($log) {
+	
+	function column_source( $log ) {
 		echo $log->get_source();
 	}
-	function column_message($log) {
-		echo apply_filters('w4_loggable_format_message', $log->get_message(), $log->get_context());
+
+	function column_message( $log ) {
+		echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() );
 	}
-	function column_timestamp($log) {
+
+	function column_timestamp( $log ) {
 		if (! $log->get_timestamp()) {
 			_e('N/A');
 		} else {
 			printf('%s<br/>@ %s', mysql2date('d M Y', $log->get_timestamp()), mysql2date('h:i A', $log->get_timestamp()));
 		}
 	}
-	# No items
+
+	/**
+	 * No items
+	 */ 
 	function no_items() {
 		_e('No logs', 'w4-loggable');
 	}
 
-	# Search box
-	function search_box($text, $input_id) {
+	/**
+	 * Search box
+	 */
+	function search_box( $text, $input_id ) {
 		?><p class="search-box">
 			<label for="<?php echo $input_id; ?>" class="screen-reader-text"><?php echo $text; ?></label>
-			<input type="text" name="s" id="<?php echo $input_id ?>" value="<?php _admin_search_query(); ?>" placeholder="<?php _e('message..', 'w4-loggable'); ?>" title="<?php _e('Search by message', 'w4-loggable'); ?>" />
-			<?php submit_button($text, 'button', false, false, array('id' => 'search-submit')); ?>
+			<input type="text" name="s" id="<?php echo $input_id ?>" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_attr_e('message..', 'w4-loggable'); ?>" title="<?php esc_attr_e( 'Search by message', 'w4-loggable'); ?>" />
+			<?php submit_button( $text, 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
 		</p>
 		<?php
 	}

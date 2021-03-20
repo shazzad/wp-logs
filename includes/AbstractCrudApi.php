@@ -28,7 +28,7 @@ abstract class AbstractCrudApi {
 		if (method_exists( $this, $action ) ) {
 			return $this->$action( $data );
 		} else {
-			return new \WP_Error('apiError', __('Invalid request' ), array( 'status' => 404  ) );
+			return new \WP_Error('apiError', __('Invalid request' ), array( 'status' => 404 ) );
 		}
 	}
 
@@ -46,7 +46,7 @@ abstract class AbstractCrudApi {
 
 			$return = $object->get_data( );
 		} catch(ResourceExistsException $e ){
-			$return = new \WP_Error('resourceExist', $e->getMessage( ), array( 'status' => 409  ) );
+			$return = new \WP_Error('resourceExist', $e->getMessage( ), array( 'status' => 409 ) );
 		} catch(Exception $e ){
 			$return = new \WP_Error('apiError', $e->getMessage( ), array( 'status' => 422 ) );
 		}
@@ -69,7 +69,7 @@ abstract class AbstractCrudApi {
 			if ( $object->get_id( ) > 0 ) {
 				$return = $object->get_data( );
 			} else {
-				$return = new \WP_Error('resourceNotExists', __('Requested resource does not exist.', 'served-admin' ), array( 'status' => 404  ) );
+				$return = new \WP_Error('resourceNotExists', __('Requested resource does not exist.', 'served-admin' ), array( 'status' => 404 ) );
 			}
 		} catch(Exception $e ) {
 			$return = new \WP_Error('apiError', $e->getMessage( ), array('status' => 404 ) );
@@ -90,16 +90,16 @@ abstract class AbstractCrudApi {
 				$object = new $this->model_class_name( $data );
 			}
 
-			if ( $object->get_id( ) > 0  ) {
+			if ( $object->get_id( ) > 0 ) {
 				if ( $object->get_id( ) > 0 && $this->can_delete( $object ) ) {
 					$id = $object->get_id( );
 					$object->delete( );
-					return array( 'id' => $id  );
+					return array( 'id' => $id );
 				} else {
-					return new \WP_Error('noPermissing', __('You have no permission to delete this.', 'served-admin' ), array( 'status' => 404  ) );
+					return new \WP_Error('noPermissing', __('You have no permission to delete this.', 'served-admin' ), array( 'status' => 404 ) );
 				}
 			} else {
-				return new \WP_Error('resourceNotExists', __('Requested resource does not exist.', 'served-admin' ), array( 'status' => 404  ) );
+				return new \WP_Error('resourceNotExists', __('Requested resource does not exist.', 'served-admin' ), array( 'status' => 404 ) );
 			}
 		} catch ( Exception $e ) {
 			return new \WP_Error( 'apiError', $e->getMessage( ), array('status' => 404 ) );

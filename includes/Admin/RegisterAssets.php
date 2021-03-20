@@ -1,14 +1,11 @@
 <?php
-namespace W4dev\Loggable\Admin;
-
 /**
- * Register css & js
- * @package WordPress
- * @subpackage SERVED Admin
- * @author Shazzad Hossain Khan
- * @url https://shazzad.me
-**/
+ * Register CSS/JS
+ * 
+ * @package W4dev\Loggable
+ */
 
+namespace W4dev\Loggable\Admin;
 
 class RegisterAssets
 {
@@ -19,9 +16,9 @@ class RegisterAssets
 
 	public function register()
 	{
-		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset(  $_GET['gform_debug']  ) ? '' : '.min';
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
 
-		wp_register_script( 'W4_loggable-admin-main', W4_Loggable_URL . 'admin/js/admin'. $min .'.js', array(), W4_LOGGABLE_VERSION, true );
-		wp_register_style( 'W4_loggable-admin-main', W4_Loggable_URL . 'admin/css/admin'. $min .'.css', array(), W4_LOGGABLE_VERSION );
+		wp_register_script( 'w4-loggable-admin-main', W4_LOGGABLE_URL . 'assets/js/admin'. $min .'.js', array(), W4_LOGGABLE_VERSION, true );
+		wp_register_style( 'w4-loggable-admin-main', W4_LOGGABLE_URL . 'assets/css/admin'. $min .'.css', array(), W4_LOGGABLE_VERSION );
 	}
 }

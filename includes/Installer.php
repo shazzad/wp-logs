@@ -3,11 +3,8 @@ namespace W4dev\Loggable;
 
 /**
  * Core Environment
- * @package WordPress
- * @subpackage SERVED Admin
- * @author Shazzad Hossain Khan
- * @url https://shazzad.me
-**/
+ * @package W4dev\Loggable
+ */
 
 
 class Installer
@@ -18,7 +15,7 @@ class Installer
 
 		$sql = array();
 
-		if ( ! empty( $wpdb->charset  ) ) {
+		if ( ! empty( $wpdb->charset ) ) {
 			$charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
 		  	if ( ! empty( $wpdb->collate ) ) {
 	  			$charset_collate .= " COLLATE {$wpdb->collate}";
@@ -41,7 +38,7 @@ class Installer
 		}
 
 		if ( ! empty( $sql ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/upgrade.php'  );
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 			dbDelta( $sql );
 		}
 	}

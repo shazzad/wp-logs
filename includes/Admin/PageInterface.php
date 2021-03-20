@@ -3,11 +3,8 @@ namespace W4dev\Loggable\Admin;
 
 /**
  * Admin Environment
- * @package WordPress
- * @subpackage SERVED Admin
- * @author Shazzad Hossain Khan
- * @url https://shazzad.me
-**/
+ * @package W4dev\Loggable
+ */
 
 
 interface PageInterface
