@@ -92,6 +92,15 @@ class ListTable extends \WP_List_Table {
 
 				$query_args['source'] = $sources;
 			}
+
+		} elseif ( isset( $_REQUEST['page'] ) && Utils::get_menu_item( $_REQUEST['page'] ) ) {
+
+			$menu_item = Utils::get_menu_item( $_REQUEST['page'] );
+			if ( $menu_item && isset( $menu_item['sources'] ) ) {
+				$sources = $menu_item['sources'];
+
+				$query_args['source'] = $sources;
+			}
 		}
 
 		$query_args = stripslashes_deep( $query_args );

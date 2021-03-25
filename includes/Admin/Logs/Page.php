@@ -15,11 +15,49 @@ class Page implements PageInterface
 {
 	function __construct()
 	{
-		add_action( 'admin_menu', array( $this, 'admin_menu' ), 15 );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ), 100 );
 		add_action( 'admin_menu', array( $this, 'add_submenus' ), 100 );
 		add_filter( 'parent_file', array( $this, 'highlight_submenu' ) );
 		add_filter( 'set-screen-option', [ $this, 'set_screen_option' ], 10, 3);
 		add_filter( 'set_screen_option_w4_loggable_logs_per_page', [ $this, 'set_screen_option' ], 10, 3);
+	}
+
+	public function admin_menu() {
+		$access_cap = apply_filters( 'w4_loggable/page_access_cap/logs', 'manage_options' );
+		$admin_page = add_menu_page(
+			__( 'Logs', 'w4-loggable' ),
+			__( 'Logs', 'w4-loggable' ),
+			$access_cap,
+			'w4-loggable',
+			[$this, 'render_page'],
+			'dashicons-info-outline'
+		);
+
+		add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
+		add_action( "load-{$admin_page}", array( $this, 'load_page' ) );
+		add_action( "load-{$admin_page}", array( $this, 'handle_actions' ) );
+
+		// Register menu for each of the item.
+		$menu_items = Utils::get_menu_items();
+		if ( ! empty( $menu_items ) ) {
+			foreach ( $menu_items as $menu_slug => $menu_item ) {
+				if ( ! empty( $menu_item['parent_slug'] ) ) {
+
+					$admin_page = add_submenu_page(
+						$menu_item['parent_slug'],
+						$menu_item['page_title'],
+						$menu_item['menu_title'],
+						$menu_item['capability'],
+						$menu_slug,
+						[$this, 'render_page']
+					);
+
+					add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
+					add_action( "load-{$admin_page}", array( $this, 'load_page' ) );
+					add_action( "load-{$admin_page}", array( $this, 'handle_actions' ) );
+				}
+			}
+		}
 	}
 
 	public function set_screen_option( $status, $option, $value ) {
@@ -85,6 +123,10 @@ class Page implements PageInterface
 		if ( isset( $_REQUEST['menu_item'] ) && Utils::get_menu_item( $_REQUEST['menu_item'] ) ) {
 			$menu_item = Utils::get_menu_item( $_REQUEST['menu_item'] );
 			$page_title = $menu_item['page_title'];
+		
+		} elseif ( isset( $_REQUEST['page'] ) && Utils::get_menu_item( $_REQUEST['page'] ) ) {
+			$menu_item = Utils::get_menu_item( $_REQUEST['page'] );
+			$page_title = $menu_item['page_title'];
 		}
 
 		?>
@@ -92,8 +134,7 @@ class Page implements PageInterface
 		<div class="wrap w4_loggable_wrap">
 			<?php
 
-			if ( in_array( $req_action, array( 'view' ) ) && isset( $_REQUEST['id'] ) ) {
-
+			if ( 'view' === $req_action && isset( $_REQUEST['id'] ) ) {
 				$log = new LogData( intval( $_REQUEST['id'] ) );
 
 				?>
@@ -102,7 +143,9 @@ class Page implements PageInterface
 					<?php printf( __( 'View Log: # %d', 'w4-loggable' ), $log->get_id() ); ?>
 				</h1>
 
-				<a class="page-title-action" href="<?php echo remove_query_arg( array( 'id', 'action' ) ); ?>">Back to logs</a>
+				<a class="page-title-action" href="<?php echo remove_query_arg( array( 'id', 'action' ) ); ?>">
+					<?php _e( 'Back to logs' ); ?>
+				</a>
 
 				<hr class="wp-header-end">
 
@@ -139,26 +182,20 @@ class Page implements PageInterface
 		<?php
 	}
 
-	public function admin_menu() {
-		$access_cap = apply_filters( 'w4_loggable/page_access_cap/logs', 'manage_options' );
-		$admin_page = add_menu_page(
-			__( 'Logs', 'w4-loggable' ),
-			__( 'Logs', 'w4-loggable' ),
-			$access_cap,
-			'w4-loggable',
-			[$this, 'render_page'],
-			'dashicons-info-outline'
-		 );
-
-		add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
-		add_action( "load-{$admin_page}", array( $this, 'load_page' ) );
-		add_action( "load-{$admin_page}", array( $this, 'handle_actions' ) );
-	}
-
 	public function add_submenus() {
 		global $menu, $submenu;
 
 		$menu_items = Utils::get_menu_items();
+
+		// Remote items having parent_slug attribute, 
+		// as they will be registered as page under their 
+		// plugin menu.
+		foreach ( $menu_items as $k => $v ) {
+			if ( ! empty( $v['parent_slug'] ) ) {
+				unset( $menu_items[ $k ] );
+			}
+		}
+
 		if ( empty( $menu_items ) ) {
 			return;
 		}

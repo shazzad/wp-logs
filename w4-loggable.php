@@ -3,7 +3,7 @@
  * Plugin Name: W4 Loggable
  * Plugin URI: https://w4dev.com
  * Description: Store and view logs for debugging.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 4.4.0
  * Tested up to: 5.3.2
  * Requires PHP: 5.5

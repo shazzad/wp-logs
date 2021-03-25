@@ -1,19 +1,24 @@
 <?php
-namespace W4dev\Loggable;
-
 /**
  * Utility Class
+ * 
  * @package W4dev\Loggable
  */
 
+namespace W4dev\Loggable;
 
+/**
+ * Class Utils.
+ */
 class Utils
 {
-	public static function get_menu_items() {
+	public static function get_menu_items()
+	{
 		return apply_filters( 'w4_loggable_menu_items', array() );
 	}
 
-	public static function get_menu_item( $key ) {
+	public static function get_menu_item( $key )
+	{
 		$menu_items = self::get_menu_items();
 		if ( isset( $menu_items[ $key ] ) ) {
 			return $menu_items[ $key ];
@@ -24,8 +29,8 @@ class Utils
 
 	public static function choice_name( $choice, $choices = array() )
 	{
-		if ( isset( $choices[$choice] ) ) {
-			return $choices[$choice];
+		if ( isset( $choices[ $choice ] ) ) {
+			return $choices[ $choice ];
 		}
 
 		foreach ( $choices as $c ) {
@@ -37,6 +42,7 @@ class Utils
 				}
 			}
 		}
+
 		return '';
 	}
 
@@ -57,6 +63,8 @@ class Utils
 			wp_set_current_user( $user_id );
 		}
 	}
+
+
 	public static function human_time_diff( $time, $now )
 	{
 		$start_date = new DateTime( $time );
@@ -94,12 +102,14 @@ class Utils
 
 		return join( ', ', $items );
 	}
+	
 	public static function p( $data )
 	{
 		echo '<pre>';
 		print_r( $data );
 		echo '</pre>';
 	}
+	
 	public static function d( $data )
 	{
 		self::p( $data );
