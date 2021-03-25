@@ -12,7 +12,7 @@ final class Plugin
 	public $name = 'W4 Loggable';
 
 	// plugin version
-	public $version = '1.0.2';
+	public $version = '1.0.3';
 
 	// class instance holder
 	protected static $_instance = null;

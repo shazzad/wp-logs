@@ -3,9 +3,8 @@
  * Plugin Name: W4 Loggable
  * Plugin URI: https://w4dev.com
  * Description: Store and view logs for debugging.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 4.4.0
- * Tested up to: 5.3.2
  * Requires PHP: 5.5
  * Author: Shazzad Hossain Khan
  * Author URI: https://shazzad.me
@@ -54,3 +53,15 @@ function w4_loggable_install() {
 	\W4dev\Loggable\Installer::update_tables();
 }
 register_activation_hook(W4_LOGS_PLUGIN_FILE, 'w4_loggable_install', 10);
+
+
+// Github updater
+if( ! class_exists( 'GithubUpdater' ) ) {
+	include_once( __DIR__ . '/libraries/GithubUpdater.php' );
+}
+
+new GithubUpdater( array(
+	'file'       => __FILE__,
+	'api_slug'   => 'shazzad/w4-loggable',
+	'date_added' => '2020-06-01'
+) );
