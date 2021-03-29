@@ -38,12 +38,9 @@ function w4_loggable() {
 }
 
 /**
- * Initialize plugin on plugins loaded hook
+ * Initialize asap
  */
-function w4_loggable_init() {
-	w4_loggable();
-}
-add_action( 'plugins_loaded', 'w4_loggable_init' );
+w4_loggable();
 
 /**
  * Install table to store log
@@ -54,14 +51,19 @@ function w4_loggable_install() {
 }
 register_activation_hook(W4_LOGS_PLUGIN_FILE, 'w4_loggable_install', 10);
 
-
 // Github updater
 if( ! class_exists( 'GithubUpdater' ) ) {
 	include_once( __DIR__ . '/libraries/GithubUpdater.php' );
 }
 
 new GithubUpdater( array(
-	'file'       => __FILE__,
-	'api_slug'   => 'shazzad/w4-loggable',
-	'date_added' => '2020-06-01'
+	'file'         => __FILE__,
+	'api_slug'     => 'shazzad/w4-loggable',
+	'repo'		   => 'w4-loggable',
+	'private_repo' => false,
+
+	// Test
+	'owner'        => 'shazzad',
+	'owner_name'   => 'Shazzad',
+	'option_prefix'=> 'shazzad_'
 ) );
