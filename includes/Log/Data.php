@@ -163,8 +163,10 @@ class Data extends AbstractData {
 			throw new \Exception( __( 'Invalid message', 'w4-loggable' ) );
 		} else {
 			if ( ! $this->get_timestamp() ) {
-  				$this->set_timestamp( current_time( 'mysql' ) );
+				// Let's use gmt timestamp.
+  				$this->set_timestamp( current_time( 'mysql', true ) );
   			}
+
 			if ( ! $this->get_level() ) {
   				$this->set_level( 'info' );
   			}

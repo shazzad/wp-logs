@@ -2,40 +2,28 @@
  * Admin CSS
  */
 
- .w4_loggable_wrap pre{
-	overflow:auto;
-}
-.w4_loggable_wrap pre.small{
-	font-size:12px;
-	line-height: normal;
-}
-textarea.w4_loggable_small_text{
-	font-size:12px !important;
-	line-height: normal !important;
-}
-
 /* Error/Message/Note */
-.w4_loggable_wrap div._note,
-.w4_loggable_wrap div._error,
-.w4_loggable_wrap div._updated,
-.w4_loggable_wrap div._ok {
+.w4-loggable-wrap div._note,
+.w4-loggable-wrap div._error,
+.w4-loggable-wrap div._updated,
+.w4-loggable-wrap div._ok {
   padding: 1px 12px;
   margin: 5px 0 15px;
   background-color: #fff;
   border-left:4px solid #d1e5ee;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
-.w4_loggable_wrap div._note p,
-.w4_loggable_wrap div._error p,
-.w4_loggable_wrap div._updated p,
-.w4_loggable_wrap div._ok p{
+.w4-loggable-wrap div._note p,
+.w4-loggable-wrap div._error p,
+.w4-loggable-wrap div._updated p,
+.w4-loggable-wrap div._ok p{
 	margin:.5em 0;
 }
-.w4_loggable_wrap div._error {
+.w4-loggable-wrap div._error {
   border-color: #dd3d36;
 }
-.w4_loggable_wrap div._updated,
-.w4_loggable_wrap div._ok {
+.w4-loggable-wrap div._updated,
+.w4-loggable-wrap div._ok {
   border-color: #7ad03a;
 }
 .notes div._error,
@@ -52,74 +40,34 @@ textarea.w4_loggable_small_text{
 .nav-tab-wrapper + div._ok{
 	margin-top:20px;
 }
-#w4_loggable_admin_notes._ld{
-	padding-left:30px;
-	background-position:5px center;
-	background-repeat:no-repeat;
-	background-image:url(images/spinner.gif);
-}
 
-/* Form */
-.wf{
-	color:#333;
-	margin-bottom:20px;
-}
-.w4_loggable-admin .wf{
+/* Preview */
+.w4-loggable-preview{
+	padding: 20px;
 	margin-top: 20px;
+	background-color: #FFF;
 }
-.w4_loggable-admin .subsubsub li.search{
-	font-size: 13px;
-	background-color: transparent;
+.w4-loggable-preview .w4-loggable-message {
+	font-size: 18px;
 }
-.wf p{
-	font-style:normal;
-	font-size:inherit;
+.w4-loggable-preview .w4-loggable-data {
+	padding: 20px;
+	margin: 20px 0 0;
+	background-color: #eee;
 }
-.wff_half_left,
-.wff_half_right{
-	width:48%;
-	padding:0 2% 0 0;
-	float: left;
-}
-.widefat{
-	width:100%;
-}
-.wfft_textarea{
-	height:auto;
-}
-.w4_loggable_wrap h2 a{
-	text-decoration:none;
-}
-.w4_loggable__ov,
-.wf-basic .wffw.w4_loggable__ov{
-	overflow:visible;
-}
-
-/* Form (style = basic) */
-.wf-basic {
-	background-color: #fff;
-	box-shadow: 0 1px 6px rgba(57,73,76,0.35);
-}
-.w4_loggable-button{
-	color: #666;
-	border-radius: 5px;
-	padding: 6px 12px;
-	display: inline-block;
-	border: 1px solid #ddd;
-	background-color: #fff;
-	transition: all .4s ease;
-}
-.w4_loggable-button:hover{
-	color: #333;
-	cursor: pointer;
-	border-color: #AAA;
-	box-shadow: 0 1px 2px rgba(57,73,76,0.35);
+.w4-loggable-preview .w4-loggable-level{
+	float: right;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 
 /* List table */
 @media (min-width: 768px) {
-	.wp-list-table.w4-loggable-logs .column-timestamp{
-		width: 100px;
+	.wp-list-table.w4-loggable-logs .column-date{
+		width: 130px;
+	}
+	.wp-list-table.w4-loggable-logs .column-source{
+		width: 200px;
 	}
 	.wp-list-table.w4-loggable-logs .column-level,
 	.wp-list-table.w4-loggable-logs .column-id{

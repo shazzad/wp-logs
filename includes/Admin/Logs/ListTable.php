@@ -28,8 +28,8 @@ class ListTable extends \WP_List_Table {
 			'title' 	=> __( 'Message', 'w4-loggable' ),
 			'source'    => __( 'Source', 'w4-loggable' ),
 			'level' 	=> __( 'Type', 'w4-loggable' ),
-			'date'      => __( 'Date', 'w4-loggable' ),
-			'id' 		=> __( 'UID', 'w4-loggable' )
+			'date'      => __( 'Date (GMT+0)', 'w4-loggable' ),
+			'id' 		=> __( 'ID', 'w4-loggable' )
 		];
 
 		foreach ( $this->get_queryable_columns() as $qr => $qc ) {

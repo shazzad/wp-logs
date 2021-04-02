@@ -131,7 +131,7 @@ class Page implements PageInterface
 
 		?>
 
-		<div class="wrap w4_loggable_wrap">
+		<div class="wrap w4-loggable-wrap">
 			<?php
 
 			if ( 'view' === $req_action && isset( $_REQUEST['id'] ) ) {
@@ -152,11 +152,15 @@ class Page implements PageInterface
 				<?php do_action( 'w4_loggable/admin_page/notices' ); ?>
 
 				<div class="w4-loggable-admin-content">
-					<div class="box">
+					<div class="w4-loggable-preview">
+						<div class="w4-loggable-message">
+							<strong class="w4-loggable-level"><?php echo $log->get_level(); ?></strong>
+							<?php echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() ); ?>
+						</div>
+
 						<?php
-						echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() );
 						if ( $log->get_context() ) {
-							echo '<pre>';
+							echo '<pre class="w4-loggable-data">';
 							print_r( $log->get_context() );
 							echo '</pre>';
 						}
