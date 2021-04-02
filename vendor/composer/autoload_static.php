@@ -4,12 +4,16 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitac8edc55c5f8daed8433c6b1eefecc1e
+class ComposerStaticInit0a6fa8768d69935cd322491aaf6ea4ef
 {
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
             'W4dev\\Loggable\\' => 15,
+        ),
+        'S' => 
+        array (
+            'Shazzad\\GithubPlugin\\' => 21,
         ),
     );
 
@@ -17,6 +21,10 @@ class ComposerStaticInitac8edc55c5f8daed8433c6b1eefecc1e
         'W4dev\\Loggable\\' => 
         array (
             0 => __DIR__ . '/../..' . '/includes',
+        ),
+        'Shazzad\\GithubPlugin\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/shazzad/github-plugin-updater/src',
         ),
     );
 
@@ -30,12 +38,17 @@ class ComposerStaticInitac8edc55c5f8daed8433c6b1eefecc1e
         ),
     );
 
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitac8edc55c5f8daed8433c6b1eefecc1e::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitac8edc55c5f8daed8433c6b1eefecc1e::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitac8edc55c5f8daed8433c6b1eefecc1e::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0a6fa8768d69935cd322491aaf6ea4ef::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0a6fa8768d69935cd322491aaf6ea4ef::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0a6fa8768d69935cd322491aaf6ea4ef::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit0a6fa8768d69935cd322491aaf6ea4ef::$classMap;
 
         }, null, ClassLoader::class);
     }

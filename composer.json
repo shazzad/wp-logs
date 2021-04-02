@@ -1,11 +1,19 @@
 {
-	"name" : "w4dev/loggable",
-  	"require": {
-		"mustache/mustache": "^2.12"
+	"name": "w4dev/loggable",
+	"description": "Store and view logs for debugging.",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/shazzad/github-plugin-updater"
+		}
+	],
+	"require": {
+		"mustache/mustache": "^2.12",
+		"shazzad/github-plugin-updater": "dev-main"
 	},
 	"autoload": {
-        "psr-4": {
-            "W4dev\\Loggable\\": "includes"
-        }
-    }
+		"psr-4": {
+			"W4dev\\Loggable\\": "includes"
+		}
+	}
 }

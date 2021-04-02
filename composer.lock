@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e4acc2a59788579b19628c6c6f47168e",
+    "content-hash": "d8f3157079fae2af73a84367897639d0",
     "packages": [
         {
             "name": "mustache/mustache",
@@ -50,15 +50,50 @@
                 "mustache",
                 "templating"
             ],
+            "support": {
+                "issues": "https://github.com/bobthecow/mustache.php/issues",
+                "source": "https://github.com/bobthecow/mustache.php/tree/master"
+            },
             "time": "2019-11-23T21:40:31+00:00"
+        },
+        {
+            "name": "shazzad/github-plugin-updater",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shazzad/github-plugin-updater.git",
+                "reference": "7da8e586e310d316dbcc45bb31f1c844de172f43"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/7da8e586e310d316dbcc45bb31f1c844de172f43",
+                "reference": "7da8e586e310d316dbcc45bb31f1c844de172f43",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Shazzad\\GithubPlugin\\": "src/"
+                }
+            },
+            "description": "Helper library to implement wordpress plugin update from github.",
+            "support": {
+                "source": "https://github.com/shazzad/github-plugin-updater/tree/main",
+                "issues": "https://github.com/shazzad/github-plugin-updater/issues"
+            },
+            "time": "2021-04-02T21:42:58+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "shazzad/github-plugin-updater": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

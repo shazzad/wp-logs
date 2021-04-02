@@ -45,6 +45,7 @@ abstract class AbstractCrudApi {
 			$object->save( );
 
 			$return = $object->get_data( );
+
 		} catch(ResourceExistsException $e ){
 			$return = new \WP_Error('resourceExist', $e->getMessage( ), array( 'status' => 409 ) );
 		} catch(Exception $e ){

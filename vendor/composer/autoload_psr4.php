@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'W4dev\\Loggable\\' => array($baseDir . '/includes'),
+    'Shazzad\\GithubPlugin\\' => array($vendorDir . '/shazzad/github-plugin-updater/src'),
 );

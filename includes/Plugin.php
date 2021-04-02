@@ -1,20 +1,30 @@
 <?php
 /**
  * Main Plugin Class
+ * 
  * @package W4dev\Loggable
  */
 
 namespace W4dev\Loggable;
 
-final class Plugin
-{
-	// plugin name
+/**
+ * Plugin
+ */
+final class Plugin {
+
+	/**
+	 * @var string Plugin name.
+	 */
 	public $name = 'W4 Loggable';
 
-	// plugin version
+	/**
+	 * @var string Plugin version.
+	 */
 	public $version = '1.0.5';
 
-	// class instance holder
+	/**
+	 * @var object Plugin instance.
+	 */
 	protected static $_instance = null;
 
 	/**
@@ -32,8 +42,7 @@ final class Plugin
 	/**
 	 * Constructor
 	 */
-	private function __construct()
-	{
+	private function __construct() {
 		$this->define_constants();
 		$this->initialize();
 
@@ -43,8 +52,7 @@ final class Plugin
 	/*
 	 * Define constants
 	 */
-	private function define_constants()
-	{
+	private function define_constants() {
 		define( 'W4_LOGGABLE_NAME', $this->name );
 		define( 'W4_LOGGABLE_VERSION', $this->version );
 		define( 'W4_LOGGABLE_DIR', plugin_dir_path( W4_LOGS_PLUGIN_FILE ) );
@@ -53,22 +61,23 @@ final class Plugin
 	}
 
 	/*
-	 * Bootstrap plugin
+	 * Boot plugin features
 	 */
-	private function initialize()
-	{
+	private function initialize() {
 		load_plugin_textdomain(
 			'w4-loggable',
 			false,
 			basename( dirname( W4_LOGS_PLUGIN_FILE ) ) . '/languages'
 		 );
 
-		// mustache used for parsing message
+		// Load mustache, it is used for parsing message.
 		\Mustache_Autoloader::register();
 
+		// Filter/action hook callbacks
 		new Hooks();
 
 		if ( is_admin() ) {
+			// Admin interface
 			new Admin\Main();
 		}
 	}
