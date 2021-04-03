@@ -20,7 +20,7 @@ final class Plugin {
 	/**
 	 * @var string Plugin version.
 	 */
-	public $version = '1.0.5';
+	public $version = '1.0.6';
 
 	/**
 	 * @var object Plugin instance.

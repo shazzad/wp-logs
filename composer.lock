@@ -112,12 +112,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shazzad/github-plugin-updater.git",
-                "reference": "ac2ecacf41977dec90fbe3827a9015deaeb9d4d8"
+                "reference": "4b72549d4bed53c4efb1f0331c6facbb5f9fbaa3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/ac2ecacf41977dec90fbe3827a9015deaeb9d4d8",
-                "reference": "ac2ecacf41977dec90fbe3827a9015deaeb9d4d8",
+                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/4b72549d4bed53c4efb1f0331c6facbb5f9fbaa3",
+                "reference": "4b72549d4bed53c4efb1f0331c6facbb5f9fbaa3",
                 "shasum": ""
             },
             "require": {
@@ -135,7 +135,7 @@
                 "source": "https://github.com/shazzad/github-plugin-updater/tree/main",
                 "issues": "https://github.com/shazzad/github-plugin-updater/issues"
             },
-            "time": "2021-04-02T22:42:33+00:00"
+            "time": "2021-04-03T22:43:32+00:00"
         }
     ],
     "packages-dev": [],
