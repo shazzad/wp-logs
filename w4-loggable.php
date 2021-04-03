@@ -31,6 +31,24 @@ if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 
 define( 'W4_LOGS_PLUGIN_FILE', __FILE__ );
 
+// // Load updater from local development.
+// if ( class_exists( '\Shazzad\GithubPlugin\Updater' ) ) {
+// 	new \Shazzad\GithubPlugin\Updater( array(
+// 		'file'         => __FILE__,
+// 		'owner'        => 'shazzad',
+// 		'repo'		   => 'w4-loggable',
+	
+// 		// Folloing only required for private repo
+// 		'private_repo' => false,
+// 		'owner_name'   => 'Shazzad'
+// 	) );
+// }
+
+// $reflector = new ReflectionClass("\Shazzad\GithubPlugin\Updater");
+// $fn = $reflector->getFileName();
+// print_r( $fn );
+// exit;
+
 include_once __DIR__ . '/vendor/autoload.php';
 
 
