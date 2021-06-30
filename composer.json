@@ -1,6 +1,6 @@
 {
-	"name": "w4dev/loggable",
-	"description": "Store and view logs for debugging.",
+	"name": "shazzad/wp-logs",
+	"description": "Store and view logs for debugging your application.",
 	"repositories": [
 		{
 			"type": "vcs",
@@ -13,7 +13,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"W4dev\\Loggable\\": "includes"
+			"Shazzad\\WpLogs\\": "includes"
 		}
 	}
 }

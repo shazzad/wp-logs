@@ -2,10 +2,10 @@
 /**
  * Main Plugin Class
  * 
- * @package W4dev\Loggable
+ * @package Shazzad\WpLogs
  */
 
-namespace W4dev\Loggable;
+namespace Shazzad\WpLogs;
 
 /**
  * Plugin
@@ -15,12 +15,12 @@ final class Plugin {
 	/**
 	 * @var string Plugin name.
 	 */
-	public $name = 'W4 Loggable';
+	public $name = 'Shazzad Wp Logs';
 
 	/**
 	 * @var string Plugin version.
 	 */
-	public $version = '1.0.6';
+	public $version = '1.0.7';
 
 	/**
 	 * @var object Plugin instance.
@@ -46,18 +46,18 @@ final class Plugin {
 		$this->define_constants();
 		$this->initialize();
 
-		do_action( 'w4_loggable/loaded' );
+		do_action( 'shazzad_wp_logs/loaded' );
 	}
 
 	/*
 	 * Define constants
 	 */
 	private function define_constants() {
-		define( 'W4_LOGGABLE_NAME', $this->name );
-		define( 'W4_LOGGABLE_VERSION', $this->version );
-		define( 'W4_LOGGABLE_DIR', plugin_dir_path( W4_LOGS_PLUGIN_FILE ) );
-		define( 'W4_LOGGABLE_URL', plugin_dir_url( W4_LOGS_PLUGIN_FILE ) );
-		define( 'W4_LOGGABLE_BASENAME', plugin_basename( W4_LOGS_PLUGIN_FILE ) );
+		define( 'SWPL_NAME', $this->name );
+		define( 'SWPL_VERSION', $this->version );
+		define( 'SWPL_DIR', plugin_dir_path( SWPL_PLUGIN_FILE ) );
+		define( 'SWPL_URL', plugin_dir_url( SWPL_PLUGIN_FILE ) );
+		define( 'SWPL_BASENAME', plugin_basename( SWPL_PLUGIN_FILE ) );
 	}
 
 	/*
@@ -65,9 +65,9 @@ final class Plugin {
 	 */
 	private function initialize() {
 		load_plugin_textdomain(
-			'w4-loggable',
+			'shazzad-wp-logs',
 			false,
-			basename( dirname( W4_LOGS_PLUGIN_FILE ) ) . '/languages'
+			basename( dirname( SWPL_PLUGIN_FILE ) ) . '/languages'
 		 );
 
 		// Load mustache, it is used for parsing message.

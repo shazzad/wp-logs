@@ -1,5 +1,5 @@
 <?php
-namespace W4dev\Loggable;
+namespace Shazzad\WpLogs;
 
 abstract class AbstractData
 {

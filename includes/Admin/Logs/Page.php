@@ -1,15 +1,15 @@
 <?php
 /**
  * Logs Admin Page
- * @package W4dev\Loggable
+ * @package Shazzad\WpLogs
  */
 
-namespace W4dev\Loggable\Admin\Logs;
+namespace Shazzad\WpLogs\Admin\Logs;
 
-use W4dev\Loggable\Admin\PageInterface;
-use W4dev\Loggable\Log\Data as LogData;
-use W4dev\Loggable\Log\Api as LogApi;
-use W4dev\Loggable\Utils;
+use Shazzad\WpLogs\Admin\PageInterface;
+use Shazzad\WpLogs\Log\Data as LogData;
+use Shazzad\WpLogs\Log\Api as LogApi;
+use Shazzad\WpLogs\Utils;
 
 class Page implements PageInterface
 {
@@ -19,18 +19,18 @@ class Page implements PageInterface
 		add_action( 'admin_menu', array( $this, 'add_submenus' ), 100 );
 		add_filter( 'parent_file', array( $this, 'highlight_submenu' ) );
 		add_filter( 'set-screen-option', [ $this, 'set_screen_option' ], 10, 3);
-		add_filter( 'set_screen_option_w4_loggable_logs_per_page', [ $this, 'set_screen_option' ], 10, 3);
+		add_filter( 'set_screen_option_swpl_logs_per_page', [ $this, 'set_screen_option' ], 10, 3);
 	}
 
 	public function admin_menu() {
-		$access_cap = apply_filters( 'w4_loggable/page_access_cap/logs', 'manage_options' );
+		$access_cap = apply_filters( 'shazzad_wp_logs/page_access_cap/logs', 'manage_options' );
 		$admin_page = add_menu_page(
-			__( 'Logs', 'w4-loggable' ),
-			__( 'Logs', 'w4-loggable' ),
+			__( 'Logs', 'shazzad-wp-logs' ),
+			__( 'Logs', 'shazzad-wp-logs' ),
 			$access_cap,
-			'w4-loggable',
+			'shazzad-wp-logs',
 			[$this, 'render_page'],
-			'dashicons-info-outline'
+			'dashicons-warning'
 		);
 
 		add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
@@ -61,7 +61,7 @@ class Page implements PageInterface
 	}
 
 	public function set_screen_option( $status, $option, $value ) {
-		if ( 'w4_loggable_logs_per_page' == $option ) {
+		if ( 'swpl_logs_per_page' == $option ) {
 			return $value;
 		}
 
@@ -72,27 +72,45 @@ class Page implements PageInterface
 	{
 		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
-		if ( in_array( $req_action, [ 'delete', 'bulk_delete' ] ) ) {
+		if ( in_array( $req_action, [ 'delete', 'bulk_delete', 'delete_all' ] ) ) {
 	  		$api = new LogApi();
 
 			if ( 'delete' === $req_action ) {
 				$handle = $api->handle( 'delete', $_REQUEST );
-				$message = __( 'Log deleted', 'w4-loggable' );
 			} elseif ( 'bulk_delete' === $req_action ) {
 				$handle = $api->handle( 'batch', array( 'delete' => $_REQUEST['ids'] ) );
-				$message = __( 'Logs deleted', 'w4-loggable' );
+			} elseif ( 'delete_all' === $req_action ) {
+				$handle = $api->handle( 'delete_all', $_REQUEST );
 			}
 
-			wp_redirect( add_query_arg( array(
-				'id' => false,
-				'ids' => false,
-				'action' => false,
-				'message' => urlencode( $message )
-			) ) );
+			$message = false;
+			$error = false;
+
+			if ( is_wp_error( $handle ) ) {
+				$error = $handle->get_error_message();
+			} elseif ( 'delete' === $req_action ) {
+				$message = __( 'Log deleted', 'shazzad-wp-logs' );
+			} elseif ( 'bulk_delete' === $req_action ) {
+				$message = __( 'Logs deleted', 'shazzad-wp-logs' );
+			} elseif ( 'delete_all' === $req_action ) {
+				$message = $handle['message'];
+			}
+
+			wp_redirect(
+				add_query_arg(
+					array(
+						'id' => false,
+						'ids' => false,
+						'action' => false,
+						'message' => $message ? urlencode( $message ) : false,
+						'error' => $error ? urldecode( $error ) : false
+					)
+				)
+			);
 			exit;
 		}
 
-		do_action( 'w4_loggable/admin_page/logs/handle_actions' );
+		do_action( 'shazzad_wp_logs/admin_page/logs/handle_actions' );
 	}
 
 	public function load_page()
@@ -105,13 +123,13 @@ class Page implements PageInterface
 			$w4LogsListTableLogs->prepare_items();
 		}
 
-		do_action( 'w4_loggable/admin_page/logs/load' );
+		do_action( 'shazzad_wp_logs/admin_page/logs/load' );
 	}
 
 	public function render_notices()
 	{
-		do_action( 'w4_loggable/admin_page/logs/notices' );
-		do_action( 'w4_loggable/admin_page/notices' );
+		do_action( 'shazzad_wp_logs/admin_page/logs/notices' );
+		do_action( 'shazzad_wp_logs/admin_page/notices' );
 	}
 
 	public function render_page()
@@ -119,28 +137,30 @@ class Page implements PageInterface
 		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 		$page_title = __( 'Logs' );
+		$menu_item_key = false;
 
 		if ( isset( $_REQUEST['menu_item'] ) && Utils::get_menu_item( $_REQUEST['menu_item'] ) ) {
 			$menu_item = Utils::get_menu_item( $_REQUEST['menu_item'] );
 			$page_title = $menu_item['page_title'];
+			$menu_item_key = $_REQUEST['menu_item'];
 		
 		} elseif ( isset( $_REQUEST['page'] ) && Utils::get_menu_item( $_REQUEST['page'] ) ) {
 			$menu_item = Utils::get_menu_item( $_REQUEST['page'] );
 			$page_title = $menu_item['page_title'];
+			$menu_item_key = $_REQUEST['page'];
 		}
 
 		?>
 
-		<div class="wrap w4-loggable-wrap">
+		<div class="wrap swpl-wrap">
 			<?php
 
 			if ( 'view' === $req_action && isset( $_REQUEST['id'] ) ) {
 				$log = new LogData( intval( $_REQUEST['id'] ) );
-
 				?>
 
 				<h1 class="wp-heading-inline">
-					<?php printf( __( 'View Log: # %d', 'w4-loggable' ), $log->get_id() ); ?>
+					<?php printf( __( 'View Log: # %d', 'shazzad-wp-logs' ), $log->get_id() ); ?>
 				</h1>
 
 				<a class="page-title-action" href="<?php echo remove_query_arg( array( 'id', 'action' ) ); ?>">
@@ -149,18 +169,18 @@ class Page implements PageInterface
 
 				<hr class="wp-header-end">
 
-				<?php do_action( 'w4_loggable/admin_page/notices' ); ?>
+				<?php do_action( 'shazzad_wp_logs/admin_page/notices' ); ?>
 
-				<div class="w4-loggable-admin-content">
-					<div class="w4-loggable-preview">
-						<div class="w4-loggable-message">
-							<strong class="w4-loggable-level"><?php echo $log->get_level(); ?></strong>
-							<?php echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() ); ?>
+				<div class="swpl-admin-content">
+					<div class="swpl-preview">
+						<div class="swpl-message">
+							<strong class="swpl-level"><?php echo $log->get_level(); ?></strong>
+							<?php echo apply_filters( 'swpl_format_message', $log->get_message(), $log->get_context() ); ?>
 						</div>
 
 						<?php
 						if ( $log->get_context() ) {
-							echo '<pre class="w4-loggable-data">';
+							echo '<pre class="swpl-data">';
 							print_r( $log->get_context() );
 							echo '</pre>';
 						}
@@ -170,17 +190,30 @@ class Page implements PageInterface
 
 			<?php } else if ( empty( $req_action ) || -1 == $req_action ) { ?>
 
-				<h1><?php echo $page_title; ?></h1>
+				<h1 class="wp-heading-inline">
+					<?php echo $page_title; ?>
+				</h1>
 
-				<?php do_action( 'w4_loggable/admin_page/notices' ); ?>
+				<a class="page-title-action" href="<?php 
+					echo add_query_arg( 
+						array( 
+							'action' => 'delete_all',
+							'menu_item' => $menu_item_key
+						)
+					);
+					?>">
+					<?php _e( 'Delete All' ); ?>
+				</a>
 
-				<div class="w4-loggable-admin-content">
+				<?php do_action( 'shazzad_wp_logs/admin_page/notices' ); ?>
+
+				<div class="swpl-admin-content">
 					<?php include __DIR__ . '/views/list-table.php'; ?>
 				</div>
 
 			<?php } ?>
 
-			<?php do_action( 'w4_loggable/admin_page/template_after/' ); ?>
+			<?php do_action( 'shazzad_wp_logs/admin_page/template_after/' ); ?>
 		</div>
 
 		<?php
@@ -204,23 +237,23 @@ class Page implements PageInterface
 			return;
 		}
 
-		$access_cap = apply_filters( 'w4_loggable/page_access_cap/logs', 'manage_options' );
+		$access_cap = apply_filters( 'shazzad_wp_logs/page_access_cap/logs', 'manage_options' );
 
-		if ( ! isset( $submenu['w4-loggable'] ) ) {
-			$submenu['w4-loggable'] = array();
+		if ( ! isset( $submenu['shazzad-wp-logs'] ) ) {
+			$submenu['shazzad-wp-logs'] = array();
 		}
 
-		$submenu['w4-loggable'][] = array(
+		$submenu['shazzad-wp-logs'][] = array(
 			__( 'All Logs' ),
 			$access_cap,
-			'admin.php?page=w4-loggable'
+			'admin.php?page=shazzad-wp-logs'
 		);
 
 		foreach ( $menu_items as $key => $menu_item ) {
-			$submenu['w4-loggable'][] = array(
+			$submenu['shazzad-wp-logs'][] = array(
 				$menu_item['menu_title'],
 				$access_cap,
-				'admin.php?page=w4-loggable&menu_item=' . $key
+				'admin.php?page=shazzad-wp-logs&menu_item=' . $key
 			);
 		}
 	}
@@ -228,11 +261,11 @@ class Page implements PageInterface
 	public function highlight_submenu( $parent_file ) {
 		global $submenu_file;
 
-		if ( 'w4-loggable' === $parent_file ) {
-			$submenu_file = 'admin.php?page=w4-loggable';
+		if ( 'shazzad-wp-logs' === $parent_file ) {
+			$submenu_file = 'admin.php?page=shazzad-wp-logs';
 
 			if ( isset( $_REQUEST['menu_item'] ) && Utils::get_menu_item( $_REQUEST['menu_item'] ) ) {
-				$submenu_file = 'admin.php?page=w4-loggable&menu_item=' . wp_unslash( $_REQUEST['menu_item'] );
+				$submenu_file = 'admin.php?page=shazzad-wp-logs&menu_item=' . wp_unslash( $_REQUEST['menu_item'] );
 			}
 		}
 
@@ -240,9 +273,9 @@ class Page implements PageInterface
 	}
 
 	public function print_scripts() {
-		wp_enqueue_style( array( 'w4-loggable-admin-main' ) );
-		wp_enqueue_script( array( 'w4-loggable-admin-main' ) );
+		wp_enqueue_style( array( 'swpl-admin-logs' ) );
+		wp_enqueue_script( array( 'swpl-admin-logs' ) );
 
-		do_action( 'w4_loggable/admin_page/print_styles/logs' );
+		do_action( 'shazzad_wp_logs/admin_page/print_styles/logs' );
 	}
 }

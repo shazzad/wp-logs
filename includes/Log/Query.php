@@ -1,7 +1,7 @@
 <?php
-namespace W4dev\Loggable\Log;
+namespace Shazzad\WpLogs\Log;
 
-use W4dev\Loggable\AbstractQuery;
+use Shazzad\WpLogs\AbstractQuery;
 
 class Query extends AbstractQuery
 {
@@ -9,7 +9,7 @@ class Query extends AbstractQuery
 	{
 		global $wpdb;
 
-		$this->table = \W4dev\Loggable\DbAdapter::prefix_table('logs');
+		$this->table = \Shazzad\WpLogs\DbAdapter::prefix_table('logs');
 		$this->columns = array(
 			'id' => array(
 				'type' => 'interger'
@@ -52,5 +52,14 @@ class Query extends AbstractQuery
 
 		// fetch results
 		$this->fetch_results();
+	}
+
+	public function get_objects() {
+		$objects = array();
+		foreach ( $this->get_results() as $resut ) {
+			$objects[] = Data::load( $resut );
+		}
+
+		return $objects;
 	}
 }

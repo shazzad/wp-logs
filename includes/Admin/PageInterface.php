@@ -1,9 +1,9 @@
 <?php
-namespace W4dev\Loggable\Admin;
+namespace Shazzad\WpLogs\Admin;
 
 /**
  * Admin Environment
- * @package W4dev\Loggable
+ * @package Shazzad\WpLogs
  */
 
 

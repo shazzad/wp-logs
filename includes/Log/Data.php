@@ -1,8 +1,8 @@
 <?php
-namespace W4dev\Loggable\Log;
+namespace Shazzad\WpLogs\Log;
 
-use W4dev\Loggable\AbstractData;
-use W4dev\Loggable\DbAdapter;
+use Shazzad\WpLogs\AbstractData;
+use Shazzad\WpLogs\DbAdapter;
 
 class Data extends AbstractData {
 
@@ -150,17 +150,17 @@ class Data extends AbstractData {
 			throw new \Exception( __( 'Log not exists' ) );
 		}
 
-		do_action( 'w4_loggable/log/delete', $this->get_id() );
+		do_action( 'shazzad_wp_logs/log/delete', $this->get_id() );
 
 		DbAdapter::delete( DbAdapter::prefix_table( 'logs' ), array( 'id' => $this->get_id() ) );
 
-		do_action( 'w4_loggable/log/deleted', $this->get_id() );
+		do_action( 'shazzad_wp_logs/log/deleted', $this->get_id() );
 	}
 
 	public function validate_save()
 	{
 		if ( ! $this->get_message() ) {
-			throw new \Exception( __( 'Invalid message', 'w4-loggable' ) );
+			throw new \Exception( __( 'Invalid message', 'shazzad-wp-logs' ) );
 		} else {
 			if ( ! $this->get_timestamp() ) {
 				// Let's use gmt timestamp.

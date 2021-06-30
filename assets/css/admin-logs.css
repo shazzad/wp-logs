@@ -1,0 +1,39 @@
+/**
+ * Admin CSS
+ */
+
+/* Preview */
+.swpl-preview{
+	padding: 20px;
+	background-color: #FFF;
+}
+.swpl-preview .swpl-message {
+	font-size: 18px;
+}
+.swpl-preview .swpl-data {
+	padding: 20px;
+	overflow: auto;
+	margin: 20px 0 0;
+	max-height: 300px;
+	background-color: #eee;
+}
+.swpl-preview .swpl-id,
+.swpl-preview .swpl-level{
+	float: right;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+/* List table */
+@media (min-width: 768px) {
+	.wp-list-table.swpl-logs .column-date{
+		width: 130px;
+	}
+	.wp-list-table.swpl-logs .column-source{
+		width: 200px;
+	}
+	.wp-list-table.swpl-logs .column-level,
+	.wp-list-table.swpl-logs .column-id{
+		width: 80px;
+	}
+}

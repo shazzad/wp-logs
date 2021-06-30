@@ -4,7 +4,7 @@
  * @author Shazzad
 **/
 
-namespace W4dev\Loggable;
+namespace Shazzad\WpLogs;
 
 abstract class AbstractQuery
 {
@@ -236,7 +236,7 @@ abstract class AbstractQuery
 					continue;
 				}
 
-				$term = \W4dev\Loggable\DbAdapter::esc_sql( \W4dev\Loggable\DbAdapter::esc_like( $term ) );
+				$term = \Shazzad\WpLogs\DbAdapter::esc_sql( \Shazzad\WpLogs\DbAdapter::esc_like( $term ) );
 				$search .= "{$searchand}( $column LIKE '{$n}{$term}{$n}' )";
 				$searchand = ' AND ';
 			}
@@ -382,19 +382,19 @@ abstract class AbstractQuery
 		}
 
 		if ( $this->get( 'method' ) == 'get_col' ) {
-			$result = \W4dev\Loggable\DbAdapter::get_col( $this->request );
+			$result = \Shazzad\WpLogs\DbAdapter::get_col( $this->request );
 		} elseif ( $this->get( 'method' ) == 'count_row' || $this->get( 'method' ) == 'get_var' ) {
-			$result = \W4dev\Loggable\DbAdapter::get_var( $this->request );
+			$result = \Shazzad\WpLogs\DbAdapter::get_var( $this->request );
 		} elseif ( $this->get( 'method' ) == 'get_row' ) {
-			$result = \W4dev\Loggable\DbAdapter::get_row( $this->request, $this->output );
+			$result = \Shazzad\WpLogs\DbAdapter::get_row( $this->request, $this->output );
 		} else {
-			$result = \W4dev\Loggable\DbAdapter::get_rows( $this->request, $this->output );
+			$result = \Shazzad\WpLogs\DbAdapter::get_rows( $this->request, $this->output );
 		}
 
 		$this->data = $result;
 
 		if ( '' != $this->limit ) {
-			$this->found_items = \W4dev\Loggable\DbAdapter::get_found_rows();
+			$this->found_items = \Shazzad\WpLogs\DbAdapter::get_found_rows();
 			$this->max_num_pages = ceil( $this->found_items / $this->limit );
 		} else {
 			$this->found_items = is_array( $result ) || is_object( $result ) ? count( $result ) : 0;

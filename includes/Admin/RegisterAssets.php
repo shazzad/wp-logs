@@ -2,10 +2,10 @@
 /**
  * Register CSS/JS
  * 
- * @package W4dev\Loggable
+ * @package Shazzad\WpLogs
  */
 
-namespace W4dev\Loggable\Admin;
+namespace Shazzad\WpLogs\Admin;
 
 class RegisterAssets
 {
@@ -21,7 +21,13 @@ class RegisterAssets
 		// @TODO Not yet minifying.
 		$min = '';
 
-		wp_register_script( 'w4-loggable-admin-main', W4_LOGGABLE_URL . 'assets/js/admin'. $min .'.js', array(), W4_LOGGABLE_VERSION, true );
-		wp_register_style( 'w4-loggable-admin-main', W4_LOGGABLE_URL . 'assets/css/admin'. $min .'.css', array(), W4_LOGGABLE_VERSION );
+		wp_register_script( 'swpl-admin', SWPL_URL . 'assets/js/admin'. $min .'.js', array('jquery'), SWPL_VERSION, true );
+		wp_register_style( 'swpl-admin', SWPL_URL . 'assets/css/admin'. $min .'.css', array(), SWPL_VERSION );
+
+		wp_register_script( 'swpl-admin-logs', SWPL_URL . 'assets/js/admin-logs'. $min .'.js', array('swpl-admin'), SWPL_VERSION, true );
+		wp_register_style( 'swpl-admin-logs', SWPL_URL . 'assets/css/admin-logs'. $min .'.css', array('swpl-admin'), SWPL_VERSION );
+
+		wp_register_script( 'swpl-wp-debug-log', SWPL_URL . 'assets/js/wp-debug-log'. $min .'.js', array('swpl-admin'), SWPL_VERSION, true );
+		wp_register_style( 'swpl-wp-debug-log', SWPL_URL . 'assets/css/wp-debug-log'. $min .'.css', array('swpl-admin'), SWPL_VERSION );
 	}
 }

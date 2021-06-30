@@ -1,9 +1,9 @@
 <?php
-namespace W4dev\Loggable\Admin\Logs;
+namespace Shazzad\WpLogs\Admin\Logs;
 
-use W4dev\Loggable\Utils;
-use W4dev\Loggable\Log\Data as LogData;
-use W4dev\Loggable\Log\Query as LogQuery;
+use Shazzad\WpLogs\Utils;
+use Shazzad\WpLogs\Log\Data as LogData;
+use Shazzad\WpLogs\Log\Query as LogQuery;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -14,8 +14,8 @@ class ListTable extends \WP_List_Table {
 	# Construct
 	function __construct() {
 		 parent::__construct( [
-			'singular' => 'w4-loggable-log',
-			'plural'   => 'w4-loggable-logs',
+			'singular' => 'swpl-log',
+			'plural'   => 'swpl-logs',
 			'screen'   => get_current_screen()->id,
 			'ajax'	   => false
 		] );
@@ -25,11 +25,11 @@ class ListTable extends \WP_List_Table {
 	function get_columns() {
 		$columns = [
 			'cb' 		=> '<input type="checkbox" id="cb-select-all-1">',
-			'title' 	=> __( 'Message', 'w4-loggable' ),
-			'source'    => __( 'Source', 'w4-loggable' ),
-			'level' 	=> __( 'Type', 'w4-loggable' ),
-			'date'      => __( 'Date (GMT+0)', 'w4-loggable' ),
-			'id' 		=> __( 'ID', 'w4-loggable' )
+			'title' 	=> __( 'Message', 'shazzad-wp-logs' ),
+			'source'    => __( 'Source', 'shazzad-wp-logs' ),
+			'level' 	=> __( 'Type', 'shazzad-wp-logs' ),
+			'date'      => __( 'Date (GMT+0)', 'shazzad-wp-logs' ),
+			'id' 		=> __( 'ID', 'shazzad-wp-logs' )
 		];
 
 		foreach ( $this->get_queryable_columns() as $qr => $qc ) {
@@ -37,7 +37,7 @@ class ListTable extends \WP_List_Table {
 				unset( $columns[$qc[0]] );
 		}
 
-		$columns = apply_filters( 'manage_w4_loggable_columns', $columns );
+		$columns = apply_filters( 'manage_swpl_columns', $columns );
 
 		return $columns;
 	}
@@ -45,10 +45,10 @@ class ListTable extends \WP_List_Table {
 	# Queryable Columns
 	function get_queryable_columns() {
 		return [
-			's' 		=> array( 'search'	, __( 'Search Result: ', 'w4-loggable' ) ),
-			'level'		=> array( 'level'	, __( 'Level: ', 'w4-loggable' ) ),
-			'date'      => array( 'timestamp', __( 'Date: ', 'w4-loggable' ) ),
-			'source'	=> array( 'source'	, __( 'Source: ', 'w4-loggable' ) )
+			's' 		=> array( 'search'	, __( 'Search Result: ', 'shazzad-wp-logs' ) ),
+			'level'		=> array( 'level'	, __( 'Level: ', 'shazzad-wp-logs' ) ),
+			'date'      => array( 'timestamp', __( 'Date: ', 'shazzad-wp-logs' ) ),
+			'source'	=> array( 'source'	, __( 'Source: ', 'shazzad-wp-logs' ) )
 		];
 	}
 
@@ -107,11 +107,8 @@ class ListTable extends \WP_List_Table {
 		$query = new LogQuery( $query_args );
 		$query->query();
 
-		$resuts = $query->get_results();
-		foreach ( $resuts as $resut ) {
-		  $this->items[] = LogData::load( $resut );
-		}
-		# \W4dev\Loggable\Utils::d( $this->items );
+		$this->items = $query->get_objects();
+		# Utils::d( $this->items );
 
 		$this->set_pagination_args( array( 
 			'total_items' 	=> ( int ) $query->found_items,
@@ -126,10 +123,24 @@ class ListTable extends \WP_List_Table {
 		$args = array( 
 			'label' 	=> __( 'Number of items per page:' ),
 			'default' 	=> 10,
-			'option' 	=> 'w4_loggable_logs_per_page'
-		 );
+			'option' 	=> 'swpl_logs_per_page'
+		);
 
 		add_screen_option( $option, $args );
+	}
+
+	/**
+	 * @global WP_Post $post Global post object.
+	 *
+	 * @param Log $log
+	 */
+	public function single_row( $log ) {
+		$classes = 'swpl-log-level-' . $log->get_level();
+		?>
+		<tr id="swpl-log-<?php echo $log->get_id(); ?>" class="<?php echo $classes; ?>">
+			<?php $this->single_row_columns( $log ); ?>
+		</tr>
+		<?php
 	}
 
 	function display_tablenav( $which ) {
@@ -138,10 +149,10 @@ class ListTable extends \WP_List_Table {
 			<?php if ( 'top' == $which ) { ?>
 				<div class="alignleft actions bulkactions">
 					<select name="action">
-						<option selected="selected" value="-1"><?php _e( 'Bulk Actions', 'w4-loggable' ); ?></option>
-						<option value="bulk_delete"><?php _e( 'Delete', 'w4-loggable' ); ?></option>
+						<option selected="selected" value="-1"><?php _e( 'Bulk Actions', 'shazzad-wp-logs' ); ?></option>
+						<option value="bulk_delete"><?php _e( 'Delete', 'shazzad-wp-logs' ); ?></option>
 					</select>
-					<input type="submit" value="<?php _e( 'Apply', 'w4-loggable' ); ?>" class="button action" id="doaction" name="">
+					<input type="submit" value="<?php _e( 'Apply', 'shazzad-wp-logs' ); ?>" class="button action" id="doaction" name="">
 				</div>
 			<?php } ?>
 			<?php $this->pagination( $which ); ?>
@@ -169,7 +180,7 @@ class ListTable extends \WP_List_Table {
 			array( 
 				'type' => 'all',
 				'count' => '',
-				'name' 	=> __( 'All', 'w4-loggable' ),
+				'name' 	=> __( 'All', 'shazzad-wp-logs' ),
 				'url'	=> $base_url,
 				'class'	=> ''
 			 )
@@ -197,7 +208,7 @@ class ListTable extends \WP_List_Table {
 		if ( ! $view_active ) {
 			$links['0']['class'] = 'current';
 		} else {
-			$links['0']['name'] = __( 'All Logs', 'w4-loggable' );
+			$links['0']['name'] = __( 'All Logs', 'shazzad-wp-logs' );
 		}
 
 		$_links = array();
@@ -228,17 +239,37 @@ class ListTable extends \WP_List_Table {
 	}
 
 	function column_default( $log, $column ) {
-		do_action( "manage_W4_Loggable_custom_column", $column, $log->get_id() );
+		do_action( 'manage_swpl_custom_column', $column, $log->get_id() );
 	}
 
 	function column_title( $log ) {
-		echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() );
+		echo apply_filters( 'swpl_format_message', $log->get_message(), $log->get_context() );
 
 		$actions = array();
-		$actions['view'] = '<a href="'. add_query_arg( ['action' => 'view', 'id' => $log->get_id()] ) .'">View</a>';
+
 		$actions['delete'] = '<a href="'. add_query_arg( ['action' => 'delete', 'id' => $log->get_id()] ) .'">Delete</a>';
+		$actions['view'] = '<a href="'. add_query_arg( ['action' => 'view', 'id' => $log->get_id()] ) .'">View</a>';
 
 		echo $this->row_actions( $actions );
+
+		?>
+		<div id="swpl-log-modal-<?php echo $log->get_id(); ?>" style="display:none;">
+			<div class="swpl-modal-header">
+				<?php echo apply_filters( 'swpl_format_message', $log->get_message(), $log->get_context() ); ?>
+			</div>
+
+			<div class="swpl-modal-content">
+				<?php
+					if ( $log->get_context() ) {
+						echo '<pre>';
+						print_r( $log->get_context() );
+						echo '</pre>';
+					}
+				?>
+			</div>
+			<div class="swpl-modal-footer"><strong class="swpl-id"># <?php echo $log->get_id(); ?></strong></div>
+		</div>
+		<?php
 	}
 
 	function column_id( $log ) {
@@ -254,7 +285,7 @@ class ListTable extends \WP_List_Table {
 	}
 
 	function column_message( $log ) {
-		echo apply_filters( 'w4_loggable_format_message', $log->get_message(), $log->get_context() );
+		echo apply_filters( 'swpl_format_message', $log->get_message(), $log->get_context() );
 	}
 
 	function column_date( $log ) {
@@ -273,16 +304,17 @@ class ListTable extends \WP_List_Table {
 	 * No items
 	 */ 
 	function no_items() {
-		_e( 'No logs', 'w4-loggable' );
+		_e( 'No logs', 'shazzad-wp-logs' );
 	}
 
 	/**
 	 * Search box
 	 */
 	function search_box( $text, $input_id ) {
-		?><p class="search-box">
+		?>
+		<p class="search-box">
 			<label for="<?php echo $input_id; ?>" class="screen-reader-text"><?php echo $text; ?></label>
-			<input type="text" name="s" id="<?php echo $input_id ?>" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_attr_e( 'message..', 'w4-loggable' ); ?>" title="<?php esc_attr_e( 'Search by message', 'w4-loggable' ); ?>" />
+			<input type="text" name="s" id="<?php echo $input_id ?>" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_attr_e( 'Message..', 'shazzad-wp-logs' ); ?>" title="<?php esc_attr_e( 'Search by message', 'shazzad-wp-logs' ); ?>" />
 			<?php submit_button( $text, 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
 		</p>
 		<?php

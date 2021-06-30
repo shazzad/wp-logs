@@ -2,10 +2,10 @@
 /**
  * Utility Class
  * 
- * @package W4dev\Loggable
+ * @package Shazzad\WpLogs
  */
 
-namespace W4dev\Loggable;
+namespace Shazzad\WpLogs;
 
 /**
  * Class Utils.
@@ -14,7 +14,7 @@ class Utils
 {
 	public static function get_menu_items()
 	{
-		return apply_filters( 'w4_loggable_menu_items', array() );
+		return apply_filters( 'swpl_menu_items', array() );
 	}
 
 	public static function get_menu_item( $key )
@@ -72,32 +72,32 @@ class Utils
 		$items = array();
 
 		if ( $diff->y > 0 ) {
-			$items[] = sprintf( _n( '%s year', '%s years', $diff->m, 'w4-loggable' ), $diff->m );
+			$items[] = sprintf( _n( '%s year', '%s years', $diff->m, 'shazzad-wp-logs' ), $diff->m );
 			if ( $diff->m > 0 ) {
-				$items[] = sprintf( _n( '%s month', '%s months', $diff->m, 'w4-loggable' ), $diff->m );
+				$items[] = sprintf( _n( '%s month', '%s months', $diff->m, 'shazzad-wp-logs' ), $diff->m );
 			}
 		} elseif ( $diff->m > 0 ) {
-			$items[] = sprintf( _n( '%s month', '%s months', $diff->m, 'w4-loggable' ), $diff->m );
+			$items[] = sprintf( _n( '%s month', '%s months', $diff->m, 'shazzad-wp-logs' ), $diff->m );
 			if ( $diff->d > 0 ) {
-				$items[] = sprintf( _n( '%s day', '%s days', $diff->d, 'w4-loggable' ), $diff->d );
+				$items[] = sprintf( _n( '%s day', '%s days', $diff->d, 'shazzad-wp-logs' ), $diff->d );
 			}
 		} elseif ( $diff->d > 0 ) {
-			$items[] = sprintf( _n( '%s day', '%s days', $diff->d, 'w4-loggable' ), $diff->d );
+			$items[] = sprintf( _n( '%s day', '%s days', $diff->d, 'shazzad-wp-logs' ), $diff->d );
 			if ( $diff->h > 0 ) {
-				$items[] = sprintf( _n( '%s hour', '%s hours', $diff->h, 'w4-loggable' ), $diff->h );
+				$items[] = sprintf( _n( '%s hour', '%s hours', $diff->h, 'shazzad-wp-logs' ), $diff->h );
 			}
 		} elseif ( $diff->h > 0 ) {
-			$items[] = sprintf( _n( '%s hour', '%s hours', $diff->h, 'w4-loggable' ), $diff->h );
+			$items[] = sprintf( _n( '%s hour', '%s hours', $diff->h, 'shazzad-wp-logs' ), $diff->h );
 			if ( $diff->i > 0 ) {
-				$items[] = sprintf( _n( '%s min', '%s mins', $diff->i, 'w4-loggable' ), $diff->i );
+				$items[] = sprintf( _n( '%s min', '%s mins', $diff->i, 'shazzad-wp-logs' ), $diff->i );
 			}
 		} elseif ( $diff->i > 0 ) {
-			$items[] = sprintf( _n( '%s min', '%s mins', $diff->i, 'w4-loggable' ), $diff->i );
+			$items[] = sprintf( _n( '%s min', '%s mins', $diff->i, 'shazzad-wp-logs' ), $diff->i );
 			if ( $diff->i < 10 && $diff->s > 0 ) {
-				$items[] = sprintf( _n( '%s sec', '%s secs', $diff->s, 'w4-loggable' ), $diff->s );
+				$items[] = sprintf( _n( '%s sec', '%s secs', $diff->s, 'shazzad-wp-logs' ), $diff->s );
 			}
 		} elseif ( $diff->s > 0 ) {
-			$items[] = sprintf( _n( '%s sec', '%s secs', $diff->s, 'w4-loggable' ), $diff->s );
+			$items[] = sprintf( _n( '%s sec', '%s secs', $diff->s, 'shazzad-wp-logs' ), $diff->s );
 		}
 
 		return join( ', ', $items );

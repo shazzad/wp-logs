@@ -1,15 +1,16 @@
-# W4 loggable
+# Shazzad Wp Logs
 
-A WordPress plugin that can store & display log.
+A WordPress plugin that can store & display runtime log data. All of the log 
+data are stored in additional database table.
 
 
-### Store Log
+### Save Log
 
 Call the function `do_action` with appropriate parameter to store a log.
 
 ```php
 do_action(
-	'w4_loggable_log',
+	'swpl_log',
 	// string, usually a name from where you are storing this log
 	$source,
 	// string, log message
@@ -26,4 +27,4 @@ All logs can be viewed at `Wp Admin > Tools > Logs` page.
 ### Requirements
 * WordPress: 5.0
 * PHP: 5.7
-* Tested: 5.7
+* Tested: 5.7.2

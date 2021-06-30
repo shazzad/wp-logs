@@ -2,10 +2,10 @@
 /**
  * Admin Environment
  * 
- * @package W4dev\Loggable
+ * @package Shazzad\WpLogs
  */
 
-namespace W4dev\Loggable\Admin;
+namespace Shazzad\WpLogs\Admin;
 
 class Main
 {
@@ -17,20 +17,23 @@ class Main
 
 	public function initialize()
 	{
+		new AjaxHandler();
 		new RegisterAssets();
 		new Notices();
+		new AdminBarMenu();
+		new WpDebugLog();
 		new Logs\Page();
 	}
 
 	public function register_hooks()
 	{
 		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
-		add_filter( 'plugin_action_links_' . W4_LOGGABLE_BASENAME , array( $this, 'plugin_action_links' ) );
+		add_filter( 'plugin_action_links_' . SWPL_BASENAME , array( $this, 'plugin_action_links' ) );
 	}
 
 	public function set_screen_option( $status, $option, $value )
 	{
-		if ( ! empty( $option ) && 'w4_loggable' == substr( $option, 0, 11 ) ) {
+		if ( ! empty( $option ) && 'shazzad_wp_logs' == substr( $option, 0, 11 ) ) {
 			return $value;
 		}
 
@@ -39,7 +42,7 @@ class Main
 
 	public function plugin_action_links( $links )
 	{
-		$links['logs'] = '<a href="'. admin_url( 'admin.php?page=w4-loggable' ) .'">' . __( 'Logs', 'w4-loggable' ). '</a>';
+		$links['logs'] = '<a href="'. admin_url( 'admin.php?page=shazzad-wp-logs' ) .'">' . __( 'Logs', 'shazzad-wp-logs' ). '</a>';
 		return $links;
 	}
 }
