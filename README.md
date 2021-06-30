@@ -1,4 +1,4 @@
-# Shazzad Wp Logs
+# Wp Logs
 
 A WordPress plugin that can store & display runtime log data. All of the log 
 data are stored in additional database table.
