@@ -1,22 +1,23 @@
 <?php
+/**
+ * Hooks
+ * 
+ * @package Shazzad\WpLogs
+ */
 namespace Shazzad\WpLogs;
 
 /**
- * Core Environment
- * @package Shazzad\WpLogs
+ * Hooks class
  */
+class Hooks {
 
-class Hooks
-{
-	function __construct()
-	{
+	function __construct() {
 		add_action( 'swpl_log', array( $this, 'store_log' ), 10, 4 );
 		add_filter( 'swpl_format_message', array( $this, 'format_message' ), 20, 2 );
 	}
 
-	public function store_log( $source, $message, $context = array(), $level = 'info' )
-	{
-		if (empty($message)) {
+	public function store_log( $source, $message, $context = array(), $level = 'info' ) {
+		if ( empty( $message ) ) {
 			return;
 		}
 
@@ -29,9 +30,8 @@ class Hooks
 		$log->save();
 	}
 
-	public function format_message( $message, $context = array() )
-	{
-		if (empty($context)) {
+	public function format_message( $message, $context = array() ) {
+		if ( empty( $context ) ) {
 			return $message;
 		}
 

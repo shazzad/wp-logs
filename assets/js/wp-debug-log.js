@@ -27,16 +27,20 @@
         }
       })
       .fail(function (xhr) {
-        var message = 'Unable to delete log';
+        var header = 'Server Error';
+        var content = 'Unable to load logs';
+
         if (xhr.status === 400) {
-          message = 'No Response From Ajax Handler';
+          content = 'No Response From Ajax Handler';
         } else if (xhr.status === 500) {
-          message = 'Server side error occured, please check your server error log.';
+          header = 'WordPress in Trouble';
+          content = 'Server side error occured, please check your server error log.';
         } else if (xhr.responseJSON && xhr.responseJSON.message) {
-          message = xhr.responseJSON.message;
+          content = xhr.responseJSON.message;
         }
 
-        $(document.body).trigger('swpl-modal-content', message);
+        $(document.body).trigger('swpl-modal-header', header);
+        $(document.body).trigger('swpl-modal-content', content);
       })
       .always(function () {
         $(document.body).trigger('swpl-modal-loading', false);

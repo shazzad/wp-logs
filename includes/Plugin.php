@@ -30,8 +30,7 @@ final class Plugin {
 	/**
 	 * Class instance getter
 	 */
-	public static function instance()
-	{
+	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 		}

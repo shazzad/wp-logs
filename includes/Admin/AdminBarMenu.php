@@ -85,29 +85,29 @@ class AdminBarMenu
 					)
 				);
 			}
+		}
 
-			$group_secondary = self::PARENT_ID . '-secondary';
+		$group_secondary = self::PARENT_ID . '-secondary';
 
-			$wp_admin_bar->add_group(
+		$wp_admin_bar->add_group(
+			array(
+				'id'   => $group_secondary,
+				'parent' => self::PARENT_ID,
+				'meta' => array(
+					'class' => 'ab-sub-secondary',
+				),
+			)
+		);
+
+		if ( class_exists( 'WP_REST_API_Log' ) ) {
+			$wp_admin_bar->add_node(
 				array(
-					'id'   => $group_secondary,
-					'parent' => self::PARENT_ID,
-					'meta' => array(
-						'class' => 'ab-sub-secondary',
-					),
+					'id'     => self::PARENT_ID . '-rest-api-log',
+					'parent' => $group_secondary,
+					'title'  => __( 'Rest Api Log' ),
+					'href'   => admin_url( 'edit.php?post_type=wp-rest-api-log' ),
 				)
 			);
-
-			if ( class_exists( 'WP_REST_API_Log' ) ) {
-				$wp_admin_bar->add_node(
-					array(
-						'id'     => self::PARENT_ID . '-rest-api-log',
-						'parent' => $group_secondary,
-						'title'  => __( 'Rest Api Log' ),
-						'href'   => admin_url( 'edit.php?post_type=wp-rest-api-log' ),
-					)
-				);
-			}
 		}
 	}
 }
