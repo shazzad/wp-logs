@@ -1,7 +1,7 @@
 # WP Logs
 
-A WordPress plugin that can store & display runtime log data. All of the log 
-data are stored in additional database table.
+A WordPress plugin that can store & display runtime log data. Logs 
+data are stored in custom database table.
 
 
 ## Save Log
