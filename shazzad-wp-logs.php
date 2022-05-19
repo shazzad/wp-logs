@@ -3,7 +3,7 @@
  * Plugin Name: Shazzad Wp Logs
  * Plugin URI: https://w4dev.com
  * Description: Store and view logs for debugging.
- * Version: 1.0.7
+ * Version: 1.0.8
  * Requires at least: 4.4.0
  * Requires PHP: 5.5
  * Author: Shazzad Hossain Khan
@@ -24,8 +24,21 @@ if ( defined( 'SWPL_PLUGIN_FILE' ) ) {
 	return;
 }
 
-// If autoloader is missing, stop silently
+function swpl_missing_vendor_notice() {
+	?>
+    <div class="notice notice-error is-dismissible">
+        <p>
+			<?php 
+				_e( 'Shazzad Wp Logs plugin is missing vendor folder. Please run <code>composer install</code> to import vendors.', 'shazzad-wp-logs' );
+			?>
+		</p>
+    </div>
+    <?php
+}
+
+// If autoloader is missing, stop further execution.
 if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	add_action( 'admin_notices', 'swpl_missing_vendor_notice' );
 	return;
 }
 
@@ -38,6 +51,7 @@ include_once __DIR__ . '/vendor/autoload.php';
  */
 function shazzad_wp_logs() {
 	return \Shazzad\WpLogs\Plugin::instance();
+
 }
 
 /**

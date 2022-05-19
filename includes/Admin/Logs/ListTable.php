@@ -2,8 +2,7 @@
 namespace Shazzad\WpLogs\Admin\Logs;
 
 use Shazzad\WpLogs\Utils;
-use Shazzad\WpLogs\Log\Data as LogData;
-use Shazzad\WpLogs\Log\Query as LogQuery;
+use Shazzad\WpLogs\Log;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -104,11 +103,12 @@ class ListTable extends \WP_List_Table {
 		}
 
 		$query_args = stripslashes_deep( $query_args );
-		$query = new LogQuery( $query_args );
+		// Utils::d( $query_args );
+
+		$query = new Log\Query( $query_args );
 		$query->query();
 
 		$this->items = $query->get_objects();
-		# Utils::d( $this->items );
 
 		$this->set_pagination_args( array( 
 			'total_items' 	=> ( int ) $query->found_items,
@@ -216,8 +216,9 @@ class ListTable extends \WP_List_Table {
 			$type = $link['type'];
 			$type_txt = '';
 
-			if ( !empty( $link['count'] ) )
-				$type_txt = ' <span class="count">( '. $link['count'] .' )</span>';
+			if ( ! empty( $link['count'] ) ) {
+				$type_txt = sprintf( ' <span class="count">(%s)</span>', $link['count'] );
+			}
 
 			$_links[$type] = sprintf( 
 				'<a href="%1$s" class="%2$s" title="%3$s">%3$s %4$s</a>',

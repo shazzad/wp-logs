@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * A Simple Query Class
- * @author Shazzad
-**/
-
+ */
 namespace Shazzad\WpLogs;
+
+use Shazzad\WpLogs\DbAdapter;
 
 abstract class AbstractQuery
 {
@@ -26,14 +26,14 @@ abstract class AbstractQuery
 	var $max_num_pages = 1;
 
 
-	function __construct( $query_args )
+	public function __construct( $query_args )
 	{
 		$this->query_args = $query_args;
 		$this->reset();
 		$this->parse_query_vars();
 	}
 
-	function reset()
+	public function reset()
 	{
 		$this->output =  "";
 		$this->_select = "";
@@ -200,11 +200,11 @@ abstract class AbstractQuery
 		}
 	}
 
-	function query()
-	{}
+	public function query() {
 
-	function parse_search_fields( $args = array(), $relation = 'OR' )
-	{
+	}
+
+	function parse_search_fields( $args = array(), $relation = 'OR' ) {
 		if ( empty( $args ) ) {
 			return;
 		}
@@ -212,18 +212,20 @@ abstract class AbstractQuery
 		$args = array_filter( $args );
 
 		$search_where = '';
+
 		foreach ( $args as $column => $term ) {
 
-			$search_terms = array();
-			preg_match_all( '/".*?( "|$ )|( ( ?<=[\\s",+] )|^ )[^\\s",+]+/', $term, $users );
+			preg_match_all( '/".*?("|$)|((?<=[\\s",+])|^)[^\\s",+]+/', $term, $terms );
 
-			if ( is_array( $users[0] ) ) {
-				foreach ( $users[0] as $s ) {
+			$search_terms = array();
+			if ( is_array( $terms[0] ) ) {
+				foreach ( $terms[0] as $s ) {
 					$search_terms[] = trim( $s, "\"'\n\r " );
 				}
 			} else {
-				$search_terms[] = $users[0];
+				$search_terms[] = $terms[0];
 			}
+			// \Shazzad\WpLogs\Utils::d( $terms );
 
 			$n = '%';
 			$searchand = '';
@@ -236,8 +238,8 @@ abstract class AbstractQuery
 					continue;
 				}
 
-				$term = \Shazzad\WpLogs\DbAdapter::esc_sql( \Shazzad\WpLogs\DbAdapter::esc_like( $term ) );
-				$search .= "{$searchand}( $column LIKE '{$n}{$term}{$n}' )";
+				$term = DbAdapter::esc_sql( DbAdapter::esc_like( $term ) );
+				$search .= "{$searchand}($column LIKE '{$n}{$term}{$n}')";
 				$searchand = ' AND ';
 			}
 
@@ -245,12 +247,13 @@ abstract class AbstractQuery
 				if ( ! empty( $search_where ) ) {
 					$search_where .= " {$relation} ";
 				}
-				$search_where .= "( {$search} )";
+
+				$search_where .= "({$search})";
 			}
 		}
 
 		if ( ! empty( $search_where ) ) {
-			$this->_where .= " AND ( {$search_where} )";
+			$this->_where .= " AND ({$search_where})";
 		}
 	}
 
@@ -382,19 +385,19 @@ abstract class AbstractQuery
 		}
 
 		if ( $this->get( 'method' ) == 'get_col' ) {
-			$result = \Shazzad\WpLogs\DbAdapter::get_col( $this->request );
+			$result = DbAdapter::get_col( $this->request );
 		} elseif ( $this->get( 'method' ) == 'count_row' || $this->get( 'method' ) == 'get_var' ) {
-			$result = \Shazzad\WpLogs\DbAdapter::get_var( $this->request );
+			$result = DbAdapter::get_var( $this->request );
 		} elseif ( $this->get( 'method' ) == 'get_row' ) {
-			$result = \Shazzad\WpLogs\DbAdapter::get_row( $this->request, $this->output );
+			$result = DbAdapter::get_row( $this->request, $this->output );
 		} else {
-			$result = \Shazzad\WpLogs\DbAdapter::get_rows( $this->request, $this->output );
+			$result = DbAdapter::get_rows( $this->request, $this->output );
 		}
 
 		$this->data = $result;
 
 		if ( '' != $this->limit ) {
-			$this->found_items = \Shazzad\WpLogs\DbAdapter::get_found_rows();
+			$this->found_items = DbAdapter::get_found_rows();
 			$this->max_num_pages = ceil( $this->found_items / $this->limit );
 		} else {
 			$this->found_items = is_array( $result ) || is_object( $result ) ? count( $result ) : 0;

@@ -3,10 +3,9 @@ namespace Shazzad\WpLogs\Log;
 
 use Shazzad\WpLogs\AbstractQuery;
 
-class Query extends AbstractQuery
-{
-	function __construct( $args = array() )
-	{
+class Query extends AbstractQuery {
+
+	public function __construct( $args = array() ) {
 		global $wpdb;
 
 		$this->table = \Shazzad\WpLogs\DbAdapter::prefix_table('logs');
@@ -15,32 +14,37 @@ class Query extends AbstractQuery
 				'type' => 'interger'
 			),
 			'level' => array(
-				'type' => 'varchar'
+				'type' => 'varchar',
+				'searchable' => true
 			),
 			'source' => array(
-				'type' => 'varchar'
+				'type' => 'varchar',
+				'searchable' => true
 			),
 			'message' => array(
 				'type' => 'varchar',
 				'searchable' => true
+			),
+			'context' => array(
+				'type' => 'varchar',
+				'searchable' => false
 			),
 			'timestamp' => array(
 				'type' => 'datetime'
 			)
 		);
 
-		parent::__construct($args);
+		parent::__construct( $args );
 	}
 
-	function query()
-	{
-		if( ! empty($this->errors) ) {
+	public function query() {
+		if ( ! empty( $this->errors ) ) {
 			return;
 		}
 
 		$this->build_default_query();
 
-		// build the request
+		// Build the request.
 		$this->request = $this->_select
 		. $this->_found_rows
 		. $this->_fields
@@ -50,7 +54,7 @@ class Query extends AbstractQuery
 		. $this->_order
 		. $this->_limit;
 
-		// fetch results
+		// Fetch results.
 		$this->fetch_results();
 	}
 

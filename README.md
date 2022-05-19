@@ -12,10 +12,10 @@ Call the function `do_action` with appropriate parameter to store a log.
 do_action(
 	'swpl_log',
 
-	// $source | string | a name from where the log is stored
+	// $source | string | a name from where the log is stored.
 	'Example Plugin',
 
-	// $message | string | log message
+	// $message | string | log message.
 	'{user} updated his profile',
 
 	// $context | array | a data that can be replaced with placeholder inside message.

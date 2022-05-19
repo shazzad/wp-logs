@@ -1,3 +1,6 @@
+#### 1.0.7 2021-05-20
+* fixed log search query.
+
 #### 1.0.6 2021-04-03
 * updated github updater
 
