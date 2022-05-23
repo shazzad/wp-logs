@@ -205,6 +205,8 @@ class Page implements PageInterface
 					<?php _e( 'Delete All' ); ?>
 				</a>
 
+				<hr class="wp-header-end">
+
 				<?php do_action( 'shazzad_wp_logs/admin_page/notices' ); ?>
 
 				<div class="swpl-admin-content">
