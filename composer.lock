@@ -112,12 +112,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shazzad/github-plugin-updater.git",
-                "reference": "0863e608073aa97a38eeb1ddfe2eeef7f3296b58"
+                "reference": "c4cabf4d908120ef57562f8c34136a95da56cd01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/0863e608073aa97a38eeb1ddfe2eeef7f3296b58",
-                "reference": "0863e608073aa97a38eeb1ddfe2eeef7f3296b58",
+                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/c4cabf4d908120ef57562f8c34136a95da56cd01",
+                "reference": "c4cabf4d908120ef57562f8c34136a95da56cd01",
                 "shasum": ""
             },
             "require": {
@@ -130,12 +130,12 @@
                     "Shazzad\\GithubPlugin\\": "src/"
                 }
             },
-            "description": "Helper library to implement wordpress plugin update from github.",
+            "description": "Helper library to implement wordpress plugin update from github repo.",
             "support": {
                 "source": "https://github.com/shazzad/github-plugin-updater/tree/main",
                 "issues": "https://github.com/shazzad/github-plugin-updater/issues"
             },
-            "time": "2021-04-06T02:43:52+00:00"
+            "time": "2021-11-13T19:49:21+00:00"
         }
     ],
     "packages-dev": [],
@@ -148,5 +148,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }
