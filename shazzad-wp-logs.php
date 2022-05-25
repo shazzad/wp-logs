@@ -3,7 +3,7 @@
  * Plugin Name: Shazzad Wp Logs
  * Plugin URI: https://w4dev.com
  * Description: Store and view logs for debugging.
- * Version: 1.0.8
+ * Version: 1.0.9
  * Requires at least: 4.4.0
  * Requires PHP: 5.5
  * Author: Shazzad Hossain Khan
@@ -24,6 +24,8 @@ if ( defined( 'SWPL_PLUGIN_FILE' ) ) {
 	return;
 }
 
+define( 'SWPL_VERSION', '1.0.9' );
+
 function swpl_missing_vendor_notice() {
 	?>
     <div class="notice notice-error is-dismissible">
@@ -36,7 +38,7 @@ function swpl_missing_vendor_notice() {
     <?php
 }
 
-// If autoloader is missing, stop further execution.
+// When composer files are missing, stop further execution.
 if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	add_action( 'admin_notices', 'swpl_missing_vendor_notice' );
 	return;
@@ -59,26 +61,25 @@ function shazzad_wp_logs() {
  */
 shazzad_wp_logs();
 
-
 /**
  * Install table to store log data
  */
 function swpl_install() {
-	\Shazzad\WpLogs\Installer::rename_tables();
-	\Shazzad\WpLogs\Installer::install_tables();
-	\Shazzad\WpLogs\Installer::update_tables();
+	Shazzad\WpLogs\Installer::rename_tables();
+	Shazzad\WpLogs\Installer::install_tables();
+	Shazzad\WpLogs\Installer::update_tables();
 }
 register_activation_hook( SWPL_PLUGIN_FILE, 'swpl_install', 10 );
 
 
 // Initialize updater if available.
 if ( class_exists( '\Shazzad\GithubPlugin\Updater' ) ) {
-	new \Shazzad\GithubPlugin\Updater( array(
+	new Shazzad\GithubPlugin\Updater( array(
 		'file'         => __FILE__,
 		'owner'        => 'shazzad',
 		'repo'		   => 'wp-logs',
 	
-		// Folloing only required for private repo
+		// Folloing only required for private repo.
 		'private_repo' => false,
 		'owner_name'   => 'Shazzad'
 	) );

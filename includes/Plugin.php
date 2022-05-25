@@ -4,7 +4,6 @@
  * 
  * @package Shazzad\WpLogs
  */
-
 namespace Shazzad\WpLogs;
 
 /**
@@ -13,22 +12,12 @@ namespace Shazzad\WpLogs;
 final class Plugin {
 
 	/**
-	 * @var string Plugin name.
-	 */
-	public $name = 'Shazzad Wp Logs';
-
-	/**
-	 * @var string Plugin version.
-	 */
-	public $version = '1.0.7';
-
-	/**
 	 * @var object Plugin instance.
 	 */
 	protected static $_instance = null;
 
 	/**
-	 * Class instance getter
+	 * Class instance getter.
 	 */
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
@@ -39,7 +28,7 @@ final class Plugin {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	private function __construct() {
 		$this->define_constants();
@@ -49,18 +38,16 @@ final class Plugin {
 	}
 
 	/*
-	 * Define constants
+	 * Define constants.
 	 */
 	private function define_constants() {
-		define( 'SWPL_NAME', $this->name );
-		define( 'SWPL_VERSION', $this->version );
 		define( 'SWPL_DIR', plugin_dir_path( SWPL_PLUGIN_FILE ) );
 		define( 'SWPL_URL', plugin_dir_url( SWPL_PLUGIN_FILE ) );
 		define( 'SWPL_BASENAME', plugin_basename( SWPL_PLUGIN_FILE ) );
 	}
 
 	/*
-	 * Boot plugin features
+	 * Boot plugin features.
 	 */
 	private function initialize() {
 		load_plugin_textdomain(
@@ -72,11 +59,11 @@ final class Plugin {
 		// Load mustache, it is used for parsing message.
 		\Mustache_Autoloader::register();
 
-		// Filter/action hook callbacks
+		// Filter/action hook callbacks.
 		new Hooks();
 
 		if ( is_admin() ) {
-			// Admin interface
+			// Admin interface.
 			new Admin\Main();
 		}
 	}

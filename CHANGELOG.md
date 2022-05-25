@@ -1,3 +1,6 @@
+#### 1.0.9 2021-05-25
+* fixed title action link when notice available.
+
 #### 1.0.7 2021-05-20
 * fixed log search query.
 
