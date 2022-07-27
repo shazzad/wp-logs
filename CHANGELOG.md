@@ -1,3 +1,6 @@
+#### 1.1.0 2022-07-27
+* optimized delete all function.
+
 #### 1.0.9 2021-05-25
 * fixed title action link when notice available.
 
