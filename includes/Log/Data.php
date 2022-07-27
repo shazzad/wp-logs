@@ -65,7 +65,7 @@ class Data extends AbstractData {
 	}
 	public function set_source( $value )
 	{
-		return $this->set_prop( 'source', $value );
+		return $this->set_prop( 'source', trim( $value ) );
 	}
 	public function set_message( $value )
 	{

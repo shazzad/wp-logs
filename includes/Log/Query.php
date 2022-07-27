@@ -2,13 +2,15 @@
 namespace Shazzad\WpLogs\Log;
 
 use Shazzad\WpLogs\AbstractQuery;
+use Shazzad\WpLogs\DbAdapter;
 
 class Query extends AbstractQuery {
 
 	public function __construct( $args = array() ) {
 		global $wpdb;
 
-		$this->table = \Shazzad\WpLogs\DbAdapter::prefix_table('logs');
+		$this->table = DbAdapter::prefix_table('logs');
+
 		$this->columns = array(
 			'id' => array(
 				'type' => 'interger'
@@ -22,11 +24,11 @@ class Query extends AbstractQuery {
 				'searchable' => true
 			),
 			'message' => array(
-				'type' => 'varchar',
+				'type' => 'text',
 				'searchable' => true
 			),
 			'context' => array(
-				'type' => 'varchar',
+				'type' => 'text',
 				'searchable' => false
 			),
 			'timestamp' => array(
