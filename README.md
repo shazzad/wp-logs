@@ -66,4 +66,4 @@ All logs can be viewed at `Wp Admin > Logs` page.
 
 * WordPress: 5.0
 * PHP: 5.7
-* Tested: 5.7.2
+* Tested: 6.0.1
