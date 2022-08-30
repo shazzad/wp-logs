@@ -180,7 +180,35 @@ class Data extends AbstractData {
 		if ( empty( $data['context'] ) ) {
 			$data['context'] = array();
 		}
+
+		// Maximum size for mysql TEXT field.
+		$max_size = 64 * 1000;
+
+		if ( is_array( $data['context'] ) ) {
+			$data['context'] = $this->remove_size_recursive( $data['context'] );
+		}
+
 		$data['context'] = maybe_serialize( $data['context'] );
+
+		if ( strlen( $data['context'] ) > $max_size ) {
+			$data['context'] = '{}';
+		}
+
+		return $data;
+	}
+
+	protected function remove_size_recursive( $data ) {
+		$max_chunk_size = 20 * 1000;
+
+		if ( is_string( $data ) || is_numeric( $data ) ) {
+			if ( strlen( $data ) > $max_chunk_size ) {
+				$data = substr( $data, 0, 10 ) . ' REMOVED LARGE DATA';
+			}
+		} else if ( is_array( $data ) ) {
+			foreach ( $data as $k => $v ) {
+				$data[ $k ] = $this->remove_size_recursive( $v );
+			}
+		}
 
 		return $data;
 	}

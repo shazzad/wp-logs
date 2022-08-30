@@ -1,5 +1,8 @@
 <?php
 namespace Shazzad\WpLogs;
+
+use Exception;
+
 /**
  * Database adapter
  * 

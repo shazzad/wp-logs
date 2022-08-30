@@ -1,3 +1,7 @@
+#### 1.1.0 2022-08-30
+* removed exception raised on failed log creation.
+* sanitized context data size before insert.
+
 #### 1.1.0 2022-07-27
 * optimized delete all function.
 

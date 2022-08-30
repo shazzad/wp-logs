@@ -6,6 +6,8 @@
  */
 namespace Shazzad\WpLogs;
 
+use Exception;
+
 /**
  * Hooks class
  */
@@ -21,13 +23,17 @@ class Hooks {
 			return;
 		}
 
-		$log = new Log\Data();
+		try {
+			$log = new Log\Data();
 
-		$log->set_source( $source );
-		$log->set_message( $message );
-		$log->set_context( $context );
-		$log->set_level( $level );
-		$log->save();
+			$log->set_source( $source );
+			$log->set_message( $message );
+			$log->set_context( $context );
+			$log->set_level( $level );
+			$log->save();
+		} catch ( Exception $e ) {
+			// ignore.
+		}
 	}
 
 	public function format_message( $message, $context = array() ) {
