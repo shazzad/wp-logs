@@ -18,15 +18,16 @@ class Api extends AbstractCrudApi
 		$this->query_class_name = 'Shazzad\WpLogs\Log\Query';
 	}
 
-	public function delete_all( $data = array() ) {
+	public function delete_all($data = array())
+	{
 		global $wpdb;
 
 		$sources = array();
 
-		if ( ! empty( $data['menu_item'] ) ) {
-			$menu_item = Utils::get_menu_item( $data['menu_item'] );
+		if (!empty($data['menu_item'])) {
+			$menu_item = Utils::get_menu_item($data['menu_item']);
 
-			if ( $menu_item && isset( $menu_item['sources'] ) ) {
+			if ($menu_item && isset($menu_item['sources'])) {
 				$sources = $menu_item['sources'];
 			}
 		}
@@ -37,15 +38,15 @@ class Api extends AbstractCrudApi
 		// There could be high amount of entries.
 		$sql = "DELETE FROM {$table}";
 
-		if ( $sources ) {
-			$sources = array_map( 'trim', $sources );
-			$sql .= " WHERE source IN ('" . implode( "','", $sources ) . "')";
+		if ($sources) {
+			$sources = array_map('trim', $sources);
+			$sql .= " WHERE source IN ('" . implode("','", $sources) . "')";
 		}
 
-		$wpdb->query( $sql );
+		$wpdb->query($sql);
 
 		return array(
-			'message' => __( 'Logs deleted', 'shazzad-wp-logs' )
+			'message' => __('Logs deleted', 'shazzad-wp-logs')
 		);
 	}
 }

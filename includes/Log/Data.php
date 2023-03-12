@@ -181,8 +181,8 @@ class Data extends AbstractData {
 			$data['context'] = array();
 		}
 
-		// Maximum size for mysql TEXT field.
-		$max_size = 64 * 1000;
+		// Maximum size for mysql LONGTEXT field.
+		$max_size = 4294967295;
 
 		if ( is_array( $data['context'] ) ) {
 			$data['context'] = $this->remove_size_recursive( $data['context'] );
@@ -197,16 +197,24 @@ class Data extends AbstractData {
 		return $data;
 	}
 
-	protected function remove_size_recursive( $data ) {
-		$max_chunk_size = 20 * 1000;
+	protected function remove_size_recursive( $data, $filled = 0 ) {
+		$max_size = 4294967295 / 10;
+		$max_chunk_size = 4294967295 / 20;
+
+		// if ( $filled > $max_size ) {
+		// 	return '';
+		// }
 
 		if ( is_string( $data ) || is_numeric( $data ) ) {
 			if ( strlen( $data ) > $max_chunk_size ) {
 				$data = substr( $data, 0, 10 ) . ' REMOVED LARGE DATA';
 			}
+
+			// $filled = strlen( $filled );
+
 		} else if ( is_array( $data ) ) {
 			foreach ( $data as $k => $v ) {
-				$data[ $k ] = $this->remove_size_recursive( $v );
+				$data[ $k ] = $this->remove_size_recursive( $v, $filled );
 			}
 		}
 

@@ -15,16 +15,16 @@ abstract class AbstractData
 	protected $meta_fields = array();
 	protected $extra_meta_fields = array();
 
-	public function __construct( $id = 0 )
+	public function __construct($id = 0)
 	{
-		$this->data = array_merge( $this->data, $this->extra_data );
-		$this->meta_fields = array_merge( $this->meta_fields, $this->extra_meta_fields );
+		$this->data = array_merge($this->data, $this->extra_data);
+		$this->meta_fields = array_merge($this->meta_fields, $this->extra_meta_fields);
 		$this->default_data = $this->data;
 	}
 
-	public function set_id( $id )
+	public function set_id($id)
 	{
-		$this->id = absint( $id );
+		$this->id = absint($id);
 	}
 
 	public function get_id()
@@ -34,12 +34,12 @@ abstract class AbstractData
 
 	public function __toString()
 	{
-		return json_encode( $this->get_data() );
+		return json_encode($this->get_data());
 	}
 
 	public function get_data()
 	{
-		return array_merge( array( 'id' => $this->get_id() ), $this->data );
+		return array_merge(array('id' => $this->get_id()), $this->data);
 	}
 
 	public function get_extra_data_()
@@ -49,61 +49,62 @@ abstract class AbstractData
 
 	public function get_data_keys()
 	{
-		return array_keys( $this->data );
+		return array_keys($this->data);
 	}
 
 	public function get_extra_data_keys()
 	{
-		return array_keys( $this->extra_data );
+		return array_keys($this->extra_data);
 	}
 
 	public function set_defaults()
 	{
-		$this->data		= $this->default_data;
-		$this->changes	 = array();
-		$this->set_object_read( false );
- 	}
-
-	public function set_object_read( $read = true )
-	{
-		$this->object_read = ( bool ) $read;
+		$this->data = $this->default_data;
+		$this->changes = array();
+		$this->set_object_read(false);
 	}
 
-	public function set_props( $props, $context = 'set' )
+	public function set_object_read($read = true)
+	{
+		$this->object_read = (bool) $read;
+	}
+
+	public function set_props($props, $context = 'set')
 	{
 		$errors = array();
 
-		foreach ( $props as $prop => $value ) {
+		foreach ($props as $prop => $value) {
 			try {
 				$setter = "set_$prop";
-				if ( ! is_null( $value ) && is_callable( array( $this, $setter ) ) ) {
-					$reflection = new \ReflectionMethod( $this, $setter );
-					if ( $reflection->isPublic() ) {
-						$this->{$setter}( $value );
+				if (!is_null($value) && is_callable(array($this, $setter))) {
+					$reflection = new \ReflectionMethod($this, $setter);
+					if ($reflection->isPublic()) {
+						$this->{$setter}($value);
 					}
 				}
-			} catch ( \Exception $e ) {
+			}
+			catch (\Exception $e) {
 				$errors[] = $e->getMessage();
 			}
 		}
 
-		return sizeof( $errors ) ? $errors : true;
+		return sizeof($errors) ? $errors : true;
 	}
 
-	protected function pre_set_props( $props, $id )
+	protected function pre_set_props($props, $id)
 	{
 		return $props;
 	}
 
-	protected function set_prop( $prop, $value )
+	protected function set_prop($prop, $value)
 	{
-		if ( array_key_exists( $prop, $this->data ) ) {
-			if ( true === $this->object_read ) {
-				if ( $value !== $this->data[ $prop ] || array_key_exists( $prop, $this->changes ) ) {
-					$this->changes[ $prop ] = $value;
+		if (array_key_exists($prop, $this->data)) {
+			if (true === $this->object_read) {
+				if ($value !== $this->data[$prop] || array_key_exists($prop, $this->changes)) {
+					$this->changes[$prop] = $value;
 				}
 			} else {
-				$this->data[ $prop ] = $value;
+				$this->data[$prop] = $value;
 			}
 		}
 	}
@@ -115,40 +116,40 @@ abstract class AbstractData
 
 	public function apply_changes()
 	{
-		$this->data	= array_replace_recursive( $this->data, $this->changes );
+		$this->data = array_replace_recursive($this->data, $this->changes);
 		$this->changes = array();
 	}
 
-	protected function get_prop( $prop, $context = 'view' )
+	protected function get_prop($prop, $context = 'view')
 	{
 		$value = null;
-		if ( array_key_exists( $prop, $this->data ) ) {
-			$value = array_key_exists( $prop, $this->changes ) ? $this->changes[ $prop ] : $this->data[ $prop ];
+		if (array_key_exists($prop, $this->data)) {
+			$value = array_key_exists($prop, $this->changes) ? $this->changes[$prop] : $this->data[$prop];
 		}
 
 		return $value;
 	}
 
-	public function read_metadata( $id )
+	public function read_metadata($id)
 	{
 		$metadata = array();
-		foreach ( $this->meta_fields as $field => $args ) {
-			$metadata[$field] = get_metadata( $this->meta_type, $id, $args['key'], $args['unique'] );
+		foreach ($this->meta_fields as $field => $args) {
+			$metadata[$field] = get_metadata($this->meta_type, $id, $args['key'], $args['unique']);
 		}
 		return $metadata;
 	}
 
-	public function update_metadata( $data )
+	public function update_metadata($data)
 	{
-		foreach ( $this->meta_fields as $field => $args ) {
-			if ( array_key_exists( $field, $data ) ) {
-				if ( $args['unique'] ) {
-					update_metadata( $this->meta_type, $this->get_id(), $args['key'], $data[$field], '' );
+		foreach ($this->meta_fields as $field => $args) {
+			if (array_key_exists($field, $data)) {
+				if ($args['unique']) {
+					update_metadata($this->meta_type, $this->get_id(), $args['key'], $data[$field], '');
 				} else {
-					delete_metadata( $this->meta_type, $this->get_id(), $args['key'], '' );
-					if ( is_array( $data[$field] ) ) {
-						foreach ( $data[$field] as $val ) {
-							add_metadata( $this->meta_type, $this->get_id(), $args['key'], $val, false );
+					delete_metadata($this->meta_type, $this->get_id(), $args['key'], '');
+					if (is_array($data[$field])) {
+						foreach ($data[$field] as $val) {
+							add_metadata($this->meta_type, $this->get_id(), $args['key'], $val, false);
 						}
 					}
 				}
@@ -168,12 +169,12 @@ abstract class AbstractData
 	{
 	}
 
-	public function pre_get_filter( $data )
+	public function pre_get_filter($data)
 	{
 		return $data;
 	}
 
-	public function pre_save_filter( $data )
+	public function pre_save_filter($data)
 	{
 		return $data;
 	}
