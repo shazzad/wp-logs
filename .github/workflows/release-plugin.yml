@@ -44,10 +44,7 @@ jobs:
         run: npm ci
 
       - name: Build Plugin Zip
-        run: |
-          npm run css
-          ls -l -R assets/css
-          npm run build
+        run: npm run build
 
       - name: Create Release
         uses: ncipollo/release-action@v1
