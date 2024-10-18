@@ -1,6 +1,7 @@
 # ignore dependency directories
 node_modules/
 vendor/
+build/
 
 # ignore log files, databases and windows extension
 *.log

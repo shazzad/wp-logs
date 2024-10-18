@@ -1,0 +1,61 @@
+name: Release Plugin
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  release-plugin:
+    name: Release Plugin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Package Json Env
+        run: echo "PACKAGE_JSON=$(jq -c . < package.json)" >> $GITHUB_ENV
+
+      - name: Setup Plugin Version Env
+        run: echo "PLUGIN_VERSION=${{ fromJson(env.PACKAGE_JSON).version }}" >> $GITHUB_ENV
+
+      - name: Show Plugin Version
+        run: echo '$PLUGIN_VERSION'
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Setup node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.0
+      - name: Install Deps
+        run: npm ci
+
+      - name: Build Plugin Zip
+        run: |
+          npm run css
+          ls -l -R assets/css
+          npm run build
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.PLUGIN_VERSION }}
+          name: v${{ env.PLUGIN_VERSION }}
+          draft: false
+          prerelease: false
+          artifacts: build/shazzad-wp-logs.v${{ env.PLUGIN_VERSION }}.zip
+          artifactContentType: application/zip
