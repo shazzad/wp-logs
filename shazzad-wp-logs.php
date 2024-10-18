@@ -3,7 +3,7 @@
  * Plugin Name: Shazzad Wp Logs
  * Plugin URI: https://w4dev.com
  * Description: Store and view logs for debugging.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Requires at least: 4.4.0
  * Requires PHP: 5.5
  * Author: Shazzad Hossain Khan
@@ -24,18 +24,18 @@ if ( defined( 'SWPL_PLUGIN_FILE' ) ) {
 	return;
 }
 
-define( 'SWPL_VERSION', '1.1.1' );
+define( 'SWPL_VERSION', '1.1.2' );
 
 function swpl_missing_vendor_notice() {
 	?>
-    <div class="notice notice-error is-dismissible">
-        <p>
-			<?php 
-				_e( 'Shazzad Wp Logs plugin is missing vendor folder. Please run <code>composer install</code> to import vendors.', 'shazzad-wp-logs' );
+	<div class="notice notice-error is-dismissible">
+		<p>
+			<?php
+			_e( 'Shazzad Wp Logs plugin is missing vendor folder. Please run <code>composer install</code> to import vendors.', 'shazzad-wp-logs' );
 			?>
 		</p>
-    </div>
-    <?php
+	</div>
+	<?php
 }
 
 // When composer files are missing, stop further execution.
@@ -77,8 +77,8 @@ if ( class_exists( '\Shazzad\GithubPlugin\Updater' ) ) {
 	new Shazzad\GithubPlugin\Updater( array(
 		'file'         => __FILE__,
 		'owner'        => 'shazzad',
-		'repo'		   => 'wp-logs',
-	
+		'repo'         => 'wp-logs',
+
 		// Folloing only required for private repo.
 		'private_repo' => false,
 		'owner_name'   => 'Shazzad'
