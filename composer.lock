@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c67bf1d5236daf5d5b67538fa7f061e",
+    "content-hash": "f0f5443608774cb7813f92fa0db2a98a",
     "packages": [
         {
             "name": "erusev/parsedown",
@@ -130,10 +130,11 @@
                     "Shazzad\\GithubPlugin\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "description": "Helper library to implement wordpress plugin update from github repo.",
             "support": {
-                "source": "https://github.com/shazzad/github-plugin-updater/tree/main",
-                "issues": "https://github.com/shazzad/github-plugin-updater/issues"
+                "issues": "https://github.com/shazzad/github-plugin-updater/issues",
+                "source": "https://github.com/shazzad/github-plugin-updater/tree/main"
             },
             "time": "2022-09-18T00:09:41+00:00"
         }

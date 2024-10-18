@@ -3,12 +3,6 @@
 	"description": "Store and view logs for debugging your application.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/shazzad/github-plugin-updater"
-		}
-	],
 	"require": {
 		"mustache/mustache": "^2.12",
 		"shazzad/github-plugin-updater": "dev-main"
