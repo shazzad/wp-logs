@@ -1,6 +1,8 @@
 {
 	"name": "shazzad/wp-logs",
 	"description": "Store and view logs for debugging your application.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
 	"repositories": [
 		{
 			"type": "vcs",
