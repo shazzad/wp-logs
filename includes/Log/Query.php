@@ -4,45 +4,42 @@ namespace Shazzad\WpLogs\Log;
 use Shazzad\WpLogs\AbstractQuery;
 use Shazzad\WpLogs\DbAdapter;
 
-class Query extends AbstractQuery
-{
-	public function __construct($args = array())
-	{
+class Query extends AbstractQuery {
+	public function __construct( $args = [] ) {
 		global $wpdb;
 
-		$this->table = DbAdapter::prefix_table('logs');
+		$this->table = DbAdapter::prefix_table( 'logs' );
 
-		$this->columns = array(
-			'id'        => array(
+		$this->columns = [ 
+			'id'        => [ 
 				'type' => 'interger'
-			),
-			'level'     => array(
+			],
+			'level'     => [ 
 				'type'       => 'varchar',
 				'searchable' => true
-			),
-			'source'    => array(
+			],
+			'source'    => [ 
 				'type'       => 'varchar',
 				'searchable' => true
-			),
-			'message'   => array(
+			],
+			'message'   => [ 
 				'type'       => 'text',
 				'searchable' => true
-			),
-			'context'   => array(
+			],
+			'context'   => [ 
 				'type'       => 'text',
 				'searchable' => false
-			),
-			'timestamp' => array(
+			],
+			'timestamp' => [ 
 				'type' => 'datetime'
-			)
-		);
+			]
+		];
 
-		parent::__construct($args);
+		parent::__construct( $args );
 	}
 
-	public function query()
-	{
-		if (!empty($this->errors)) {
+	public function query() {
+		if ( ! empty( $this->errors ) ) {
 			return;
 		}
 
@@ -62,11 +59,10 @@ class Query extends AbstractQuery
 		$this->fetch_results();
 	}
 
-	public function get_objects()
-	{
-		$objects = array();
-		foreach ($this->get_results() as $resut) {
-			$objects[] = Data::load($resut);
+	public function get_objects() {
+		$objects = [];
+		foreach ( $this->get_results() as $resut ) {
+			$objects[] = Data::load( $resut );
 		}
 
 		return $objects;
