@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c67bf1d5236daf5d5b67538fa7f061e",
+    "content-hash": "f0f5443608774cb7813f92fa0db2a98a",
     "packages": [
         {
             "name": "erusev/parsedown",
@@ -58,16 +58,16 @@
         },
         {
             "name": "mustache/mustache",
-            "version": "v2.14.1",
+            "version": "v2.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/mustache.php.git",
-                "reference": "579ffa5c96e1d292c060b3dd62811ff01ad8c24e"
+                "reference": "e62b7c3849d22ec55f3ec425507bf7968193a6cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/mustache.php/zipball/579ffa5c96e1d292c060b3dd62811ff01ad8c24e",
-                "reference": "579ffa5c96e1d292c060b3dd62811ff01ad8c24e",
+                "url": "https://api.github.com/repos/bobthecow/mustache.php/zipball/e62b7c3849d22ec55f3ec425507bf7968193a6cb",
+                "reference": "e62b7c3849d22ec55f3ec425507bf7968193a6cb",
                 "shasum": ""
             },
             "require": {
@@ -102,9 +102,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/mustache.php/issues",
-                "source": "https://github.com/bobthecow/mustache.php/tree/v2.14.1"
+                "source": "https://github.com/bobthecow/mustache.php/tree/v2.14.2"
             },
-            "time": "2022-01-21T06:08:36+00:00"
+            "time": "2022-08-23T13:07:01+00:00"
         },
         {
             "name": "shazzad/github-plugin-updater",
@@ -112,12 +112,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shazzad/github-plugin-updater.git",
-                "reference": "c4cabf4d908120ef57562f8c34136a95da56cd01"
+                "reference": "63c5637c84242036b43775110da5f82e56b657aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/c4cabf4d908120ef57562f8c34136a95da56cd01",
-                "reference": "c4cabf4d908120ef57562f8c34136a95da56cd01",
+                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/63c5637c84242036b43775110da5f82e56b657aa",
+                "reference": "63c5637c84242036b43775110da5f82e56b657aa",
                 "shasum": ""
             },
             "require": {
@@ -130,12 +130,13 @@
                     "Shazzad\\GithubPlugin\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "description": "Helper library to implement wordpress plugin update from github repo.",
             "support": {
-                "source": "https://github.com/shazzad/github-plugin-updater/tree/main",
-                "issues": "https://github.com/shazzad/github-plugin-updater/issues"
+                "issues": "https://github.com/shazzad/github-plugin-updater/issues",
+                "source": "https://github.com/shazzad/github-plugin-updater/tree/main"
             },
-            "time": "2021-11-13T19:49:21+00:00"
+            "time": "2022-09-18T00:09:41+00:00"
         }
     ],
     "packages-dev": [],
@@ -148,5 +149,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
