@@ -31,10 +31,14 @@ abstract class Query {
 	public $errors;
 	public $use_cache = false;
 
+	public $cache_ttl = 30;
+
 	public $found_items = 0;
 	public $limit = '';
 	public $page = 1;
 	public $max_num_pages = 1;
+
+	public $use_found_rows = true;
 
 	public function __construct( $query_args ) {
 		$this->query_args = $query_args;
@@ -42,6 +46,7 @@ abstract class Query {
 		$this->parse_query_vars();
 	}
 
+	// Reset all query properties
 	public function reset() {
 		$this->output      = "";
 		$this->_select     = "";
@@ -54,15 +59,18 @@ abstract class Query {
 		$this->_limit      = "";
 	}
 
-	function set( $key, $val ) {
+	// Set a query argument
+	public function set( $key, $val ) {
 		$this->query_args[ $key ] = $val;
 	}
 
-	function get( $key, $default = '' ) {
+	// Get a query argument with a default value
+	public function get( $key, $default = '' ) {
 		return array_key_exists( $key, $this->query_args ) ? $this->query_args[ $key ] : $default;
 	}
 
-	function parse_query_vars() {
+	// Parse and validate query variables
+	public function parse_query_vars() {
 		if ( ! is_array( $this->query_args ) ) {
 			$this->query_args = [];
 		}
@@ -72,7 +80,7 @@ abstract class Query {
 			return;
 		}
 
-		if ( '' == $this->get( 'order' ) || ! in_array( strtoupper( $this->get( 'order' ) ), array( 'ASC', 'DESC' ) ) ) {
+		if ( '' == $this->get( 'order' ) || ! in_array( strtoupper( $this->get( 'order' ) ), [ 'ASC', 'DESC' ] ) ) {
 			$this->set( 'order', "ASC" );
 		}
 
@@ -101,16 +109,16 @@ abstract class Query {
 		$this->output = $this->get( 'output' ) ? $this->get( 'output' ) : OBJECT;
 	}
 
-
-	function build_default_query() {
+	// Build the default query based on the query arguments
+	public function build_default_query() {
 		$this->_select = "SELECT";
 		$this->_join   = " FROM $this->table AS TB";
 		$this->_where  = " WHERE 1=1";
 
 		if ( '' != $this->get( 'column' ) ) {
-			$this->_fields .= " TB." . $this->get( 'column' ) . "";
+			$this->_fields .= " TB." . $this->get( 'column' );
 		} elseif ( '' != $this->get( 'columns' ) ) {
-			$this->_fields .= " TB." . implode( ", TB.", $this->get( 'columns' ) ) . "";
+			$this->_fields .= " TB." . implode( ", TB.", $this->get( 'columns' ) );
 		} elseif ( $this->get( 'method' ) == 'count_row' ) {
 			$this->_fields .= " COUNT( * )";
 		} else {
@@ -120,32 +128,25 @@ abstract class Query {
 		$search_args = [];
 
 		foreach ( $this->columns as $column => $args ) {
-
 			switch ( $args['type'] ) {
-
 				case 'text':
 				case 'varchar':
 				case 'price':
-
-					$this->parse_text_fields( array(
+					$this->parse_text_fields( [ 
 						$column => "TB.{$column}"
-					) );
+					] );
 					if ( $this->get( "{$column}__like" ) ) {
 						$search_args[ $column ] = $this->get( "{$column}__like" );
 					}
-
 					break;
 				case 'interger':
-
-					$this->parse_interger_fields( array(
+					$this->parse_interger_fields( [ 
 						$column => "TB.{$column}"
-					) );
-					$this->parse_interger_fields( array(
+					] );
+					$this->parse_interger_fields( [ 
 						"{$column}__not" => "TB.{$column}"
-					), 'NOT IN' );
-
+					], 'NOT IN' );
 					break;
-
 				default:
 					break;
 			}
@@ -157,10 +158,10 @@ abstract class Query {
 			foreach ( $this->columns as $column => $args ) {
 				if ( ! empty( $search_args[ $column ] ) ) {
 					continue;
-				} else if ( isset( $args['searchable'] ) ) {
-					if ( in_array( $args['type'], array( 'text', 'varchar' ) ) ) {
+				} elseif ( isset( $args['searchable'] ) ) {
+					if ( in_array( $args['type'], [ 'text', 'varchar' ] ) ) {
 						$search_args[ $column ] = $this->get( 's' );
-					} else if ( in_array( $args['type'], array( 'interger', 'number' ) ) ) {
+					} elseif ( in_array( $args['type'], [ 'interger', 'number' ] ) ) {
 						$search_args[ $column ] = (int) $this->get( 's' );
 					}
 				}
@@ -193,16 +194,18 @@ abstract class Query {
 			}
 		}
 
-		if ( '' != $this->limit ) {
+		if ( '' != $this->limit && $this->use_found_rows ) {
 			$this->_found_rows = " SQL_CALC_FOUND_ROWS";
 		}
 	}
 
+	// Execute the query
 	public function query() {
-
+		// Method to execute the query should be implemented here.
 	}
 
-	function parse_search_fields( $args = [], $relation = 'OR' ) {
+	// Parse search fields to build the search WHERE clause
+	public function parse_search_fields( $args = [], $relation = 'OR' ) {
 		if ( empty( $args ) ) {
 			return;
 		}
@@ -212,8 +215,7 @@ abstract class Query {
 		$search_where = '';
 
 		foreach ( $args as $column => $term ) {
-
-			preg_match_all( '/".*?("|$)|((?<=[\\s",+])|^)[^\\s",+]+/', $term, $terms );
+			preg_match_all( '/".*?("|$)|((?<=[\s",+])|^)[^\s",+]+/', $term, $terms );
 
 			$search_terms = [];
 			if ( is_array( $terms[0] ) ) {
@@ -228,7 +230,7 @@ abstract class Query {
 			$searchand = '';
 			$search    = '';
 
-			$escap_words = array( '-', '_' );
+			$escap_words = [ '-', '_' ];
 
 			foreach ( (array) $search_terms as $term ) {
 				if ( in_array( $term, $escap_words ) ) {
@@ -254,14 +256,11 @@ abstract class Query {
 		}
 	}
 
-
-	function parse_interger_fields( $args = [], $compare = '' ) {
-
+	// Parse integer fields to build the search WHERE clause
+	public function parse_interger_fields( $args = [], $compare = '' ) {
 		if ( empty( $args ) ) {
 			return;
 		}
-
-		#print_r( $args );
 
 		foreach ( $args as $request => $column ) {
 			if ( is_numeric( $request ) ) {
@@ -275,10 +274,8 @@ abstract class Query {
 			}
 
 			if ( '' != $this->get( $request ) ) {
-
 				$var = $this->get( $request );
 
-				// this prevents 0
 				if ( is_array( $var ) ) {
 					$_compare     = ! $compare ? "IN" : $compare;
 					$this->_where .= " AND {$column} {$_compare} ( " . implode( ',', array_map( 'intval', $var ) ) . " )";
@@ -290,14 +287,13 @@ abstract class Query {
 		}
 	}
 
-
-	function parse_text_fields( $args = [], $compare = '' ) {
+	// Parse text fields to build the search WHERE clause
+	public function parse_text_fields( $args = [], $compare = '' ) {
 		if ( empty( $args ) ) {
 			return;
 		}
 
 		foreach ( $args as $request => $column ) {
-
 			if ( is_numeric( $request ) ) {
 				$request = $column;
 			}
@@ -307,12 +303,11 @@ abstract class Query {
 			} elseif ( '__not_empty__' == $this->get( $request ) ) {
 				$this->_where .= " AND $column <> ''";
 			} elseif ( '' != $this->get( $request ) ) {
-
 				$var = $this->get( $request );
 
 				if ( is_array( $var ) && ! empty( $var ) ) {
 					$_compare     = ! $compare ? "IN" : $compare;
-					$this->_where .= " AND {$column} {$_compare} ( \"" . implode( '","', array_map( 'esc_sql', $var ) ) . "\" )";
+					$this->_where .= " AND {$column} {$_compare} ( \"" . implode( '\",\"', array_map( 'esc_sql', $var ) ) . "\" )";
 				} else {
 					$_compare     = ! $compare ? "=" : $compare;
 					$this->_where .= " AND {$column} {$_compare} '" . esc_sql( $var ) . "'";
@@ -321,8 +316,8 @@ abstract class Query {
 		}
 	}
 
-
-	function parse_sortable_fields( $args = [] ) {
+	// Parse sortable fields for ordering
+	public function parse_sortable_fields( $args = [] ) {
 		if ( empty( $args ) ) {
 			return;
 		}
@@ -337,13 +332,13 @@ abstract class Query {
 		}
 	}
 
-	function fetch_results() {
+	// Fetch the query results
+	public function fetch_results() {
 		if ( ! empty( $this->errors ) ) {
 			$error_obj = new WP_Error();
 			foreach ( $this->errors as $error ) {
 				$error_obj->add( 'error', $error );
 			}
-
 			return $error_obj;
 		}
 
@@ -351,20 +346,22 @@ abstract class Query {
 			$this->set( 'method', 'get_col' );
 		}
 
-		if ( ! in_array( $this->get( 'method' ), array( 'get_row', 'get_var', 'get_col', 'count_row' ) ) ) {
+		if ( ! in_array( $this->get( 'method' ), [ 'get_row', 'get_var', 'get_col', 'count_row' ] ) ) {
 			$this->set( 'method', 'get_results' );
 		}
 
-		// enable cache
+		// Enable cache
 		if ( $this->use_cache ) {
 			$request_hash = md5( $this->request );
-			$result       = wp_cache_get( 'result' . $request_hash );
-			$attrs        = wp_cache_get( 'attrs' . $request_hash );
+
+			$result = wp_cache_get( "result_{$request_hash}" );
+			$attrs  = wp_cache_get( "attrs_{$request_hash}" );
 
 			if ( false !== $result && false !== $attrs ) {
 				$this->data          = $result;
 				$this->found_items   = $attrs['found_items'];
 				$this->max_num_pages = $attrs['max_num_pages'];
+
 				return true;
 			}
 		}
@@ -382,32 +379,38 @@ abstract class Query {
 		$this->data = $result;
 
 		if ( '' != $this->limit ) {
-			$this->found_items   = DbAdapter::get_found_rows();
+			if ( $this->use_found_rows ) {
+				$this->found_items = DbAdapter::get_found_rows();
+			} else {
+				$this->found_items = DbAdapter::get_var( $this->get_count_query() );
+			}
+
 			$this->max_num_pages = ceil( $this->found_items / $this->limit );
 		} else {
 			$this->found_items   = is_array( $result ) || is_object( $result ) ? count( $result ) : 0;
 			$this->max_num_pages = 1;
 		}
 
-		$this->paginations = array(
+		$this->paginations = [ 
 			'current' => $this->get( 'paged' ),
 			'items'   => $this->found_items,
 			'pages'   => $this->max_num_pages
-		);
+		];
 
-		// if cache enabled, keep the data on cache
+		// If cache enabled, keep the data on cache
 		if ( $this->use_cache ) {
-			wp_cache_set( 'result' . $request_hash, $this->data );
-			wp_cache_set( 'attrs' . $request_hash, array(
+			wp_cache_set( "result_{$request_hash}", $this->data, '', $this->cache_ttl );
+			wp_cache_set( "attrs_{$request_hash}", [ 
 				'found_items'   => $this->found_items,
 				'max_num_pages' => $this->max_num_pages
-			) );
+			], '', $this->cache_ttl );
 		}
 
 		return true;
 	}
 
-	function get_results() {
+	// Get the query results
+	public function get_results() {
 		return $this->data;
 	}
 }

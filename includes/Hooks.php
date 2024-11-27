@@ -13,11 +13,11 @@ use Exception;
  */
 class Hooks {
 	function __construct() {
-		add_action( 'swpl_log', array( $this, 'store_log' ), 10, 4 );
-		add_filter( 'swpl_format_message', array( $this, 'format_message' ), 20, 2 );
+		add_action( 'swpl_log', [ $this, 'store_log' ], 10, 4 );
+		add_filter( 'swpl_format_message', [ $this, 'format_message' ], 20, 2 );
 	}
 
-	public function store_log( $source, $message, $context = array(), $level = 'info' ) {
+	public function store_log( $source, $message, $context = [], $level = 'info' ) {
 		if ( empty( $message ) ) {
 			return;
 		}
@@ -32,7 +32,7 @@ class Hooks {
 			$log->save();
 		}
 		catch (Exception $e) {
-			// ignore.
+			error_log( 'Shazzad Wp Logs: ' . $e->getMessage() );
 		}
 	}
 

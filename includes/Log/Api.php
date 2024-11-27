@@ -1,7 +1,6 @@
 <?php
 namespace Shazzad\WpLogs\Log;
 
-use WP_Error;
 use Shazzad\WpLogs\Utils;
 use Shazzad\WpLogs\DbAdapter;
 use Shazzad\WpLogs\Abstracts\CrudApi;
@@ -42,8 +41,8 @@ class Api extends CrudApi {
 
 		$wpdb->query( $sql );
 
-		return array(
+		return [ 
 			'message' => __( 'Logs deleted', 'shazzad-wp-logs' )
-		);
+		];
 	}
 }

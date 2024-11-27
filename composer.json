@@ -11,5 +11,13 @@
 		"psr-4": {
 			"Shazzad\\WpLogs\\": "includes"
 		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Shazzad\\WpLogs\\Commands": "commands"
+		}
+	},
+	"require-dev": {
+		"fakerphp/faker": "^1.24"
 	}
 }

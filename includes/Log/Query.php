@@ -5,6 +5,9 @@ use Shazzad\WpLogs\Abstracts\Query as AbstractQuery;
 use Shazzad\WpLogs\DbAdapter;
 
 class Query extends AbstractQuery {
+
+	public $use_found_rows = false;
+
 	public function __construct( $args = [] ) {
 		global $wpdb;
 
@@ -57,6 +60,15 @@ class Query extends AbstractQuery {
 
 		// Fetch results.
 		$this->fetch_results();
+	}
+
+	public function get_count_query() {
+		return $this->_select
+			. $this->_found_rows
+			. " COUNT( * )"
+			. $this->_join
+			. $this->_where
+			. $this->_groupby;
 	}
 
 	public function get_objects() {

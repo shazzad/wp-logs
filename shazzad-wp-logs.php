@@ -71,6 +71,9 @@ function swpl_install() {
 }
 register_activation_hook( SWPL_PLUGIN_FILE, 'swpl_install' );
 
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once __DIR__ . '/commands/GenerateLogsCommand.php';
+}
 
 // Initialize updater if available.
 if ( class_exists( '\Shazzad\GithubPlugin\Updater' ) ) {
