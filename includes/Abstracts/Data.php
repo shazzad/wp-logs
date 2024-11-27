@@ -1,7 +1,7 @@
 <?php
-namespace Shazzad\WpLogs;
+namespace Shazzad\WpLogs\Abstracts;
 
-abstract class AbstractData {
+abstract class Data {
 	protected $id = 0;
 	protected $changes = [];
 	protected $object_read = false;

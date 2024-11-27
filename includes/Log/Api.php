@@ -4,9 +4,9 @@ namespace Shazzad\WpLogs\Log;
 use WP_Error;
 use Shazzad\WpLogs\Utils;
 use Shazzad\WpLogs\DbAdapter;
-use Shazzad\WpLogs\AbstractCrudApi;
+use Shazzad\WpLogs\Abstracts\CrudApi;
 
-class Api extends AbstractCrudApi {
+class Api extends CrudApi {
 	public function __construct() {
 		$this->key              = 'log';
 		$this->name             = __( 'Log', 'shazzad_wp_logs' );

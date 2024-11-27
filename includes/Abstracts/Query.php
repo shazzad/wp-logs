@@ -2,12 +2,12 @@
 /**
  * A Simple Query Class
  */
-namespace Shazzad\WpLogs;
+namespace Shazzad\WpLogs\Abstracts;
 
 use WP_Error;
 use Shazzad\WpLogs\DbAdapter;
 
-abstract class AbstractQuery {
+abstract class Query {
 	protected $table;
 	protected $columns = [];
 	protected $primary_column = null;
@@ -26,15 +26,15 @@ abstract class AbstractQuery {
 	protected $_order;
 	protected $_limit;
 
-	var $query_args;
-	var $request;
-	var $errors;
-	var $use_cache = false;
+	public $query_args;
+	public $request;
+	public $errors;
+	public $use_cache = false;
 
-	var $found_items = 0;
-	var $limit = '';
-	var $page = 1;
-	var $max_num_pages = 1;
+	public $found_items = 0;
+	public $limit = '';
+	public $page = 1;
+	public $max_num_pages = 1;
 
 	public function __construct( $query_args ) {
 		$this->query_args = $query_args;
@@ -323,7 +323,6 @@ abstract class AbstractQuery {
 
 
 	function parse_sortable_fields( $args = [] ) {
-
 		if ( empty( $args ) ) {
 			return;
 		}

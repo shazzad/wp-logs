@@ -1,10 +1,10 @@
 <?php
-namespace Shazzad\WpLogs;
+namespace Shazzad\WpLogs\Abstracts;
 
 use Exception;
 use WP_Error;
 
-abstract class AbstractCrudApi {
+abstract class CrudApi {
 	/* unique key */
 	public $key;
 

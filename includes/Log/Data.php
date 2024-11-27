@@ -1,7 +1,7 @@
 <?php
 namespace Shazzad\WpLogs\Log;
 
-use Shazzad\WpLogs\AbstractData;
+use Shazzad\WpLogs\Abstracts\Data as AbstractData;
 use Shazzad\WpLogs\DbAdapter;
 
 class Data extends AbstractData {

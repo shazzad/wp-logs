@@ -1,7 +1,7 @@
 <?php
 namespace Shazzad\WpLogs\Log;
 
-use Shazzad\WpLogs\AbstractQuery;
+use Shazzad\WpLogs\Abstracts\Query as AbstractQuery;
 use Shazzad\WpLogs\DbAdapter;
 
 class Query extends AbstractQuery {
