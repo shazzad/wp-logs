@@ -27,7 +27,7 @@ class ListTable extends \WP_List_Table {
 			'title'  => __( 'Message', 'shazzad-wp-logs' ),
 			'source' => __( 'Source', 'shazzad-wp-logs' ),
 			'level'  => __( 'Type', 'shazzad-wp-logs' ),
-			'date'   => __( 'Date (GMT+0)', 'shazzad-wp-logs' ),
+			'date'   => __( 'Date (UTC)', 'shazzad-wp-logs' ),
 			'id'     => __( 'ID', 'shazzad-wp-logs' )
 		];
 
