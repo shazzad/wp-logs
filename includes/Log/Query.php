@@ -1,40 +1,42 @@
 <?php
 namespace Shazzad\WpLogs\Log;
 
-use Shazzad\WpLogs\AbstractQuery;
+use Shazzad\WpLogs\Abstracts\Query as AbstractQuery;
 use Shazzad\WpLogs\DbAdapter;
 
 class Query extends AbstractQuery {
 
-	public function __construct( $args = array() ) {
+	public $use_found_rows = false;
+
+	public function __construct( $args = [] ) {
 		global $wpdb;
 
-		$this->table = DbAdapter::prefix_table('logs');
+		$this->table = DbAdapter::prefix_table( 'logs' );
 
-		$this->columns = array(
-			'id' => array(
+		$this->columns = [ 
+			'id'        => [ 
 				'type' => 'interger'
-			),
-			'level' => array(
-				'type' => 'varchar',
+			],
+			'level'     => [ 
+				'type'       => 'varchar',
 				'searchable' => true
-			),
-			'source' => array(
-				'type' => 'varchar',
+			],
+			'source'    => [ 
+				'type'       => 'varchar',
 				'searchable' => true
-			),
-			'message' => array(
-				'type' => 'text',
+			],
+			'message'   => [ 
+				'type'       => 'text',
 				'searchable' => true
-			),
-			'context' => array(
-				'type' => 'text',
+			],
+			'context'   => [ 
+				'type'       => 'text',
 				'searchable' => false
-			),
-			'timestamp' => array(
+			],
+			'timestamp' => [ 
 				'type' => 'datetime'
-			)
-		);
+			]
+		];
 
 		parent::__construct( $args );
 	}
@@ -48,20 +50,29 @@ class Query extends AbstractQuery {
 
 		// Build the request.
 		$this->request = $this->_select
-		. $this->_found_rows
-		. $this->_fields
-		. $this->_join
-		. $this->_where
-		. $this->_groupby
-		. $this->_order
-		. $this->_limit;
+			. $this->_found_rows
+			. $this->_fields
+			. $this->_join
+			. $this->_where
+			. $this->_groupby
+			. $this->_order
+			. $this->_limit;
 
 		// Fetch results.
 		$this->fetch_results();
 	}
 
+	public function get_count_query() {
+		return $this->_select
+			. $this->_found_rows
+			. " COUNT( * )"
+			. $this->_join
+			. $this->_where
+			. $this->_groupby;
+	}
+
 	public function get_objects() {
-		$objects = array();
+		$objects = [];
 		foreach ( $this->get_results() as $resut ) {
 			$objects[] = Data::load( $resut );
 		}

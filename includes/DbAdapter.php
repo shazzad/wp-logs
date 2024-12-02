@@ -9,8 +9,7 @@ use Exception;
  * @package Shazzad\WpLogs
  */
 
-class DbAdapter
-{
+class DbAdapter {
 	public static function prefix_table( $table ) {
 		global $wpdb;
 		if ( in_array( $table, array( 'posts', 'postmeta' ) ) ) {
@@ -28,47 +27,47 @@ class DbAdapter
 		return $wpdb->insert_id;
 	}
 
-	public static function update( $table, $data, $where ){
+	public static function update( $table, $data, $where ) {
 		global $wpdb;
 		return $wpdb->update( $table, $data, $where );
 	}
 
-	public static function delete( $table, $where ){
+	public static function delete( $table, $where ) {
 		global $wpdb;
 		return $wpdb->delete( $table, $where );
 	}
 
-	public static function insert_id( ){
+	public static function insert_id() {
 		global $wpdb;
 		return $wpdb->insert_id;
 	}
 
-	public static function get_row( $query, $output = 'ARRAY_A' ){
+	public static function get_row( $query, $output = 'ARRAY_A' ) {
 		global $wpdb;
 		return $wpdb->get_row( $query, $output );
 	}
 
-	public static function get_rows( $query, $output = 'ARRAY_A' ){
+	public static function get_rows( $query, $output = 'ARRAY_A' ) {
 		global $wpdb;
 		return $wpdb->get_results( $query, $output );
 	}
 
-	public static function get_col( $query ){
+	public static function get_col( $query ) {
 		global $wpdb;
 		return $wpdb->get_col( $query );
 	}
 
-	public static function get_var( $query ){
+	public static function get_var( $query ) {
 		global $wpdb;
 		return $wpdb->get_var( $query );
 	}
 
-	public static function query( $query ){
+	public static function query( $query ) {
 		global $wpdb;
 		return $wpdb->query( $query );
 	}
 
-	public static function get_found_rows( ){
+	public static function get_found_rows() {
 		global $wpdb;
 		return $wpdb->get_var( 'SELECT FOUND_ROWS()' );
 	}

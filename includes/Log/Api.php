@@ -1,27 +1,24 @@
 <?php
 namespace Shazzad\WpLogs\Log;
 
-use WP_Error;
 use Shazzad\WpLogs\Utils;
 use Shazzad\WpLogs\DbAdapter;
-use Shazzad\WpLogs\AbstractCrudApi;
+use Shazzad\WpLogs\Abstracts\CrudApi;
 
-class Api extends AbstractCrudApi
-{
-	public function __construct()
-	{
-		$this->key = 'log';
-		$this->name = __('Log', 'shazzad_wp_logs');
-		$this->key_plural = 'logs';
-		$this->name_plural = __('Logs', 'shazzad_wp_logs');
+class Api extends CrudApi {
+	public function __construct() {
+		$this->key              = 'log';
+		$this->name             = __( 'Log', 'shazzad_wp_logs' );
+		$this->key_plural       = 'logs';
+		$this->name_plural      = __( 'Logs', 'shazzad_wp_logs' );
 		$this->model_class_name = 'Shazzad\WpLogs\Log\Data';
 		$this->query_class_name = 'Shazzad\WpLogs\Log\Query';
 	}
 
-	public function delete_all( $data = array() ) {
+	public function delete_all( $data = [] ) {
 		global $wpdb;
 
-		$sources = array();
+		$sources = [];
 
 		if ( ! empty( $data['menu_item'] ) ) {
 			$menu_item = Utils::get_menu_item( $data['menu_item'] );
@@ -31,7 +28,7 @@ class Api extends AbstractCrudApi
 			}
 		}
 
-		$table = DbAdapter::prefix_table('logs');
+		$table = DbAdapter::prefix_table( 'logs' );
 
 		// Use direct sql to delete logs rather than modular read/delete
 		// There could be high amount of entries.
@@ -44,8 +41,8 @@ class Api extends AbstractCrudApi
 
 		$wpdb->query( $sql );
 
-		return array(
+		return [ 
 			'message' => __( 'Logs deleted', 'shazzad-wp-logs' )
-		);
+		];
 	}
 }

@@ -10,7 +10,6 @@ namespace Shazzad\WpLogs;
  * Plugin
  */
 final class Plugin {
-
 	/**
 	 * @var object Plugin instance.
 	 */
@@ -20,7 +19,7 @@ final class Plugin {
 	 * Class instance getter.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
+		if ( self::$_instance === null ) {
 			self::$_instance = new self();
 		}
 
@@ -54,7 +53,7 @@ final class Plugin {
 			'shazzad-wp-logs',
 			false,
 			basename( dirname( SWPL_PLUGIN_FILE ) ) . '/languages'
-		 );
+		);
 
 		// Load mustache, it is used for parsing message.
 		\Mustache_Autoloader::register();

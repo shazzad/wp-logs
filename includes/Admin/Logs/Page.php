@@ -11,15 +11,13 @@ use Shazzad\WpLogs\Log\Data as LogData;
 use Shazzad\WpLogs\Log\Api as LogApi;
 use Shazzad\WpLogs\Utils;
 
-class Page implements PageInterface
-{
-	function __construct()
-	{
+class Page implements PageInterface {
+	function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 100 );
 		add_action( 'admin_menu', array( $this, 'add_submenus' ), 100 );
 		add_filter( 'parent_file', array( $this, 'highlight_submenu' ) );
-		add_filter( 'set-screen-option', [ $this, 'set_screen_option' ], 10, 3);
-		add_filter( 'set_screen_option_swpl_logs_per_page', [ $this, 'set_screen_option' ], 10, 3);
+		add_filter( 'set-screen-option', [ $this, 'set_screen_option' ], 10, 3 );
+		add_filter( 'set_screen_option_swpl_logs_per_page', [ $this, 'set_screen_option' ], 10, 3 );
 	}
 
 	public function admin_menu() {
@@ -29,7 +27,7 @@ class Page implements PageInterface
 			__( 'Logs', 'shazzad-wp-logs' ),
 			$access_cap,
 			'shazzad-wp-logs',
-			[$this, 'render_page'],
+			[ $this, 'render_page' ],
 			'dashicons-warning'
 		);
 
@@ -49,7 +47,7 @@ class Page implements PageInterface
 						$menu_item['menu_title'],
 						$menu_item['capability'],
 						$menu_slug,
-						[$this, 'render_page']
+						[ $this, 'render_page' ]
 					);
 
 					add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
@@ -68,12 +66,11 @@ class Page implements PageInterface
 		return $status;
 	}
 
-	public function handle_actions()
-	{
+	public function handle_actions() {
 		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 		if ( in_array( $req_action, [ 'delete', 'bulk_delete', 'delete_all' ] ) ) {
-	  		$api = new LogApi();
+			$api = new LogApi();
 
 			if ( 'delete' === $req_action ) {
 				$handle = $api->handle( 'delete', $_REQUEST );
@@ -84,7 +81,7 @@ class Page implements PageInterface
 			}
 
 			$message = false;
-			$error = false;
+			$error   = false;
 
 			if ( is_wp_error( $handle ) ) {
 				$error = $handle->get_error_message();
@@ -99,11 +96,11 @@ class Page implements PageInterface
 			wp_redirect(
 				add_query_arg(
 					array(
-						'id' => false,
-						'ids' => false,
-						'action' => false,
+						'id'      => false,
+						'ids'     => false,
+						'action'  => false,
 						'message' => $message ? urlencode( $message ) : false,
-						'error' => $error ? urldecode( $error ) : false
+						'error'   => $error ? urldecode( $error ) : false
 					)
 				)
 			);
@@ -113,8 +110,7 @@ class Page implements PageInterface
 		do_action( 'shazzad_wp_logs/admin_page/logs/handle_actions' );
 	}
 
-	public function load_page()
-	{
+	public function load_page() {
 		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 		if ( empty( $req_action ) || -1 == $req_action ) {
@@ -126,27 +122,25 @@ class Page implements PageInterface
 		do_action( 'shazzad_wp_logs/admin_page/logs/load' );
 	}
 
-	public function render_notices()
-	{
+	public function render_notices() {
 		do_action( 'shazzad_wp_logs/admin_page/logs/notices' );
 		do_action( 'shazzad_wp_logs/admin_page/notices' );
 	}
 
-	public function render_page()
-	{
+	public function render_page() {
 		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
-		$page_title = __( 'Logs' );
+		$page_title    = __( 'Logs' );
 		$menu_item_key = false;
 
 		if ( isset( $_REQUEST['menu_item'] ) && Utils::get_menu_item( $_REQUEST['menu_item'] ) ) {
-			$menu_item = Utils::get_menu_item( $_REQUEST['menu_item'] );
-			$page_title = $menu_item['page_title'];
+			$menu_item     = Utils::get_menu_item( $_REQUEST['menu_item'] );
+			$page_title    = $menu_item['page_title'];
 			$menu_item_key = $_REQUEST['menu_item'];
-		
+
 		} elseif ( isset( $_REQUEST['page'] ) && Utils::get_menu_item( $_REQUEST['page'] ) ) {
-			$menu_item = Utils::get_menu_item( $_REQUEST['page'] );
-			$page_title = $menu_item['page_title'];
+			$menu_item     = Utils::get_menu_item( $_REQUEST['page'] );
+			$page_title    = $menu_item['page_title'];
 			$menu_item_key = $_REQUEST['page'];
 		}
 
@@ -190,28 +184,28 @@ class Page implements PageInterface
 
 			<?php } else if ( empty( $req_action ) || -1 == $req_action ) { ?>
 
-				<h1 class="wp-heading-inline">
+					<h1 class="wp-heading-inline">
 					<?php echo $page_title; ?>
-				</h1>
+					</h1>
 
-				<a class="page-title-action" href="<?php 
-					echo add_query_arg( 
-						array( 
-							'action' => 'delete_all',
+					<a class="page-title-action" href="<?php
+					echo add_query_arg(
+						array(
+							'action'    => 'delete_all',
 							'menu_item' => $menu_item_key
 						)
 					);
 					?>">
 					<?php _e( 'Delete All' ); ?>
-				</a>
+					</a>
 
-				<hr class="wp-header-end">
+					<hr class="wp-header-end">
 
 				<?php do_action( 'shazzad_wp_logs/admin_page/notices' ); ?>
 
-				<div class="swpl-admin-content">
+					<div class="swpl-admin-content">
 					<?php include __DIR__ . '/views/list-table.php'; ?>
-				</div>
+					</div>
 
 			<?php } ?>
 
