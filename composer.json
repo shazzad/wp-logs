@@ -14,7 +14,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Shazzad\\WpLogs\\Commands": "commands"
+			"Shazzad\\WpLogs\\Commands\\": "commands"
 		}
 	},
 	"require-dev": {
