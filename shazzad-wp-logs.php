@@ -3,7 +3,7 @@
  * Plugin Name: Shazzad Wp Logs
  * Plugin URI: https://w4dev.com
  * Description: Store and view logs for debugging.
- * Version: 1.1.5
+ * Version: 1.1.6
  * Requires at least: 4.4.0
  * Requires PHP: 5.5
  * Author: Shazzad Hossain Khan
@@ -24,7 +24,7 @@ if ( defined( 'SWPL_PLUGIN_FILE' ) ) {
 	return;
 }
 
-define( 'SWPL_VERSION', '1.1.5' );
+define( 'SWPL_VERSION', '1.1.6' );
 
 function swpl_missing_vendor_notice() {
 	?>
@@ -71,7 +71,8 @@ function swpl_install() {
 }
 register_activation_hook( SWPL_PLUGIN_FILE, 'swpl_install' );
 
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
+// Dev cli command.
+if ( defined( 'WP_CLI' ) && WP_CLI && file_exists( __DIR__ . '/commands/GenerateLogsCommand.php' ) ) {
 	require_once __DIR__ . '/commands/GenerateLogsCommand.php';
 }
 
