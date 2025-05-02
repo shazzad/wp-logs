@@ -99,12 +99,12 @@ class LogController extends WP_REST_Controller {
 		$data = [];
 		foreach ( $items as $item ) {
 			$data[] = [
-				'id'        => $item->get_id(),
-				'timestamp' => $item->get_timestamp(),
-				'level'     => $item->get_level(),
-				'source'    => $item->get_source(),
-				'message'   => $item->get_message(),
-				'context'   => $item->get_context(),
+				'id'      => $item->get_id(),
+				'date'    => $item->get_timestamp(),
+				'level'   => $item->get_level(),
+				'source'  => $item->get_source(),
+				'message' => $item->get_message(),
+				'context' => $item->get_context(),
 			];
 		}
 
