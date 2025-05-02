@@ -7,6 +7,23 @@
 namespace Shazzad\WpLogs;
 
 class Installer {
+
+	public static function activate() {
+		self::rename_tables();
+		self::install_tables();
+		self::update_tables();
+
+		update_option( 'swpl_version', SWPL_VERSION );
+	}
+
+	public static function upgrade() {
+		self::rename_tables();
+		self::install_tables();
+		self::update_tables();
+
+		update_option( 'swpl_version', SWPL_VERSION );
+	}
+
 	public static function rename_tables() {
 	}
 
@@ -50,7 +67,7 @@ class Installer {
 	 * @since 2.8
 	 */
 	public static function update_tables() {
-		global $wpdb;
+		// global $wpdb;
 
 		// $logs_table      = DbAdapter::prefix_table( 'logs' );
 		// $logs_table_cols = $wpdb->get_col( "DESC {$logs_table}", 0 );

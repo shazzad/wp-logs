@@ -8,9 +8,9 @@ use Shazzad\WpLogs\Abstracts\CrudApi;
 class Api extends CrudApi {
 	public function __construct() {
 		$this->key              = 'log';
-		$this->name             = __( 'Log', 'shazzad_wp_logs' );
+		$this->name             = __( 'Log', 'shazzad-wp-logs' );
 		$this->key_plural       = 'logs';
-		$this->name_plural      = __( 'Logs', 'shazzad_wp_logs' );
+		$this->name_plural      = __( 'Logs', 'shazzad-wp-logs' );
 		$this->model_class_name = 'Shazzad\WpLogs\Log\Data';
 		$this->query_class_name = 'Shazzad\WpLogs\Log\Query';
 	}
@@ -41,7 +41,7 @@ class Api extends CrudApi {
 
 		$wpdb->query( $sql );
 
-		return [ 
+		return [
 			'message' => __( 'Logs deleted', 'shazzad-wp-logs' )
 		];
 	}

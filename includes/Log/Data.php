@@ -6,7 +6,7 @@ use Shazzad\WpLogs\DbAdapter;
 
 class Data extends AbstractData {
 
-	protected $data = [ 
+	protected $data = [
 		'timestamp' => '',
 		'level'     => '',
 		'source'    => '',
@@ -72,10 +72,9 @@ class Data extends AbstractData {
 			$this->create();
 		}
 	}
-
 	public function read() {
 		if ( $this->get_id() > 0 ) {
-			$query = new Query( [ 
+			$query = new Query( [
 				'id'     => $this->get_id(),
 				'method' => 'get_row',
 				'output' => 'ARRAY_A'
@@ -95,9 +94,7 @@ class Data extends AbstractData {
 	}
 
 	public function create() {
-		if ( ! $this->validate_save() ) {
-			return false;
-		}
+		$this->validate_save();
 
 		$data = $this->get_changes();
 		if ( array_key_exists( 'id', $data ) ) {
@@ -114,15 +111,19 @@ class Data extends AbstractData {
 	}
 
 	public function update() {
-		if ( ! $this->validate_save() ) {
-			return false;
-		}
+		$this->validate_save();
 
 		$changes = $this->get_changes();
+
 		if ( array_intersect( $this->updatable_fields, array_keys( $changes ) ) ) {
 			$data = $this->get_changes();
 			$data = $this->pre_save_filter( $data );
-			DbAdapter::update( DbAdapter::prefix_table( 'logs' ), $data, array( 'id' => $this->get_id() ) );
+
+			DbAdapter::update(
+				DbAdapter::prefix_table( 'logs' ),
+				$data,
+				array( 'id' => $this->get_id() )
+			);
 		}
 
 		$this->apply_changes();
@@ -173,30 +174,23 @@ class Data extends AbstractData {
 		$data['context'] = maybe_serialize( $data['context'] );
 
 		if ( strlen( $data['context'] ) > $max_size ) {
-			$data['context'] = '{}';
+			$data['context'] = maybe_serialize( 'REMOVED LARGE DATA' );
 		}
 
 		return $data;
 	}
 
 	protected function remove_size_recursive( $data, $filled = 0 ) {
-		$max_size       = 4294967295 / 10;
 		$max_chunk_size = 4294967295 / 20;
-
-		// if ( $filled > $max_size ) {
-		// 	return '';
-		// }
 
 		if ( is_string( $data ) || is_numeric( $data ) ) {
 			if ( strlen( $data ) > $max_chunk_size ) {
 				$data = substr( $data, 0, 10 ) . ' REMOVED LARGE DATA';
 			}
 
-			// $filled = strlen( $filled );
-
 		} else if ( is_array( $data ) ) {
 			foreach ( $data as $k => $v ) {
-				$data[ $k ] = $this->remove_size_recursive( $v, $filled );
+				$data[$k] = $this->remove_size_recursive( $v, $filled );
 			}
 		}
 
@@ -222,7 +216,9 @@ class Data extends AbstractData {
 			$self->set_props( $self->pre_get_filter( $data ) );
 			$self->apply_changes();
 		}
+
 		$self->set_object_read( true );
+
 		return $self;
 	}
 }

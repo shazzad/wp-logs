@@ -11,8 +11,8 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class ListTable extends \WP_List_Table {
 
 	# Construct
-	function __construct() {
-		parent::__construct( [ 
+	public function __construct() {
+		parent::__construct( [
 			'singular' => 'swpl-log',
 			'plural'   => 'swpl-logs',
 			'screen'   => get_current_screen()->id,
@@ -21,8 +21,8 @@ class ListTable extends \WP_List_Table {
 	}
 
 	# Columns
-	function get_columns() {
-		$columns = [ 
+	public function get_columns() {
+		$columns = [
 			'cb'     => '<input type="checkbox" id="cb-select-all-1">',
 			'title'  => __( 'Message', 'shazzad-wp-logs' ),
 			'source' => __( 'Source', 'shazzad-wp-logs' ),
@@ -32,8 +32,8 @@ class ListTable extends \WP_List_Table {
 		];
 
 		foreach ( $this->get_queryable_columns() as $qr => $qc ) {
-			if ( isset( $_GET[ $qr ] ) && ! empty( $_GET[ $qr ] ) && $_GET[ $qr ] != '-1' && isset( $columns[ $qc[0] ] ) )
-				unset( $columns[ $qc[0] ] );
+			if ( isset( $_GET[$qr] ) && ! empty( $_GET[$qr] ) && $_GET[$qr] != '-1' && isset( $columns[$qc[0]] ) )
+				unset( $columns[$qc[0]] );
 		}
 
 		$columns = apply_filters( 'manage_swpl_columns', $columns );
@@ -42,8 +42,8 @@ class ListTable extends \WP_List_Table {
 	}
 
 	# Queryable Columns
-	function get_queryable_columns() {
-		return [ 
+	public function get_queryable_columns() {
+		return [
 			's'      => array( 'search', __( 'Search Result: ', 'shazzad-wp-logs' ) ),
 			'level'  => array( 'level', __( 'Level: ', 'shazzad-wp-logs' ) ),
 			'date'   => array( 'timestamp', __( 'Date: ', 'shazzad-wp-logs' ) ),
@@ -52,8 +52,8 @@ class ListTable extends \WP_List_Table {
 	}
 
 	# Sortable Columns
-	function get_sortable_columns() {
-		return [ 
+	public function get_sortable_columns() {
+		return [
 			'id'     => array( 'id' ),
 			'level'  => array( 'level' ),
 			'source' => array( 'source' ),
@@ -62,7 +62,7 @@ class ListTable extends \WP_List_Table {
 	}
 
 	# Prepare / init
-	function prepare_items() {
+	public function prepare_items() {
 		$this->register_screen_options();
 
 		$per_page = get_user_option( get_current_screen()->get_option( 'per_page', 'option' ) );
@@ -70,7 +70,7 @@ class ListTable extends \WP_List_Table {
 			$per_page = 10;
 		}
 
-		$query_args = [ 
+		$query_args = [
 			'limit'   => $per_page,
 			'paged'   => ( isset( $_GET['paged'] ) && $_GET['paged'] > 1 ) ? $_GET['paged'] : 1,
 			'orderby' => ( isset( $_GET['orderby'] ) && $_GET['orderby'] ) ? $_GET['orderby'] : 'id',
@@ -78,8 +78,8 @@ class ListTable extends \WP_List_Table {
 		];
 
 		foreach ( array_keys( $this->get_queryable_columns() ) as $qr ) {
-			if ( isset( $_GET[ $qr ] ) && '' != $_GET[ $qr ] && $_GET[ $qr ] != '-1' ) {
-				$query_args[ $qr ] = urldecode( $_GET[ $qr ] );
+			if ( isset( $_GET[$qr] ) && '' != $_GET[$qr] && $_GET[$qr] != '-1' ) {
+				$query_args[$qr] = urldecode( $_GET[$qr] );
 			}
 		}
 
@@ -117,7 +117,7 @@ class ListTable extends \WP_List_Table {
 	}
 
 	# prepare / init
-	function register_screen_options() {
+	public function register_screen_options() {
 		$option = 'per_page';
 		$args   = array(
 			'label'   => __( 'Number of items per page:' ),
@@ -129,12 +129,10 @@ class ListTable extends \WP_List_Table {
 	}
 
 	/**
-	 * @global WP_Post $post Global post object.
-	 *
-	 * @param Log $log
+	 * @param Log\Data $log
 	 */
 	public function single_row( $log ) {
-		$classes = 'swpl-log-level-' . $log->get_level();
+		$classes = 'swpl-log swpl-log-level-' . $log->get_level();
 		?>
 		<tr id="swpl-log-<?php echo $log->get_id(); ?>" class="<?php echo $classes; ?>">
 			<?php $this->single_row_columns( $log ); ?>
@@ -142,7 +140,7 @@ class ListTable extends \WP_List_Table {
 		<?php
 	}
 
-	function display_tablenav( $which ) {
+	public function display_tablenav( $which ) {
 		?>
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
 			<?php if ( 'top' == $which ) { ?>
@@ -151,8 +149,8 @@ class ListTable extends \WP_List_Table {
 						<option selected="selected" value="-1"><?php _e( 'Bulk Actions', 'shazzad-wp-logs' ); ?></option>
 						<option value="bulk_delete"><?php _e( 'Delete', 'shazzad-wp-logs' ); ?></option>
 					</select>
-					<input type="submit" value="<?php _e( 'Apply', 'shazzad-wp-logs' ); ?>" class="button action" id="doaction"
-						name="">
+					<input type="submit" value="<?php
+					_e( 'Apply', 'shazzad-wp-logs' ); ?>" class="button action" id="doaction" name="" />
 				</div>
 			<?php } ?>
 			<?php $this->pagination( $which ); ?>
@@ -161,7 +159,7 @@ class ListTable extends \WP_List_Table {
 		<?php
 	}
 
-	function get_views() {
+	public function get_views() {
 		$base_url = remove_query_arg(
 			array(
 				'action',
@@ -187,13 +185,13 @@ class ListTable extends \WP_List_Table {
 		);
 
 		foreach ( $this->get_queryable_columns() as $qr => $qc ) {
-			if ( isset( $_GET[ $qr ] ) && ! empty( $_GET[ $qr ] ) && $_GET[ $qr ] != '-1' ) {
+			if ( isset( $_GET[$qr] ) && ! empty( $_GET[$qr] ) && $_GET[$qr] != '-1' ) {
 				$view_active = true;
 				$column      = $qc[0];
 				$name        = $qc[1];
-				$value       = urlencode( $_GET[ $qr ] );
+				$value       = urlencode( $_GET[$qr] );
 
-				$count = urldecode( $_GET[ $qr ] );
+				$count = urldecode( $_GET[$qr] );
 
 				$links[] = array(
 					'type'  => $qr,
@@ -220,7 +218,7 @@ class ListTable extends \WP_List_Table {
 				$type_txt = sprintf( ' <span class="count">(%s)</span>', $link['count'] );
 			}
 
-			$_links[ $type ] = sprintf(
+			$_links[$type] = sprintf(
 				'<a href="%1$s" class="%2$s" title="%3$s">%3$s %4$s</a>',
 				$link['url'],
 				$link['class'],
@@ -235,15 +233,15 @@ class ListTable extends \WP_List_Table {
 	/**
 	 * Checkbox column
 	 */
-	function column_cb( $log ) {
+	public function column_cb( $log ) {
 		printf( '<input id="cb-select-%1$d" type="checkbox" name="ids[]" value="%1$d" />', $log->get_id() );
 	}
 
-	function column_default( $log, $column ) {
+	public function column_default( $log, $column ) {
 		do_action( 'manage_swpl_custom_column', $column, $log->get_id() );
 	}
 
-	function column_title( $log ) {
+	public function column_title( $log ) {
 		echo apply_filters( 'swpl_format_message', $log->get_message(), $log->get_context() );
 
 		$actions = array();
@@ -273,23 +271,23 @@ class ListTable extends \WP_List_Table {
 		<?php
 	}
 
-	function column_id( $log ) {
+	public function column_id( $log ) {
 		echo $log->get_id();
 	}
 
-	function column_level( $log ) {
+	public function column_level( $log ) {
 		echo strtoupper( $log->get_level() );
 	}
 
-	function column_source( $log ) {
+	public function column_source( $log ) {
 		echo $log->get_source();
 	}
 
-	function column_message( $log ) {
+	public function column_message( $log ) {
 		echo apply_filters( 'swpl_format_message', $log->get_message(), $log->get_context() );
 	}
 
-	function column_date( $log ) {
+	public function column_date( $log ) {
 		if ( ! $log->get_timestamp() ) {
 			_e( 'N/A' );
 		} else {
@@ -304,14 +302,14 @@ class ListTable extends \WP_List_Table {
 	/**
 	 * No items
 	 */
-	function no_items() {
+	public function no_items() {
 		_e( 'No logs', 'shazzad-wp-logs' );
 	}
 
 	/**
 	 * Search box
 	 */
-	function search_box( $text, $input_id ) {
+	public function search_box( $text, $input_id ) {
 		?>
 		<p class="search-box">
 			<label for="<?php echo $input_id; ?>" class="screen-reader-text"><?php echo $text; ?></label>

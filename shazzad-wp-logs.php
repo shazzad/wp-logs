@@ -25,6 +25,10 @@ if ( defined( 'SWPL_PLUGIN_FILE' ) ) {
 }
 
 define( 'SWPL_VERSION', '1.1.6' );
+define( 'SWPL_PLUGIN_FILE', __FILE__ );
+define( 'SWPL_DIR', plugin_dir_path( SWPL_PLUGIN_FILE ) );
+define( 'SWPL_URL', plugin_dir_url( SWPL_PLUGIN_FILE ) );
+define( 'SWPL_BASENAME', plugin_basename( SWPL_PLUGIN_FILE ) );
 
 function swpl_missing_vendor_notice() {
 	?>
@@ -44,20 +48,18 @@ if ( ! file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	return;
 }
 
-define( 'SWPL_PLUGIN_FILE', __FILE__ );
-
-include_once __DIR__ . '/vendor/autoload.php';
-
 /**
  * Function to get an instance of our Plugin
  */
 function shazzad_wp_logs() {
+	require_once __DIR__ . '/includes/Plugin.php';
+
 	return \Shazzad\WpLogs\Plugin::instance();
 
 }
 
 /**
- * Initialize asap
+ * Initialize asap.
  */
 shazzad_wp_logs();
 
@@ -65,20 +67,25 @@ shazzad_wp_logs();
  * Install table to store log data
  */
 function swpl_install() {
-	Shazzad\WpLogs\Installer::rename_tables();
-	Shazzad\WpLogs\Installer::install_tables();
-	Shazzad\WpLogs\Installer::update_tables();
+	require_once __DIR__ . '/includes/Installer.php';
+	require_once __DIR__ . '/includes/DbAdapter.php';
+
+	Shazzad\WpLogs\Installer::activate();
 }
 register_activation_hook( SWPL_PLUGIN_FILE, 'swpl_install' );
 
 // Dev cli command.
-if ( defined( 'WP_CLI' ) && WP_CLI && file_exists( __DIR__ . '/commands/GenerateLogsCommand.php' ) ) {
+if ( defined( 'WP_CLI' )
+	&& WP_CLI
+	&& file_exists( __DIR__ . '/commands/GenerateLogsCommand.php' ) ) {
+
+	require_once __DIR__ . '/vendor/autoload.php';
 	require_once __DIR__ . '/commands/GenerateLogsCommand.php';
 }
 
 // Initialize updater if available.
 if ( class_exists( '\Shazzad\GithubPlugin\Updater' ) ) {
-	new Shazzad\GithubPlugin\Updater( [ 
+	new Shazzad\GithubPlugin\Updater( [
 		'file'         => __FILE__,
 		'owner'        => 'shazzad',
 		'repo'         => 'wp-logs',

@@ -13,48 +13,43 @@ final class Plugin {
 	/**
 	 * @var object Plugin instance.
 	 */
-	protected static $_instance = null;
-
-	/**
-	 * Class instance getter.
-	 */
-	public static function instance() {
-		if ( self::$_instance === null ) {
-			self::$_instance = new self();
-		}
-
-		return self::$_instance;
-	}
+	protected static $instance = null;
 
 	/**
 	 * Constructor.
 	 */
 	private function __construct() {
-		$this->define_constants();
-		$this->initialize();
-
-		do_action( 'shazzad_wp_logs/loaded' );
 	}
 
-	/*
+	/**
+	 * Class instance getter.
+	 */
+	public static function instance() {
+		if ( self::$instance === null ) {
+			self::$instance = new self();
+			self::$instance->include_files();
+			self::$instance->initialize();
+
+			add_action( 'init', array( self::$instance, 'load_plugin_translations' ) );
+			add_action( 'init', array( self::$instance, 'maybe_upgrade_db' ) );
+
+			do_action( 'shazzad_wp_logs/loaded' );
+		}
+
+		return self::$instance;
+	}
+
+	/**
 	 * Define constants.
 	 */
-	private function define_constants() {
-		define( 'SWPL_DIR', plugin_dir_path( SWPL_PLUGIN_FILE ) );
-		define( 'SWPL_URL', plugin_dir_url( SWPL_PLUGIN_FILE ) );
-		define( 'SWPL_BASENAME', plugin_basename( SWPL_PLUGIN_FILE ) );
+	private function include_files() {
+		require_once SWPL_DIR . 'vendor/autoload.php';
 	}
 
 	/*
 	 * Boot plugin features.
 	 */
 	private function initialize() {
-		load_plugin_textdomain(
-			'shazzad-wp-logs',
-			false,
-			basename( dirname( SWPL_PLUGIN_FILE ) ) . '/languages'
-		);
-
 		// Load mustache, it is used for parsing message.
 		\Mustache_Autoloader::register();
 
@@ -64,6 +59,29 @@ final class Plugin {
 		if ( is_admin() ) {
 			// Admin interface.
 			new Admin\Main();
+		}
+	}
+
+
+	/**
+	 * Load plugin translation file.
+	 */
+	public function load_plugin_translations() {
+		load_plugin_textdomain(
+			'shazzad-wp-logs',
+			false,
+			basename( dirname( HOMELOCAL_PLUGIN_FILE ) ) . '/languages'
+		);
+	}
+
+	/**
+	 * Upgrade/migrate database if required (on version change).
+	 */
+	public function maybe_upgrade_db() {
+		if ( ! get_option( 'swpl_version' )
+			|| version_compare( get_option( 'swpl_version' ), SWPL_VERSION, '!=' ) ) {
+
+			Installer::upgrade();
 		}
 	}
 }

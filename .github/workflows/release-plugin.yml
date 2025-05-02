@@ -2,7 +2,7 @@ name: Release Plugin
 
 on:
   push:
-    branches: ["master"]
+    branches: ["master", "main"]
 
 jobs:
   release-plugin:

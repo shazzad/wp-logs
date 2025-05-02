@@ -10,12 +10,14 @@ use Exception;
  */
 
 class DbAdapter {
+
 	public static function prefix_table( $table ) {
 		global $wpdb;
-		if ( in_array( $table, array( 'posts', 'postmeta' ) ) ) {
-			return $wpdb->prefix . $table;
+
+		if ( in_array( $table, [ 'logs' ] ) ) {
+			return "{$wpdb->prefix}swpl_{$table}";
 		} else {
-			return $wpdb->prefix . 'swpl_' . $table;
+			return "{$wpdb->prefix}{$table}";
 		}
 	}
 

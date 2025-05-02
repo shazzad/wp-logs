@@ -18,16 +18,16 @@ class Utils {
 
 	public static function get_menu_item( $key ) {
 		$menu_items = self::get_menu_items();
-		if ( isset( $menu_items[ $key ] ) ) {
-			return $menu_items[ $key ];
+		if ( isset( $menu_items[$key] ) ) {
+			return $menu_items[$key];
 		}
 
 		return false;
 	}
 
 	public static function choice_name( $choice, $choices = [] ) {
-		if ( isset( $choices[ $choice ] ) ) {
-			return $choices[ $choice ];
+		if ( isset( $choices[$choice] ) ) {
+			return $choices[$choice];
 		}
 
 		foreach ( $choices as $c ) {

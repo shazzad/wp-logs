@@ -7,12 +7,14 @@
 namespace Shazzad\WpLogs;
 
 use Exception;
+use Mustache_Engine;
 
 /**
  * Hooks class
  */
 class Hooks {
-	function __construct() {
+
+	public function __construct() {
 		add_action( 'swpl_log', [ $this, 'store_log' ], 10, 4 );
 		add_filter( 'swpl_format_message', [ $this, 'format_message' ], 20, 2 );
 	}
@@ -41,7 +43,7 @@ class Hooks {
 			return $message;
 		}
 
-		$mustache = new \Mustache_Engine();
+		$mustache = new Mustache_Engine();
 		return $mustache->render( $message, $context );
 	}
 }

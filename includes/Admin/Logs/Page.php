@@ -12,7 +12,7 @@ use Shazzad\WpLogs\Log\Api as LogApi;
 use Shazzad\WpLogs\Utils;
 
 class Page implements PageInterface {
-	function __construct() {
+	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 100 );
 		add_action( 'admin_menu', array( $this, 'add_submenus' ), 100 );
 		add_filter( 'parent_file', array( $this, 'highlight_submenu' ) );
@@ -67,7 +67,7 @@ class Page implements PageInterface {
 	}
 
 	public function handle_actions() {
-		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
+		$req_action = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 		if ( in_array( $req_action, [ 'delete', 'bulk_delete', 'delete_all' ] ) ) {
 			$api = new LogApi();
@@ -111,12 +111,12 @@ class Page implements PageInterface {
 	}
 
 	public function load_page() {
-		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
+		$req_action = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
-		if ( empty( $req_action ) || -1 == $req_action ) {
-			global $w4LogsListTableLogs;
-			$w4LogsListTableLogs = new ListTable();
-			$w4LogsListTableLogs->prepare_items();
+		if ( empty( $req_action ) || '-1' === $req_action ) {
+			global $list_table_logs;
+			$list_table_logs = new ListTable();
+			$list_table_logs->prepare_items();
 		}
 
 		do_action( 'shazzad_wp_logs/admin_page/logs/load' );
@@ -128,7 +128,7 @@ class Page implements PageInterface {
 	}
 
 	public function render_page() {
-		$req_action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
+		$req_action = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 		$page_title    = __( 'Logs' );
 		$menu_item_key = false;
@@ -216,7 +216,7 @@ class Page implements PageInterface {
 	}
 
 	public function add_submenus() {
-		global $menu, $submenu;
+		global $submenu;
 
 		$menu_items = Utils::get_menu_items();
 
@@ -225,7 +225,7 @@ class Page implements PageInterface {
 		// plugin menu.
 		foreach ( $menu_items as $k => $v ) {
 			if ( ! empty( $v['parent_slug'] ) ) {
-				unset( $menu_items[ $k ] );
+				unset( $menu_items[$k] );
 			}
 		}
 
@@ -249,7 +249,7 @@ class Page implements PageInterface {
 			$submenu['shazzad-wp-logs'][] = array(
 				$menu_item['menu_title'],
 				$access_cap,
-				'admin.php?page=shazzad-wp-logs&menu_item=' . $key
+				"admin.php?page=shazzad-wp-logs&menu_item={$key}"
 			);
 		}
 	}
@@ -269,8 +269,8 @@ class Page implements PageInterface {
 	}
 
 	public function print_scripts() {
-		wp_enqueue_style( array( 'swpl-admin-logs' ) );
-		wp_enqueue_script( array( 'swpl-admin-logs' ) );
+		wp_enqueue_style( 'swpl-admin-logs' );
+		wp_enqueue_script( 'swpl-admin-logs' );
 
 		do_action( 'shazzad_wp_logs/admin_page/print_styles/logs' );
 	}

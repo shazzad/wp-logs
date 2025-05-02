@@ -9,31 +9,29 @@ class Query extends AbstractQuery {
 	public $use_found_rows = false;
 
 	public function __construct( $args = [] ) {
-		global $wpdb;
-
 		$this->table = DbAdapter::prefix_table( 'logs' );
 
-		$this->columns = [ 
-			'id'        => [ 
+		$this->columns = [
+			'id'        => [
 				'type' => 'interger'
 			],
-			'level'     => [ 
+			'level'     => [
 				'type'       => 'varchar',
 				'searchable' => true
 			],
-			'source'    => [ 
+			'source'    => [
 				'type'       => 'varchar',
 				'searchable' => true
 			],
-			'message'   => [ 
+			'message'   => [
 				'type'       => 'text',
 				'searchable' => true
 			],
-			'context'   => [ 
+			'context'   => [
 				'type'       => 'text',
 				'searchable' => false
 			],
-			'timestamp' => [ 
+			'timestamp' => [
 				'type' => 'datetime'
 			]
 		];
