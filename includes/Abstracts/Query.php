@@ -98,6 +98,8 @@ abstract class Query {
 
 		if ( '' != $this->get( 'limit' ) ) {
 			$this->limit = absint( $this->get( 'limit' ) );
+		} elseif ( '' != $this->get( 'per_page' ) ) {
+			$this->limit = absint( $this->get( 'per_page' ) );
 		}
 
 		if ( '' != $this->get( 'method' ) ) {
@@ -380,9 +382,9 @@ abstract class Query {
 
 		if ( '' != $this->limit ) {
 			if ( $this->use_found_rows ) {
-				$this->found_items = DbAdapter::get_found_rows();
+				$this->found_items = (int) DbAdapter::get_found_rows();
 			} else {
-				$this->found_items = DbAdapter::get_var( $this->get_count_query() );
+				$this->found_items = (int) DbAdapter::get_var( $this->get_count_query() );
 			}
 
 			$this->max_num_pages = ceil( $this->found_items / $this->limit );

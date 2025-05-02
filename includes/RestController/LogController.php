@@ -6,7 +6,6 @@
  */
 namespace Shazzad\WpLogs\RestController;
 
-use Exception;
 use WP_Error;
 use WP_REST_Controller;
 use WP_REST_Request;
@@ -63,17 +62,70 @@ class LogController extends WP_REST_Controller {
 	}
 
 	/**
-	 * Create quote
+	 * Get log items with pagination
+	 * 
+	 * @param WP_REST_Request $request
+	 * 
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_items( $request ) {
-		$query_args = [];
+		$query_args = [
+			'page'     => $request['page'] ?? 1,
+			'per_page' => $request['per_page'] ?? 10,
+			'orderby'  => $request['orderby'] ?? 'id',
+			'order'    => $request['order'] ?? 'DESC',
+			's'        => $request['search'] ?? '',
+		];
+
+		if ( ! empty( $request['source'] ) ) {
+			$query_args['source'] = $request['source'];
+		}
+
+		if ( ! empty( $request['level'] ) ) {
+			if ( ! array_key_exists( $request['level'], swpl_get_levels() ) ) {
+				return new WP_Error( 'invalid_log_level', __( 'Invalid log level', 'shazzad-wp-logs' ), [ 'status' => 400 ] );
+			}
+
+			$query_args['level'] = strtolower( $request['level'] );
+		}
 
 		$query = new Log\Query( $query_args );
 		$query->query();
 
-		$data = $query->get_objects();
+		$items       = $query->get_objects();
+		$total       = $query->found_items;
+		$total_pages = $query->max_num_pages;
 
-		return new WP_REST_Response( $data, 201 );
+		$data = [];
+		foreach ( $items as $item ) {
+			$data[] = [
+				'id'        => $item->get_id(),
+				'timestamp' => $item->get_timestamp(),
+				'level'     => $item->get_level(),
+				'source'    => $item->get_source(),
+				'message'   => $item->get_message(),
+				'context'   => $item->get_context(),
+			];
+		}
+
+		$response = new WP_REST_Response( [ 'data' => $data ], 200 );
+
+		// Add pagination headers
+		$response->header( 'X-WP-Total', $total );
+		$response->header( 'X-WP-TotalPages', $total_pages );
+
+		// Add pagination data to response
+		$response->set_data( [
+			'data' => $data,
+			'meta' => [
+				'total'       => $total,
+				'total_pages' => $total_pages,
+				'page'        => (int) $query_args['page'],
+				'per_page'    => (int) $query_args['per_page'],
+			]
+		] );
+
+		return $response;
 	}
 
 	/**
@@ -96,7 +148,7 @@ class LogController extends WP_REST_Controller {
 			return new WP_REST_Response( [ 'success' => true ], 200 );
 		}
 
-		return new WP_Error( 'log_not_found', __( 'Log not found', 'homelocal' ), [ 'status' => 404 ] );
+		return new WP_Error( 'log_not_found', __( 'Log not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
 	}
 
 	/**
@@ -115,7 +167,7 @@ class LogController extends WP_REST_Controller {
 		$items = $query->get_objects();
 
 		if ( empty( $items ) ) {
-			return new WP_Error( 'log_not_found', __( 'Log not found', 'homelocal' ), [ 'status' => 404 ] );
+			return new WP_Error( 'log_not_found', __( 'Log not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
 		}
 
 		return new WP_REST_Response( $items[0], 200 );
