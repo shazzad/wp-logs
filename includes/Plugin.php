@@ -44,6 +44,8 @@ final class Plugin {
 	 */
 	private function include_files() {
 		require_once SWPL_DIR . 'vendor/autoload.php';
+
+		require_once SWPL_DIR . 'includes/functions.php';
 	}
 
 	/*
@@ -52,6 +54,8 @@ final class Plugin {
 	private function initialize() {
 		// Load mustache, it is used for parsing message.
 		\Mustache_Autoloader::register();
+
+		RestApi::setup();
 
 		// Filter/action hook callbacks.
 		new Hooks();

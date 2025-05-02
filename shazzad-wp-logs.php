@@ -90,7 +90,7 @@ if ( class_exists( '\Shazzad\GithubPlugin\Updater' ) ) {
 		'owner'        => 'shazzad',
 		'repo'         => 'wp-logs',
 
-		// Folloing only required for private repo.
+		// Following only required for private repo.
 		'private_repo' => false,
 		'owner_name'   => 'Shazzad'
 	] );

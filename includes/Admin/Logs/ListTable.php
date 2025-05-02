@@ -146,12 +146,39 @@ class ListTable extends \WP_List_Table {
 			<?php if ( 'top' == $which ) { ?>
 				<div class="alignleft actions bulkactions">
 					<select name="action">
-						<option selected="selected" value="-1"><?php _e( 'Bulk Actions', 'shazzad-wp-logs' ); ?></option>
+						<option selected="selected" value="-1"><?php _e( 'Bulk actions', 'shazzad-wp-logs' ); ?></option>
 						<option value="bulk_delete"><?php _e( 'Delete', 'shazzad-wp-logs' ); ?></option>
 					</select>
 					<input type="submit" value="<?php
 					_e( 'Apply', 'shazzad-wp-logs' ); ?>" class="button action" id="doaction" name="" />
 				</div>
+
+				<div class="alignleft actions">
+					<label for="source" class="screen-reader-text"><?php _e( 'Source', 'shazzad-wp-logs' ); ?></label>
+					<select name="source" id="source">
+						<option value=""><?php _e( 'All source', 'shazzad-wp-logs' ); ?></option>
+						<?php
+						foreach ( swpl_get_sources() as $source ) {
+							$selected = ( isset( $_GET['source'] ) && $_GET['source'] == $source ) ? 'selected="selected"' : '';
+							echo '<option value="' . esc_attr( $source ) . '" ' . $selected . '>' . esc_html( $source ) . '</option>';
+						}
+						?>
+					</select>
+
+					<label for="level" class="screen-reader-text"><?php _e( 'Source', 'shazzad-wp-logs' ); ?></label>
+					<select name="level" id="level">
+						<option value=""><?php _e( 'All level', 'shazzad-wp-logs' ); ?></option>
+						<?php
+						foreach ( swpl_get_levels() as $level ) {
+							$selected = ( isset( $_GET['level'] ) && $_GET['level'] == $level ) ? 'selected="selected"' : '';
+							echo '<option value="' . esc_attr( $level ) . '" ' . $selected . '>' . esc_html( $level ) . '</option>';
+						}
+						?>
+					</select>
+					<input type="submit" name="filter_action" id="post-query-submit" class="button" value="Filter">
+				</div>
+
+
 			<?php } ?>
 			<?php $this->pagination( $which ); ?>
 			<br class="clear" />
@@ -169,7 +196,9 @@ class ListTable extends \WP_List_Table {
 				'ok',
 				'message',
 				'error',
-				's'
+				's',
+				'source',
+				'level',
 			)
 		);
 

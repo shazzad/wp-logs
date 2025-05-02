@@ -122,7 +122,7 @@ class Data extends AbstractData {
 			DbAdapter::update(
 				DbAdapter::prefix_table( 'logs' ),
 				$data,
-				array( 'id' => $this->get_id() )
+				[ 'id' => $this->get_id() ]
 			);
 		}
 

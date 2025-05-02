@@ -11,11 +11,20 @@ class GenerateLogsCommand {
 		// Initialize Faker
 		$faker = Factory::create();
 
+		$companies = [];
+		// Generate a list of unique company names
+		for ( $i = 0; $i < 5; $i++ ) {
+			$companies[] = $faker->company();
+		}
+
 		for ( $i = 0; $i < $count; $i++ ) {
-			$source  = $faker->company;
-			$message = $faker->sentence;
-			$data    = [ 
-				'key1'          => $faker->uuid,
+			// Use company() method directly, not company()->name()
+			$source = $faker->randomElement( $companies );
+
+			$message = $faker->sentence();
+
+			$data = [
+				'key1'          => $faker->uuid(),
 				'key2'          => $faker->randomNumber( 2 ),
 				'large_payload' => $faker->paragraphs( 20, true ), // Generating a large payload around 10kb
 			];

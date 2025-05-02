@@ -41,6 +41,8 @@ class Api extends CrudApi {
 
 		$wpdb->query( $sql );
 
+		swpl_clear_cache();
+
 		return [
 			'message' => __( 'Logs deleted', 'shazzad-wp-logs' )
 		];
