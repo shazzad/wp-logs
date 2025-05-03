@@ -1,62 +1,188 @@
-/* src/styles/logs.css */
-.swpl-admin-toolbar {
+// Main Variables
+$primary-color: #2271b1;
+$error-color: #b32d2e;
+$border-color: #e2e4e7;
+$light-bg: #f8f9fa;
+
+// Log Level Colors
+$debug-bg: #e7f5ff;
+$debug-color: #0366d6;
+$info-bg: #e6f6e6;
+$info-color: #28a745;
+$warning-bg: #fff5e6;
+$warning-color: #f0ad4e;
+$error-bg: #ffeaea;
+$error-color: #dc3545;
+
+// Spacing
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 20px;
+
+// Z-index
+$modal-z-index: 100000;
+
+// Breakpoints
+$mobile-breakpoint: 782px;
+
+// Mixins
+@mixin flex-center {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 16px;
+	justify-content: center;
 }
 
-.swpl-search-control {
-	flex: 1;
-	max-width: 300px;
+@mixin flex-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
+@mixin card {
+	background: #fff;
+	border: 1px solid $border-color;
+	border-radius: 4px;
+	padding: $spacing-md;
+}
+
+// =============================================================================
+// Core Layout
+// =============================================================================
+
+.swpl-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 40px 0;
+}
+
+// =============================================================================
+// Filters Section
+// =============================================================================
+.swpl-admin-filters {
+	@include card;
+	margin-bottom: 20px;
+}
+
+.swpl-filter-controls {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: $spacing-md;
+
+	@media (max-width: $mobile-breakpoint) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.swpl-filter-select {
+	width: 100%;
+}
+
+.swpl-filter-buttons {
+	grid-column: 1 / -1;
+	display: flex;
+	gap: $spacing-sm;
+	justify-content: flex-end;
+	margin-top: $spacing-sm;
+}
+
+// =============================================================================
+// Bulk Actions
+// =============================================================================
+.swpl-bulk-actions {
+	@include flex-between;
+	padding: 10px 0;
+	margin-bottom: 10px;
+}
+
+.swpl-bulk-actions-buttons {
+	display: flex;
+	gap: $spacing-sm;
+}
+
+.swpl-bulk-actions-info {
+	font-size: 13px;
+	color: #555;
+}
+
+// =============================================================================
+// Tables & Data Display
+// =============================================================================
+// Check column
+.check-column {
+	width: 30px;
+	text-align: center;
+
+	input[type="checkbox"] {
+		margin: 0;
+	}
+}
+
+// Log Levels
 .log-level {
 	display: inline-block;
-	padding: 2px 8px;
+	padding: 2px $spacing-sm;
 	border-radius: 3px;
 	font-size: 12px;
 	font-weight: bold;
 	text-transform: uppercase;
+
+	&-debug {
+		background-color: $debug-bg;
+		color: $debug-color;
+	}
+
+	&-info {
+		background-color: $info-bg;
+		color: $info-color;
+	}
+
+	&-warning {
+		background-color: $warning-bg;
+		color: $warning-color;
+	}
+
+	&-error {
+		background-color: $error-bg;
+		color: $error-color;
+	}
 }
 
-.log-level-debug {
-	background-color: #e7f5ff;
-	color: #0366d6;
+// Sortable columns
+.sort-icon {
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 16px;
+	color: #555;
+
+	&.sort-asc,
+	&.sort-desc {
+		color: $primary-color;
+	}
 }
 
-.log-level-info {
-	background-color: #e6f6e6;
-	color: #28a745;
+th.sortable {
+	cursor: pointer;
+	position: relative;
+	padding-right: 25px;
+	user-select: none;
+
+	&:hover {
+		background-color: #f0f0f1;
+	}
 }
 
-.log-level-warning {
-	background-color: #fff5e6;
-	color: #f0ad4e;
-}
-
-.log-level-error {
-	background-color: #ffeaea;
-	color: #dc3545;
-}
-
-.log-context {
-	background-color: #f8f9fa;
-	padding: 8px;
-	border-radius: 3px;
-	max-height: 200px;
-	overflow: auto;
-	white-space: pre-wrap;
-	word-break: break-all;
-	font-size: 12px;
-}
-
+// =============================================================================
+// Pagination
+// =============================================================================
 .swpl-pagination {
-	margin-top: 16px;
+	margin-top: $spacing-md;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 8px;
+	gap: $spacing-sm;
 }
 
 .swpl-pagination-info {
@@ -74,16 +200,36 @@
 	margin: 0 5px;
 }
 
-.swpl-loading {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 40px 0;
+// =============================================================================
+// Buttons & Actions
+// =============================================================================
+.button-link-delete {
+	color: $error-color;
+	border-color: $error-color;
+
+	&:hover,
+	&:focus {
+		color: #fff;
+		background-color: $error-color;
+		border-color: $error-color;
+	}
 }
 
-// src/styles/logs.scss
+button.button-link-delete {
 
-// Modal styles
+	&:hover,
+	&:focus {
+		color: #fff;
+	}
+}
+
+button .components-spinner {
+	margin-right: 5px;
+}
+
+// =============================================================================
+// Modal Components
+// =============================================================================
 .swpl-modal-overlay {
 	position: fixed;
 	top: 0;
@@ -91,10 +237,8 @@
 	right: 0;
 	bottom: 0;
 	background-color: rgba(0, 0, 0, 0.5);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 100000;
+	@include flex-center;
+	z-index: $modal-z-index;
 }
 
 .swpl-modal-content {
@@ -109,16 +253,14 @@
 }
 
 .swpl-modal-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 16px;
-	border-bottom: 1px solid #e2e4e7;
-}
+	@include flex-between;
+	padding: $spacing-md;
+	border-bottom: 1px solid $border-color;
 
-.swpl-modal-header h2 {
-	margin: 0;
-	font-size: 18px;
+	h2 {
+		margin: 0;
+		font-size: 18px;
+	}
 }
 
 .swpl-modal-close {
@@ -139,18 +281,22 @@
 }
 
 .swpl-modal-body {
-	padding: 16px;
+	padding: $spacing-md;
 	overflow-y: auto;
 	flex: 1;
 }
 
 .swpl-modal-footer {
-	padding: 16px;
-	border-top: 1px solid #e2e4e7;
+	padding: $spacing-md;
+	border-top: 1px solid $border-color;
 	display: flex;
 	justify-content: flex-end;
+	gap: $spacing-sm;
 }
 
+// =============================================================================
+// Log Details in Modal
+// =============================================================================
 .swpl-log-details {
 	display: flex;
 	flex-direction: column;
@@ -166,8 +312,9 @@
 	}
 }
 
-.swpl-log-context {
-	background-color: #f8f9fa;
+.swpl-log-context,
+.log-context {
+	background-color: $light-bg;
 	padding: 10px;
 	border-radius: 3px;
 	overflow: auto;
@@ -175,96 +322,12 @@
 	word-break: break-all;
 	max-height: 400px;
 	font-size: 13px;
-	border: 1px solid #e2e4e7;
+	border: 1px solid $border-color;
 }
 
-// Add these styles to src/styles/logs.scss
-
-// Filter controls
-.swpl-admin-filters {
-	margin-bottom: 20px;
-	background: #fff;
-	padding: 16px;
-	border: 1px solid #e2e4e7;
-	border-radius: 4px;
-}
-
-.swpl-search-wrapper {
-	margin-bottom: 16px;
-
-	.swpl-search-control {
-		width: 100%;
-		max-width: 100%;
-	}
-}
-
-.swpl-filter-controls {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 16px;
-
-	@media (max-width: 782px) {
-		grid-template-columns: 1fr;
-	}
-}
-
-.swpl-filter-buttons {
-	grid-column: 1 / -1;
-	display: flex;
-	gap: 8px;
-	justify-content: flex-end;
-	margin-top: 8px;
-}
-
-.swpl-filter-select {
-	width: 100%;
-}
-
-// Add these styles to src/styles/logs.scss
-
-// Check column styles
-.check-column {
-	width: 30px;
-	text-align: center;
-
-	input[type="checkbox"] {
-		margin: 0;
-	}
-}
-
-// Bulk actions bar
-.swpl-bulk-actions {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 10px 0;
-	margin-bottom: 10px;
-}
-
-.swpl-bulk-actions-buttons {
-	display: flex;
-	gap: 8px;
-}
-
-.swpl-bulk-actions-info {
-	font-size: 13px;
-	color: #555;
-}
-
-// Button styles
-.button-link-delete {
-	color: #b32d2e;
-	border-color: #b32d2e;
-
-	&:hover,
-	&:focus {
-		color: #fff;
-		background-color: #b32d2e;
-		border-color: #b32d2e;
-	}
-}
-
-// Confirmation modal
+// =============================================================================
+// Confirmation Modal
+// =============================================================================
 .swpl-confirmation-modal {
 	background-color: white;
 	border-radius: 4px;
@@ -273,8 +336,8 @@
 	max-width: 90%;
 
 	.swpl-modal-header {
-		padding: 16px;
-		border-bottom: 1px solid #e2e4e7;
+		padding: $spacing-md;
+		border-bottom: 1px solid $border-color;
 
 		h2 {
 			margin: 0;
@@ -283,7 +346,7 @@
 	}
 
 	.swpl-modal-body {
-		padding: 20px 16px;
+		padding: $spacing-lg $spacing-md;
 		font-size: 14px;
 
 		p {
@@ -292,24 +355,10 @@
 	}
 
 	.swpl-modal-footer {
-		padding: 16px;
-		border-top: 1px solid #e2e4e7;
+		padding: $spacing-md;
+		border-top: 1px solid $border-color;
 		display: flex;
 		justify-content: flex-end;
-		gap: 8px;
+		gap: $spacing-sm;
 	}
-}
-
-// Make sure delete button is styled properly
-button.button-link-delete {
-
-	&:hover,
-	&:focus {
-		color: #fff;
-	}
-}
-
-// Fix loading spinner in button
-button .components-spinner {
-	margin-right: 5px;
 }

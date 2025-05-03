@@ -1,8 +1,12 @@
+// src/Logs.js
 import React, { useState, useEffect } from "react";
 import apiFetch from "@wordpress/api-fetch";
-import { SearchControl, Spinner, SelectControl } from "@wordpress/components";
 import SimplePagination from "../components/SimplePagination";
 import LogDetailsModal from "../components/LogDetailsModal";
+import LogFilters from "../components/LogFilters";
+import LogTable from "../components/LogTable";
+import BulkActions from "../components/BulkActions";
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 import "../styles/logs.scss";
 
 const Logs = () => {
@@ -168,17 +172,6 @@ const Logs = () => {
     setCurrentPage(1); // Reset to first page when sort changes
   };
 
-  const getSortIcon = (field) => {
-    if (field !== sortField) {
-      return <span className="sort-icon sort-none">⇵</span>;
-    }
-    return sortOrder === "asc" ? (
-      <span className="sort-icon sort-asc">↑</span>
-    ) : (
-      <span className="sort-icon sort-desc">↓</span>
-    );
-  };
-
   const resetFilters = () => {
     setSearchTerm("");
     setLevelFilter("");
@@ -186,11 +179,6 @@ const Logs = () => {
     setSortField("id");
     setSortOrder("desc");
     setCurrentPage(1);
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString();
   };
 
   const openLogDetails = (logId) => {
@@ -274,49 +262,19 @@ const Logs = () => {
     <div className="swpl-admin-page">
       <h1 className="wpl-admin-page-heading">Logs</h1>
 
-      <div className="swpl-admin-filters">
-        <div className="swpl-search-wrapper">
-          <SearchControl
-            value={searchTerm}
-            onChange={handleSearch}
-            label="Search logs"
-            placeholder="Search logs..."
-            className="swpl-search-control"
-          />
-        </div>
-
-        <div className="swpl-filter-controls">
-          <SelectControl
-            label="Log Level"
-            value={levelFilter}
-            options={levelOptions}
-            onChange={handleLevelChange}
-            className="swpl-filter-select"
-          />
-
-          <SelectControl
-            label="Log Source"
-            value={sourceFilter}
-            options={sourceOptions}
-            onChange={handleSourceChange}
-            className="swpl-filter-select"
-          />
-
-          <div className="swpl-filter-buttons">
-            <button className="button" onClick={fetchLogs} disabled={isLoading}>
-              Apply Filters
-            </button>
-
-            <button
-              className="button"
-              onClick={resetFilters}
-              disabled={isLoading}
-            >
-              Reset Filters
-            </button>
-          </div>
-        </div>
-      </div>
+      <LogFilters
+        searchTerm={searchTerm}
+        levelFilter={levelFilter}
+        sourceFilter={sourceFilter}
+        levelOptions={levelOptions}
+        sourceOptions={sourceOptions}
+        isLoading={isLoading}
+        onSearchChange={handleSearch}
+        onLevelChange={handleLevelChange}
+        onSourceChange={handleSourceChange}
+        onApplyFilters={fetchLogs}
+        onResetFilters={resetFilters}
+      />
 
       {error && (
         <div className="notice notice-error">
@@ -324,164 +282,52 @@ const Logs = () => {
         </div>
       )}
 
-      <div className="swpl-bulk-actions">
-        <div className="swpl-bulk-actions-info">
-          {selectedLogs.length > 0 && (
-            <span>{selectedLogs.length} log(s) selected</span>
-          )}
-        </div>
-        <div className="swpl-bulk-actions-buttons">
-          <button
-            className="button"
-            onClick={() => showDeleteConfirmation("selected")}
-            disabled={isLoading || isDeleting || selectedLogs.length === 0}
-          >
-            Delete Selected
-          </button>
-          <button
-            className="button button-link-delete"
-            onClick={() => showDeleteConfirmation("all")}
-            disabled={isLoading || isDeleting || logs.length === 0}
-          >
-            Delete All Logs
-          </button>
-        </div>
-      </div>
+      <BulkActions
+        selectedCount={selectedLogs.length}
+        isLoading={isLoading}
+        isDeleting={isDeleting}
+        hasLogs={logs.length > 0}
+        onDeleteSelected={() => showDeleteConfirmation("selected")}
+        onDeleteAll={() => showDeleteConfirmation("all")}
+      />
 
-      {isLoading ? (
-        <div className="swpl-loading">
-          <Spinner />
-          <p>Loading logs...</p>
-        </div>
-      ) : (
-        <>
-          <table className="wp-list-table widefat striped">
-            <thead>
-              <tr>
-                <td className="manage-column column-cb check-column">
-                  <input
-                    type="checkbox"
-                    onChange={toggleSelectAll}
-                    checked={
-                      logs.length > 0 && selectedLogs.length === logs.length
-                    }
-                    disabled={logs.length === 0}
-                  />
-                </td>
-                <th className="sortable" onClick={() => handleSort("id")}>
-                  ID {getSortIcon("id")}
-                </th>
-                <th className="sortable" onClick={() => handleSort("date")}>
-                  Date {getSortIcon("date")}
-                </th>
-                <th>Level</th>
-                <th>Source</th>
-                <th>Message</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {logs.length === 0 ? (
-                <tr>
-                  <td colSpan="7">No logs found.</td>
-                </tr>
-              ) : (
-                logs.map((log) => (
-                  <tr key={log.id}>
-                    <td className="manage-column column-cb check-column">
-                      <input
-                        type="checkbox"
-                        onChange={() => toggleLogSelection(log.id)}
-                        checked={selectedLogs.includes(log.id)}
-                      />
-                    </td>
-                    <td>{log.id}</td>
-                    <td>{formatDate(log.date)}</td>
-                    <td>
-                      <span className={`log-level log-level-${log.level}`}>
-                        {log.level}
-                      </span>
-                    </td>
-                    <td>{log.source}</td>
-                    <td>{log.message}</td>
-                    <td>
-                      <button
-                        className="button button-small"
-                        onClick={() => openLogDetails(log.id)}
-                      >
-                        View Details
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      <LogTable
+        logs={logs}
+        isLoading={isLoading}
+        selectedLogs={selectedLogs}
+        sortField={sortField}
+        sortOrder={sortOrder}
+        onToggleSelectAll={toggleSelectAll}
+        onToggleLogSelection={toggleLogSelection}
+        onSort={handleSort}
+        onViewDetails={openLogDetails}
+      />
 
-          {totalPages > 1 && (
-            <div className="swpl-pagination">
-              <div className="swpl-pagination-info">
-                Showing {logs.length} of {totalItems} logs
-              </div>
-              <SimplePagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </div>
-          )}
-        </>
+      {totalPages > 1 && (
+        <div className="swpl-pagination">
+          <div className="swpl-pagination-info">
+            Showing {logs.length} of {totalItems} logs
+          </div>
+          <SimplePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
       )}
 
       {selectedLogId && (
         <LogDetailsModal logId={selectedLogId} onClose={closeLogDetails} />
       )}
 
-      {/* Delete Confirmation Modal */}
       {confirmDelete && (
-        <div className="swpl-modal-overlay">
-          <div className="swpl-confirmation-modal">
-            <div className="swpl-modal-header">
-              <h2>Confirm Deletion</h2>
-            </div>
-            <div className="swpl-modal-body">
-              {confirmDelete === "all" ? (
-                <p>
-                  Are you sure you want to delete ALL logs? This action cannot
-                  be undone.
-                </p>
-              ) : (
-                <p>
-                  Are you sure you want to delete {selectedLogs.length} selected
-                  log(s)? This action cannot be undone.
-                </p>
-              )}
-            </div>
-            <div className="swpl-modal-footer">
-              <button
-                className="button"
-                onClick={cancelDelete}
-                disabled={isDeleting}
-              >
-                Cancel
-              </button>
-              <button
-                className="button button-primary button-link-delete"
-                onClick={executeDelete}
-                disabled={isDeleting}
-              >
-                {isDeleting ? (
-                  <>
-                    <Spinner />
-                    Deleting...
-                  </>
-                ) : (
-                  "Delete"
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeleteConfirmationModal
+          type={confirmDelete}
+          selectedCount={selectedLogs.length}
+          isDeleting={isDeleting}
+          onCancel={cancelDelete}
+          onConfirm={executeDelete}
+        />
       )}
     </div>
   );
