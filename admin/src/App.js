@@ -4,14 +4,14 @@ import {
   Route,
   Routes,
   Navigate,
-  NavLink,
-  useLocation,
 } from "react-router-dom";
+
 import { ToastContainer } from "react-toastify";
+import TabNavigation from "./components/TabNavigation";
 
 import Logs from "./pages/Logs";
 import Requests from "./pages/Requests";
-import TabNavigation from "./components/TabNavigation";
+import PluginSettings from "./pages/PluginSettings";
 
 const App = () => {
   // Define the navigation items
@@ -33,16 +33,7 @@ const App = () => {
             <Route path="/" element={<Navigate to="/logs" />} />
             <Route path="/logs" element={<Logs />} />
             <Route path="/requests" element={<Requests />} />{" "}
-            {/* Replace with actual Requests component when available */}
-            <Route
-              path="/settings"
-              element={
-                <div className="swpl-page-content">
-                  <h2>Settings</h2>
-                  <p>Settings page content will go here.</p>
-                </div>
-              }
-            />
+            <Route path="/settings" element={<PluginSettings />} />
           </Routes>
         </div>
         <ToastContainer />

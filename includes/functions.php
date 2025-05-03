@@ -34,7 +34,7 @@ function swpl_get_request_hostnames() {
 
 	if ( false === $hostnames ) {
 		$table     = \Shazzad\WpLogs\DbAdapter::prefix_table( 'requests' );
-		$hostnames = \Shazzad\WpLogs\DbAdapter::get_col( "SELECT DISTINCT `hostname` FROM $table" );
+		$hostnames = \Shazzad\WpLogs\DbAdapter::get_col( "SELECT DISTINCT `request_hostname` FROM $table" );
 
 		set_transient( $cache_key, $hostnames, 5 * MINUTE_IN_SECONDS );
 	}
