@@ -7,37 +7,42 @@
 
 namespace Shazzad\WpLogs\Admin;
 
+/**
+ * Main admin class responsible for initializing admin-related functionality.
+ *
+ * This class handles the setup of WordPress debug logs, admin pages,
+ * and registers the plugin's action links.
+ *
+ * @since 1.0.0
+ * @package Shazzad\WpLogs\Admin
+ */
 class Main {
-	public function __construct() {
-		$this->initialize();
-		$this->register_hooks();
+	/**
+	 * Set up the admin environment.
+	 *
+	 * Initializes various admin components and registers action links.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public static function setup() {
+		WpDebugLog::setup();
+		AdminPage::setup();
+
+		add_filter( 'plugin_action_links_' . SWPL_BASENAME, [ __CLASS__, 'plugin_action_links' ] );
 	}
 
-	public function initialize() {
-		new AjaxHandler();
-		new RegisterAssets();
-		new Notices();
-		new AdminBarMenu();
-		new WpDebugLog();
-
-		new Logs\Page();
-	}
-
-	public function register_hooks() {
-		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 10, 3 );
-		add_filter( 'plugin_action_links_' . SWPL_BASENAME, array( $this, 'plugin_action_links' ) );
-	}
-
-	public function set_screen_option( $status, $option, $value ) {
-		if ( ! empty( $option ) && 'shazzad_wp_logs' == substr( $option, 0, 11 ) ) {
-			return $value;
-		}
-
-		return $status;
-	}
-
-	public function plugin_action_links( $links ) {
-		$links['logs'] = '<a href="' . admin_url( 'admin.php?page=shazzad-wp-logs' ) . '">' . __( 'Logs', 'shazzad-wp-logs' ) . '</a>';
+	/**
+	 * Add plugin action links.
+	 *
+	 * Adds a "Logs" link to the plugin's action links on the plugins page.
+	 *
+	 * @since 1.0.0
+	 * @param array $links An array of plugin action links.
+	 * @return array Modified array of plugin action links.
+	 */
+	public static function plugin_action_links( $links ) {
+		$links['logs'] = '<a href="' . admin_url( 'admin.php?page=shazzad-wp-logs' ) . '">' . __( 'Logs', 'swpl' ) . '</a>';
 		return $links;
 	}
 }

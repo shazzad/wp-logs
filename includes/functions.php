@@ -17,13 +17,13 @@ function swpl_get_sources() {
 
 function swpl_get_levels() {
 	return [
-		'debug'     => __( 'Debug', 'shazzad-wp-logs' ),
-		'info'      => __( 'Info', 'shazzad-wp-logs' ),
-		'notice'    => __( 'Notice', 'shazzad-wp-logs' ),
-		'warning'   => __( 'Warning', 'shazzad-wp-logs' ),
-		'error'     => __( 'Error', 'shazzad-wp-logs' ),
-		'critical'  => __( 'Critical', 'shazzad-wp-logs' ),
-		'emergency' => __( 'Emergency', 'shazzad-wp-logs' )
+		'debug'     => __( 'Debug', 'swpl' ),
+		'info'      => __( 'Info', 'swpl' ),
+		'notice'    => __( 'Notice', 'swpl' ),
+		'warning'   => __( 'Warning', 'swpl' ),
+		'error'     => __( 'Error', 'swpl' ),
+		'critical'  => __( 'Critical', 'swpl' ),
+		'emergency' => __( 'Emergency', 'swpl' )
 	];
 }
 
@@ -44,12 +44,12 @@ function swpl_get_request_hostnames() {
 
 function swpl_get_request_methods() {
 	return [
-		'GET'     => __( 'GET', 'shazzad-wp-logs' ),
-		'POST'    => __( 'POST', 'shazzad-wp-logs' ),
-		'PUT'     => __( 'PUT', 'shazzad-wp-logs' ),
-		'DELETE'  => __( 'DELETE', 'shazzad-wp-logs' ),
-		'HEAD'    => __( 'HEAD', 'shazzad-wp-logs' ),
-		'OPTIONS' => __( 'OPTIONS', 'shazzad-wp-logs' )
+		'GET'     => __( 'GET', 'swpl' ),
+		'POST'    => __( 'POST', 'swpl' ),
+		'PUT'     => __( 'PUT', 'swpl' ),
+		'DELETE'  => __( 'DELETE', 'swpl' ),
+		'HEAD'    => __( 'HEAD', 'swpl' ),
+		'OPTIONS' => __( 'OPTIONS', 'swpl' )
 	];
 }
 

@@ -112,7 +112,7 @@ class LogController extends WP_REST_Controller {
 
 		if ( ! empty( $request['level'] ) ) {
 			if ( ! array_key_exists( $request['level'], swpl_get_levels() ) ) {
-				return new WP_Error( 'invalid_log_level', __( 'Invalid log level', 'shazzad-wp-logs' ), [ 'status' => 400 ] );
+				return new WP_Error( 'invalid_log_level', __( 'Invalid log level', 'swpl' ), [ 'status' => 400 ] );
 			}
 
 			$query_args['level'] = strtolower( $request['level'] );
@@ -168,7 +168,7 @@ class LogController extends WP_REST_Controller {
 		$items = $query->get_objects();
 
 		if ( empty( $items ) ) {
-			return new WP_Error( 'log_not_found', __( 'Log not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
+			return new WP_Error( 'log_not_found', __( 'Log not found', 'swpl' ), [ 'status' => 404 ] );
 		}
 
 		$item = $items[0];
@@ -196,7 +196,7 @@ class LogController extends WP_REST_Controller {
 			return new WP_REST_Response( [ 'success' => true ], 200 );
 		}
 
-		return new WP_Error( 'log_not_found', __( 'Log not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
+		return new WP_Error( 'log_not_found', __( 'Log not found', 'swpl' ), [ 'status' => 404 ] );
 	}
 
 	/**
@@ -245,7 +245,7 @@ class LogController extends WP_REST_Controller {
 			return new WP_REST_Response( [ 'success' => true ], 200 );
 		}
 
-		return new WP_Error( 'logs_not_found', __( 'Logs not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
+		return new WP_Error( 'logs_not_found', __( 'Logs not found', 'swpl' ), [ 'status' => 404 ] );
 	}
 
 	/**

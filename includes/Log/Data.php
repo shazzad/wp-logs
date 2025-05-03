@@ -144,7 +144,7 @@ class Data extends AbstractData {
 
 	public function validate_save() {
 		if ( ! $this->get_message() ) {
-			throw new \Exception( __( 'Invalid message', 'shazzad-wp-logs' ) );
+			throw new \Exception( __( 'Invalid message', 'swpl' ) );
 		} else {
 			if ( ! $this->get_timestamp() ) {
 				// Let's use gmt timestamp.

@@ -46,7 +46,10 @@ const RequestDetailsModal = ({ logId, onClose }) => {
 
   return (
     <div className="swpl-modal-overlay" onClick={onClose}>
-      <div className="swpl-modal-content" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="swpl__modal__content"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="swpl-modal-header">
           <h2>Request Details</h2>
           <button className="swpl-modal-close" onClick={onClose}>

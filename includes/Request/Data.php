@@ -206,10 +206,10 @@ class Data extends AbstractData {
 
 	public function validate_save() {
 		if ( ! $this->get_request_url() ) {
-			throw new \Exception( __( 'Invalid url', 'shazzad-wp-logs' ) );
+			throw new \Exception( __( 'Invalid url', 'swpl' ) );
 		}
 		if ( ! $this->get_request_method() ) {
-			throw new \Exception( __( 'Invalid request method', 'shazzad-wp-logs' ) );
+			throw new \Exception( __( 'Invalid request method', 'swpl' ) );
 		}
 
 		if ( ! $this->get_timestamp() ) {

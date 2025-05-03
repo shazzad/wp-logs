@@ -169,7 +169,7 @@ class RequestController extends WP_REST_Controller {
 		$items = $query->get_objects();
 
 		if ( empty( $items ) ) {
-			return new WP_Error( 'request_not_found', __( 'Log not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
+			return new WP_Error( 'request_not_found', __( 'Log not found', 'swpl' ), [ 'status' => 404 ] );
 		}
 
 		$item = $items[0];
@@ -197,7 +197,7 @@ class RequestController extends WP_REST_Controller {
 			return new WP_REST_Response( [ 'success' => true ], 200 );
 		}
 
-		return new WP_Error( 'request_not_found', __( 'Log not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
+		return new WP_Error( 'request_not_found', __( 'Log not found', 'swpl' ), [ 'status' => 404 ] );
 	}
 
 	/**
@@ -241,7 +241,7 @@ class RequestController extends WP_REST_Controller {
 			return new WP_REST_Response( [ 'success' => true ], 200 );
 		}
 
-		return new WP_Error( 'requests_not_found', __( 'Logs not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
+		return new WP_Error( 'requests_not_found', __( 'Logs not found', 'swpl' ), [ 'status' => 404 ] );
 	}
 
 	/**
