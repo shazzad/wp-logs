@@ -11,6 +11,7 @@ import "../styles/logs.scss";
 
 const Logs = () => {
   const [logs, setLogs] = useState([]);
+  const [displayLogs, setDisplayLogs] = useState([]); // New state for displayed logs
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -84,9 +85,15 @@ const Logs = () => {
     setSelectedLogs([]);
   }, [currentPage, searchTerm, levelFilter, sourceFilter]);
 
+  // Update displayLogs when logs state is updated
+  useEffect(() => {
+    setDisplayLogs(logs);
+  }, [logs]);
+
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
+      // We don't clear the logs here, which keeps the existing content visible
 
       // Build query parameters for pagination, search, filters, and sorting
       let queryParams = `?page=${currentPage}&per_page=${perPage}`;
@@ -202,12 +209,12 @@ const Logs = () => {
 
   // Handle select all logs on current page
   const toggleSelectAll = () => {
-    if (selectedLogs.length === logs.length) {
+    if (selectedLogs.length === displayLogs.length) {
       // Deselect all if all are selected
       setSelectedLogs([]);
     } else {
       // Select all logs on the current page
-      setSelectedLogs(logs.map((log) => log.id));
+      setSelectedLogs(displayLogs.map((log) => log.id));
     }
   };
 
@@ -286,14 +293,15 @@ const Logs = () => {
         selectedCount={selectedLogs.length}
         isLoading={isLoading}
         isDeleting={isDeleting}
-        hasLogs={logs.length > 0}
+        hasLogs={displayLogs.length > 0}
         onDeleteSelected={() => showDeleteConfirmation("selected")}
         onDeleteAll={() => showDeleteConfirmation("all")}
       />
 
       <LogTable
-        logs={logs}
+        logs={displayLogs}
         isLoading={isLoading}
+        isLoadingNewData={isLoading && displayLogs.length > 0}
         selectedLogs={selectedLogs}
         sortField={sortField}
         sortOrder={sortOrder}
@@ -306,7 +314,7 @@ const Logs = () => {
       {totalPages > 1 && (
         <div className="swpl-pagination">
           <div className="swpl-pagination-info">
-            Showing {logs.length} of {totalItems} logs
+            Showing {displayLogs.length} of {totalItems} logs
           </div>
           <SimplePagination
             currentPage={currentPage}

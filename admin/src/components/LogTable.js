@@ -5,6 +5,7 @@ import { Spinner } from "@wordpress/components";
 const LogTable = ({
   logs,
   isLoading,
+  isLoadingNewData,
   selectedLogs,
   sortField,
   sortOrder,
@@ -29,7 +30,8 @@ const LogTable = ({
     );
   };
 
-  if (isLoading) {
+  // Only show the full-page loading state on initial load when we have no logs yet
+  if (isLoading && logs.length === 0) {
     return (
       <div className="swpl-loading">
         <Spinner />
@@ -39,66 +41,78 @@ const LogTable = ({
   }
 
   return (
-    <table className="wp-list-table widefat striped">
-      <thead>
-        <tr>
-          <td className="manage-column column-cb check-column">
-            <input
-              type="checkbox"
-              onChange={onToggleSelectAll}
-              checked={logs.length > 0 && selectedLogs.length === logs.length}
-              disabled={logs.length === 0}
-            />
-          </td>
-          <th className="sortable" onClick={() => onSort("id")}>
-            ID {getSortIcon("id")}
-          </th>
-          <th className="sortable" onClick={() => onSort("date")}>
-            Date {getSortIcon("date")}
-          </th>
-          <th>Level</th>
-          <th>Source</th>
-          <th>Message</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {logs.length === 0 ? (
+    <div className="swpl-table-container">
+      {/* Loading overlay that only appears when refreshing data but keeping existing content */}
+      {isLoadingNewData && (
+        <div className="swpl-table-loading-overlay">
+          <div className="swpl-loading-indicator">
+            <Spinner />
+            <p>Updating...</p>
+          </div>
+        </div>
+      )}
+
+      <table className="wp-list-table widefat striped">
+        <thead>
           <tr>
-            <td colSpan="7">No logs found.</td>
+            <td className="manage-column column-cb check-column">
+              <input
+                type="checkbox"
+                onChange={onToggleSelectAll}
+                checked={logs.length > 0 && selectedLogs.length === logs.length}
+                disabled={logs.length === 0}
+              />
+            </td>
+            <th className="sortable" onClick={() => onSort("id")}>
+              ID {getSortIcon("id")}
+            </th>
+            <th className="sortable" onClick={() => onSort("date")}>
+              Date {getSortIcon("date")}
+            </th>
+            <th>Level</th>
+            <th>Source</th>
+            <th>Message</th>
+            <th>Actions</th>
           </tr>
-        ) : (
-          logs.map((log) => (
-            <tr key={log.id}>
-              <td className="manage-column column-cb check-column">
-                <input
-                  type="checkbox"
-                  onChange={() => onToggleLogSelection(log.id)}
-                  checked={selectedLogs.includes(log.id)}
-                />
-              </td>
-              <td>{log.id}</td>
-              <td>{formatDate(log.date)}</td>
-              <td>
-                <span className={`log-level log-level-${log.level}`}>
-                  {log.level}
-                </span>
-              </td>
-              <td>{log.source}</td>
-              <td>{log.message}</td>
-              <td>
-                <button
-                  className="button button-small"
-                  onClick={() => onViewDetails(log.id)}
-                >
-                  View Details
-                </button>
-              </td>
+        </thead>
+        <tbody>
+          {logs.length === 0 ? (
+            <tr>
+              <td colSpan="7">No logs found.</td>
             </tr>
-          ))
-        )}
-      </tbody>
-    </table>
+          ) : (
+            logs.map((log) => (
+              <tr key={log.id}>
+                <td className="manage-column column-cb check-column">
+                  <input
+                    type="checkbox"
+                    onChange={() => onToggleLogSelection(log.id)}
+                    checked={selectedLogs.includes(log.id)}
+                  />
+                </td>
+                <td>{log.id}</td>
+                <td>{formatDate(log.date)}</td>
+                <td>
+                  <span className={`log-level log-level-${log.level}`}>
+                    {log.level}
+                  </span>
+                </td>
+                <td>{log.source}</td>
+                <td>{log.message}</td>
+                <td>
+                  <button
+                    className="button button-small"
+                    onClick={() => onViewDetails(log.id)}
+                  >
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
