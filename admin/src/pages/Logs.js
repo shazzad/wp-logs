@@ -1,4 +1,3 @@
-// src/Logs.js
 import React, { useState, useEffect } from "react";
 import apiFetch from "@wordpress/api-fetch";
 import { SearchControl, Spinner, SelectControl } from "@wordpress/components";
@@ -17,6 +16,11 @@ const Logs = () => {
   const [selectedLogId, setSelectedLogId] = useState(null);
   const [levelFilter, setLevelFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
+  const [sortField, setSortField] = useState("id");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [selectedLogs, setSelectedLogs] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null); // null, 'selected', or 'all'
   const perPage = 10;
 
   // Get available levels and sources from the global settings
@@ -62,13 +66,25 @@ const Logs = () => {
 
     // Fetch logs when component mounts, page changes, or filters change
     fetchLogs();
+  }, [
+    currentPage,
+    searchTerm,
+    levelFilter,
+    sourceFilter,
+    sortField,
+    sortOrder,
+  ]);
+
+  // Clear selected logs when page changes or filters change
+  useEffect(() => {
+    setSelectedLogs([]);
   }, [currentPage, searchTerm, levelFilter, sourceFilter]);
 
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
 
-      // Build query parameters for pagination, search, and filters
+      // Build query parameters for pagination, search, filters, and sorting
       let queryParams = `?page=${currentPage}&per_page=${perPage}`;
 
       if (searchTerm.trim()) {
@@ -82,6 +98,11 @@ const Logs = () => {
       if (sourceFilter) {
         queryParams += `&source=${encodeURIComponent(sourceFilter)}`;
       }
+
+      // Add sorting parameters
+      queryParams += `&orderby=${encodeURIComponent(
+        sortField
+      )}&order=${encodeURIComponent(sortOrder)}`;
 
       const response = await apiFetch({
         path: `/wp/v2/logs${queryParams}`,
@@ -135,10 +156,35 @@ const Logs = () => {
     }
   };
 
+  const handleSort = (field) => {
+    // If clicking the same field that is already being sorted,
+    // toggle the sort order. Otherwise, set the new field and default to asc.
+    if (field === sortField) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+    setCurrentPage(1); // Reset to first page when sort changes
+  };
+
+  const getSortIcon = (field) => {
+    if (field !== sortField) {
+      return <span className="sort-icon sort-none">⇵</span>;
+    }
+    return sortOrder === "asc" ? (
+      <span className="sort-icon sort-asc">↑</span>
+    ) : (
+      <span className="sort-icon sort-desc">↓</span>
+    );
+  };
+
   const resetFilters = () => {
     setSearchTerm("");
     setLevelFilter("");
     setSourceFilter("");
+    setSortField("id");
+    setSortOrder("desc");
     setCurrentPage(1);
   };
 
@@ -153,6 +199,75 @@ const Logs = () => {
 
   const closeLogDetails = () => {
     setSelectedLogId(null);
+  };
+
+  // Handle log selection
+  const toggleLogSelection = (logId) => {
+    setSelectedLogs((prevSelected) => {
+      if (prevSelected.includes(logId)) {
+        return prevSelected.filter((id) => id !== logId);
+      } else {
+        return [...prevSelected, logId];
+      }
+    });
+  };
+
+  // Handle select all logs on current page
+  const toggleSelectAll = () => {
+    if (selectedLogs.length === logs.length) {
+      // Deselect all if all are selected
+      setSelectedLogs([]);
+    } else {
+      // Select all logs on the current page
+      setSelectedLogs(logs.map((log) => log.id));
+    }
+  };
+
+  // Show delete confirmation modal
+  const showDeleteConfirmation = (type) => {
+    setConfirmDelete(type);
+  };
+
+  // Cancel delete
+  const cancelDelete = () => {
+    setConfirmDelete(null);
+  };
+
+  // Execute deletion
+  const executeDelete = async () => {
+    try {
+      setIsDeleting(true);
+
+      // Determine whether to delete selected or all logs
+      if (confirmDelete === "all") {
+        // Delete all logs
+        await apiFetch({
+          path: "/wp/v2/logs",
+          method: "DELETE",
+        });
+      } else if (confirmDelete === "selected" && selectedLogs.length > 0) {
+        // Delete selected logs
+        await apiFetch({
+          path: "/wp/v2/logs",
+          method: "DELETE",
+          data: { ids: selectedLogs },
+        });
+      }
+
+      // Close confirmation modal
+      setConfirmDelete(null);
+
+      // Refresh the logs list
+      fetchLogs();
+
+      // Clear selected logs
+      setSelectedLogs([]);
+    } catch (err) {
+      console.error("Error deleting logs:", err);
+      setError("Failed to delete logs. Please try again later.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -209,6 +324,30 @@ const Logs = () => {
         </div>
       )}
 
+      <div className="swpl-bulk-actions">
+        <div className="swpl-bulk-actions-info">
+          {selectedLogs.length > 0 && (
+            <span>{selectedLogs.length} log(s) selected</span>
+          )}
+        </div>
+        <div className="swpl-bulk-actions-buttons">
+          <button
+            className="button"
+            onClick={() => showDeleteConfirmation("selected")}
+            disabled={isLoading || isDeleting || selectedLogs.length === 0}
+          >
+            Delete Selected
+          </button>
+          <button
+            className="button button-link-delete"
+            onClick={() => showDeleteConfirmation("all")}
+            disabled={isLoading || isDeleting || logs.length === 0}
+          >
+            Delete All Logs
+          </button>
+        </div>
+      </div>
+
       {isLoading ? (
         <div className="swpl-loading">
           <Spinner />
@@ -219,8 +358,22 @@ const Logs = () => {
           <table className="wp-list-table widefat striped">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Date</th>
+                <td className="manage-column column-cb check-column">
+                  <input
+                    type="checkbox"
+                    onChange={toggleSelectAll}
+                    checked={
+                      logs.length > 0 && selectedLogs.length === logs.length
+                    }
+                    disabled={logs.length === 0}
+                  />
+                </td>
+                <th className="sortable" onClick={() => handleSort("id")}>
+                  ID {getSortIcon("id")}
+                </th>
+                <th className="sortable" onClick={() => handleSort("date")}>
+                  Date {getSortIcon("date")}
+                </th>
                 <th>Level</th>
                 <th>Source</th>
                 <th>Message</th>
@@ -230,11 +383,18 @@ const Logs = () => {
             <tbody>
               {logs.length === 0 ? (
                 <tr>
-                  <td colSpan="6">No logs found.</td>
+                  <td colSpan="7">No logs found.</td>
                 </tr>
               ) : (
                 logs.map((log) => (
                   <tr key={log.id}>
+                    <td className="manage-column column-cb check-column">
+                      <input
+                        type="checkbox"
+                        onChange={() => toggleLogSelection(log.id)}
+                        checked={selectedLogs.includes(log.id)}
+                      />
+                    </td>
                     <td>{log.id}</td>
                     <td>{formatDate(log.date)}</td>
                     <td>
@@ -275,6 +435,53 @@ const Logs = () => {
 
       {selectedLogId && (
         <LogDetailsModal logId={selectedLogId} onClose={closeLogDetails} />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {confirmDelete && (
+        <div className="swpl-modal-overlay">
+          <div className="swpl-confirmation-modal">
+            <div className="swpl-modal-header">
+              <h2>Confirm Deletion</h2>
+            </div>
+            <div className="swpl-modal-body">
+              {confirmDelete === "all" ? (
+                <p>
+                  Are you sure you want to delete ALL logs? This action cannot
+                  be undone.
+                </p>
+              ) : (
+                <p>
+                  Are you sure you want to delete {selectedLogs.length} selected
+                  log(s)? This action cannot be undone.
+                </p>
+              )}
+            </div>
+            <div className="swpl-modal-footer">
+              <button
+                className="button"
+                onClick={cancelDelete}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                className="button button-primary button-link-delete"
+                onClick={executeDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <Spinner />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

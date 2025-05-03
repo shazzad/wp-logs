@@ -54,30 +54,35 @@ class LogController extends WP_REST_Controller {
 		register_rest_route(
 			$this->namespace,
 			$this->rest_base,
-			array(
-				array(
+			[
+				[
 					'methods'             => 'GET',
-					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permission_callback' ),
-				),
-			)
+					'callback'            => [ $this, 'get_items' ],
+					'permission_callback' => [ $this, 'get_items_permission_callback' ],
+				],
+				[
+					'methods'             => [ 'DELETE' ],
+					'callback'            => [ $this, 'delete_items' ],
+					'permission_callback' => [ $this, 'delete_items_permission_callback' ],
+				],
+			]
 		);
 
 		register_rest_route(
 			$this->namespace,
 			$this->rest_base . '/(?P<id>[\d]+)',
-			array(
-				array(
+			[
+				[
 					'methods'             => 'GET',
-					'callback'            => array( $this, 'get_item' ),
-					'permission_callback' => array( $this, 'get_item_permission_callback' ),
-				),
-				array(
+					'callback'            => [ $this, 'get_item' ],
+					'permission_callback' => [ $this, 'get_item_permission_callback' ],
+				],
+				[
 					'methods'             => 'DELETE',
-					'callback'            => array( $this, 'delete_item' ),
-					'permission_callback' => array( $this, 'delete_item_permission_callback' ),
-				),
-			)
+					'callback'            => [ $this, 'delete_item' ],
+					'permission_callback' => [ $this, 'delete_item_permission_callback' ],
+				],
+			]
 		);
 	}
 
@@ -187,6 +192,55 @@ class LogController extends WP_REST_Controller {
 	}
 
 	/**
+	 * Deletes multiple log items.
+	 *
+	 * @since 1.0.0
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function delete_items( $request ) {
+		// return [ 'status' => $request['ids'] ];
+		global $wpdb;
+
+		$table = DbAdapter::prefix_table( 'logs' );
+
+		if ( isset( $request['ids'] ) && is_array( $request['ids'] ) ) {
+			// $deleted = DbAdapter::delete( $table, [ 'id' => $request['ids'] ] );
+			$ids = array_map( 'intval', $request['ids'] );
+			$ids = implode( ',', $ids );
+
+			$sql = "DELETE FROM {$table} WHERE id IN ({$ids})";
+			$wpdb->query( $sql );
+
+			swpl_clear_cache();
+
+			$deleted = true;
+
+		} else {
+			$sql = "DELETE FROM {$table}";
+			if ( $request['source'] ) {
+				$sql .= " WHERE source IN ('" . implode( "','", $request['source'] ) . "')";
+			}
+
+			$wpdb->query( $sql );
+
+			swpl_clear_cache();
+
+			$deleted = true;
+		}
+
+		if ( is_wp_error( $deleted ) ) {
+			return $deleted;
+		}
+
+		if ( $deleted ) {
+			return new WP_REST_Response( [ 'success' => true ], 200 );
+		}
+
+		return new WP_Error( 'logs_not_found', __( 'Logs not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
+	}
+
+	/**
 	 * Prepares a log item for response.
 	 *
 	 * @since 1.0.0
@@ -236,6 +290,17 @@ class LogController extends WP_REST_Controller {
 	 * @return bool True if the request has permission to delete the log item, false otherwise.
 	 */
 	public function delete_item_permission_callback( $request ) {
+		return current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Checks whether a user has permission to delete multiple log items.
+	 * 
+	 * @since 1.0.0
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return bool True if the request has permission to delete the log items, false otherwise.
+	 */
+	public function delete_items_permission_callback( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 }

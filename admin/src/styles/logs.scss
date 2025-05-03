@@ -219,3 +219,97 @@
 .swpl-filter-select {
 	width: 100%;
 }
+
+// Add these styles to src/styles/logs.scss
+
+// Check column styles
+.check-column {
+	width: 30px;
+	text-align: center;
+
+	input[type="checkbox"] {
+		margin: 0;
+	}
+}
+
+// Bulk actions bar
+.swpl-bulk-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 0;
+	margin-bottom: 10px;
+}
+
+.swpl-bulk-actions-buttons {
+	display: flex;
+	gap: 8px;
+}
+
+.swpl-bulk-actions-info {
+	font-size: 13px;
+	color: #555;
+}
+
+// Button styles
+.button-link-delete {
+	color: #b32d2e;
+	border-color: #b32d2e;
+
+	&:hover,
+	&:focus {
+		color: #fff;
+		background-color: #b32d2e;
+		border-color: #b32d2e;
+	}
+}
+
+// Confirmation modal
+.swpl-confirmation-modal {
+	background-color: white;
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	width: 500px;
+	max-width: 90%;
+
+	.swpl-modal-header {
+		padding: 16px;
+		border-bottom: 1px solid #e2e4e7;
+
+		h2 {
+			margin: 0;
+			font-size: 18px;
+		}
+	}
+
+	.swpl-modal-body {
+		padding: 20px 16px;
+		font-size: 14px;
+
+		p {
+			margin: 0;
+		}
+	}
+
+	.swpl-modal-footer {
+		padding: 16px;
+		border-top: 1px solid #e2e4e7;
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+}
+
+// Make sure delete button is styled properly
+button.button-link-delete {
+
+	&:hover,
+	&:focus {
+		color: #fff;
+	}
+}
+
+// Fix loading spinner in button
+button .components-spinner {
+	margin-right: 5px;
+}
