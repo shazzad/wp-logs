@@ -168,18 +168,7 @@ class Page implements PageInterface {
 
 				<div class="swpl-admin-content">
 					<div class="swpl-preview">
-						<div class="swpl-message">
-							<strong class="swpl-level"><?php echo $log->get_level(); ?></strong>
-							<?php echo apply_filters( 'swpl_format_message', $log->get_message(), $log->get_context() ); ?>
-						</div>
 
-						<?php
-						if ( $log->get_context() ) {
-							echo '<pre class="swpl-data">';
-							print_r( $log->get_context() );
-							echo '</pre>';
-						}
-						?>
 					</div>
 				</div>
 
