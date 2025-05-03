@@ -102,6 +102,10 @@ class LogController extends WP_REST_Controller {
 			's'        => $request['search'] ?? '',
 		];
 
+		if ( 'date' === $query_args['orderby'] ) {
+			$query_args['orderby'] = 'timestamp';
+		}
+
 		if ( ! empty( $request['source'] ) ) {
 			$query_args['source'] = $request['source'];
 		}
@@ -112,6 +116,10 @@ class LogController extends WP_REST_Controller {
 			}
 
 			$query_args['level'] = strtolower( $request['level'] );
+		}
+
+		if ( ! empty( $query_args['s'] ) ) {
+			$query_args['s'] = '"' . $query_args['s'] . '"';
 		}
 
 		$query = new Log\Query( $query_args );

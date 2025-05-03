@@ -61,6 +61,8 @@ $mobile-breakpoint: 782px;
 // =============================================================================
 .swpl-admin-filters {
 	@include card;
+	display: flex;
+	justify-content: space-between;
 	margin-bottom: 20px;
 }
 
