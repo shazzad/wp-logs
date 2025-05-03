@@ -75,6 +75,8 @@ class Page implements PageInterface {
 				'nonce'      => wp_create_nonce( 'wp_rest' ),
 				'levels'     => swpl_get_levels(),
 				'logSources' => swpl_get_sources(),
+				'hostnames'  => swpl_get_request_hostnames(),
+				'methods'    => swpl_get_request_methods(),
 
 			)
 		);

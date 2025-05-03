@@ -110,6 +110,10 @@ class RequestController extends WP_REST_Controller {
 			$query_args['request_method'] = $request['request_method'];
 		}
 
+		if ( ! empty( $request['request_hostname'] ) ) {
+			$query_args['request_hostname'] = $request['request_hostname'];
+		}
+
 		if ( ! empty( $request['response_code'] ) ) {
 			$query_args['response_code'] = $request['response_code'];
 		}

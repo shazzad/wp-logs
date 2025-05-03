@@ -27,6 +27,10 @@ class Query extends AbstractQuery {
 				'type'       => 'text',
 				'searchable' => true
 			],
+			'request_method'   => [
+				'type'       => 'text',
+				'searchable' => false
+			],
 			'request_hostname' => [
 				'type'       => 'text',
 				'searchable' => false

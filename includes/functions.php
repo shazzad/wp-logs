@@ -27,8 +27,30 @@ function swpl_get_levels() {
 	];
 }
 
-function swpl_get_logable_requests() {
-	return apply_filters( 'swpl_logable_requests', [] );
+function swpl_get_request_hostnames() {
+	$cache_key = 'swpl_request_hostnames';
+
+	$hostnames = get_transient( $cache_key );
+
+	if ( false === $hostnames ) {
+		$table     = \Shazzad\WpLogs\DbAdapter::prefix_table( 'requests' );
+		$hostnames = \Shazzad\WpLogs\DbAdapter::get_col( "SELECT DISTINCT `hostname` FROM $table" );
+
+		set_transient( $cache_key, $hostnames, 5 * MINUTE_IN_SECONDS );
+	}
+
+	return $hostnames;
+}
+
+function swpl_get_request_methods() {
+	return [
+		'GET'     => __( 'GET', 'shazzad-wp-logs' ),
+		'POST'    => __( 'POST', 'shazzad-wp-logs' ),
+		'PUT'     => __( 'PUT', 'shazzad-wp-logs' ),
+		'DELETE'  => __( 'DELETE', 'shazzad-wp-logs' ),
+		'HEAD'    => __( 'HEAD', 'shazzad-wp-logs' ),
+		'OPTIONS' => __( 'OPTIONS', 'shazzad-wp-logs' )
+	];
 }
 
 function swpl_clear_cache() {

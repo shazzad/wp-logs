@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import apiFetch from "@wordpress/api-fetch";
 import SimplePagination from "../components/SimplePagination";
 import RequestDetailsModal from "../components/RequestDetailsModal";
-import LogFilters from "../components/LogFilters";
+import RequestFilters from "../components/RequestFilters";
 import RequestTable from "../components/RequestTable";
 import LogsBulkActions from "../components/LogsBulkActions";
 import LogsDeleteConfirmationModal from "../components/LogsDeleteConfirmationModal";
@@ -18,8 +18,8 @@ const Requests = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [selectedLogId, setSelectedLogId] = useState(null);
-  const [levelFilter, setLevelFilter] = useState("");
-  const [sourceFilter, setSourceFilter] = useState("");
+  const [methodFilter, setLevelFilter] = useState("");
+  const [hostnameFilter, setSourceFilter] = useState("");
   const [sortField, setSortField] = useState("id");
   const [sortOrder, setSortOrder] = useState("desc");
   const [selectedLogs, setSelectedLogs] = useState([]);
@@ -28,34 +28,34 @@ const Requests = () => {
   const perPage = 10;
 
   // Get available levels and sources from the global settings
-  const availableLevels = window.swplAdminAppSettings?.levels || {};
-  const availableSources = window.swplAdminAppSettings?.logSources || {};
+  const availableMethods = window.swplAdminAppSettings?.methods || {};
+  const availableHostnames = window.swplAdminAppSettings?.hostnames || {};
 
   // Prepare level options for the select dropdown
-  const levelOptions = [
-    { label: "All Levels", value: "" },
+  const methodOptions = [
+    { label: "All Methods", value: "" },
     // Convert object to array of options if needed
-    ...(Array.isArray(availableLevels)
-      ? availableLevels.map((level) => ({
+    ...(Array.isArray(availableMethods)
+      ? availableMethods.map((level) => ({
           label: level.charAt(0).toUpperCase() + level.slice(1),
           value: level,
         }))
-      : Object.keys(availableLevels).map((level) => ({
+      : Object.keys(availableMethods).map((level) => ({
           label: level.charAt(0).toUpperCase() + level.slice(1),
           value: level,
         }))),
   ];
 
   // Prepare source options for the select dropdown
-  const sourceOptions = [
-    { label: "All Sources", value: "" },
+  const hostnameOptions = [
+    { label: "All Hosts", value: "" },
     // Convert object to array of options if needed
-    ...(Array.isArray(availableSources)
-      ? availableSources.map((source) => ({
+    ...(Array.isArray(availableHostnames)
+      ? availableHostnames.map((source) => ({
           label: source,
           value: source,
         }))
-      : Object.keys(availableSources).map((source) => ({
+      : Object.keys(availableHostnames).map((source) => ({
           label: source,
           value: source,
         }))),
@@ -73,8 +73,8 @@ const Requests = () => {
   }, [
     currentPage,
     searchTerm,
-    levelFilter,
-    sourceFilter,
+    methodFilter,
+    hostnameFilter,
     sortField,
     sortOrder,
   ]);
@@ -82,7 +82,7 @@ const Requests = () => {
   // Clear selected logs when page changes or filters change
   useEffect(() => {
     setSelectedLogs([]);
-  }, [currentPage, searchTerm, levelFilter, sourceFilter]);
+  }, [currentPage, searchTerm, methodFilter, hostnameFilter]);
 
   // Update displayLogs when logs state is updated
   useEffect(() => {
@@ -101,12 +101,14 @@ const Requests = () => {
         queryParams += `&search=${encodeURIComponent(searchTerm)}`;
       }
 
-      if (levelFilter) {
-        queryParams += `&level=${encodeURIComponent(levelFilter)}`;
+      if (methodFilter) {
+        queryParams += `&request_method=${encodeURIComponent(methodFilter)}`;
       }
 
-      if (sourceFilter) {
-        queryParams += `&source=${encodeURIComponent(sourceFilter)}`;
+      if (hostnameFilter) {
+        queryParams += `&request_hostname=${encodeURIComponent(
+          hostnameFilter
+        )}`;
       }
 
       // Add sorting parameters
@@ -268,15 +270,15 @@ const Requests = () => {
     <div className="swpl-page-content">
       <h2>Requests</h2>
 
-      <LogFilters
+      <RequestFilters
         searchTerm={searchTerm}
-        levelFilter={levelFilter}
-        sourceFilter={sourceFilter}
-        levelOptions={levelOptions}
-        sourceOptions={sourceOptions}
+        methodFilter={methodFilter}
+        hostnameFilter={hostnameFilter}
+        methodOptions={methodOptions}
+        hostnameOptions={hostnameOptions}
         isLoading={isLoading}
         onSearchChange={handleSearch}
-        onLevelChange={handleLevelChange}
+        onMethodChange={handleLevelChange}
         onSourceChange={handleSourceChange}
         onApplyFilters={fetchLogs}
         onResetFilters={resetFilters}
