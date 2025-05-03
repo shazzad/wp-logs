@@ -42,18 +42,18 @@ class PluginSettings extends Settings {
 				'collapsed'   => false,
 				'fields'      => array(
 					array(
-						'id'    => 'swpl_max_logs_threshold',
-						'name'  => 'swpl_max_logs_threshold',
-						'label' => __( 'Max logs threshold', 'swpl' ),
-						'desc'  => __( 'Set the maximum number of logs to be stored in the database. Default is 1000.', 'swpl' ),
+						'id'    => 'swpl_log_retention_days',
+						'name'  => 'swpl_log_retention_days',
+						'label' => __( 'Retain Logs For', 'swpl' ),
+						'desc'  => __( 'Set the maximum number of days to retain logs. Default is 0, infinite.', 'swpl' ),
 						'type'  => 'number',
 						'min'   => 0,
 					),
 					array(
-						'id'    => 'swpl_max_requests_threshold',
-						'name'  => 'swpl_max_requests_threshold',
-						'label' => __( 'Max requests threshold', 'swpl' ),
-						'desc'  => __( 'Set the maximum number of requests to be stored in the database. Default is 1000.', 'swpl' ),
+						'id'    => 'swpl_request_retention_days',
+						'name'  => 'swpl_request_retention_days',
+						'label' => __( 'Retain Requests For', 'swpl' ),
+						'desc'  => __( 'Set the maximum number of days to retain requests. Default is 0, infinite.', 'swpl' ),
 						'type'  => 'number',
 						'min'   => 0,
 					),
@@ -66,15 +66,15 @@ class PluginSettings extends Settings {
 
 	public function get_settings() {
 		return array(
-			'swpl_max_logs_threshold'     => $this->get_setting( 'swpl_max_logs_threshold' ),
-			'swpl_max_requests_threshold' => $this->get_setting( 'swpl_max_requests_threshold' ),
+			'swpl_log_retention_days'     => $this->get_setting( 'swpl_log_retention_days' ),
+			'swpl_request_retention_days' => $this->get_setting( 'swpl_request_retention_days' ),
 		);
 	}
 
 	public function get_defaults() {
 		return array(
-			'swpl_max_logs_threshold'     => '0',
-			'swpl_max_requests_threshold' => '0',
+			'swpl_log_retention_days'     => '0',
+			'swpl_request_retention_days' => '0',
 		);
 	}
 }

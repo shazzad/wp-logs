@@ -55,6 +55,8 @@ final class Plugin {
 		// Load mustache, it is used for parsing message.
 		\Mustache_Autoloader::register();
 
+		Cleanup::setup();
+
 		RestApi::setup();
 
 		// Filter/action hook callbacks.

@@ -19,10 +19,10 @@ const PluginSettings = () => {
   } = useSettings(SETTING_ID);
 
   return (
-    <div className="hr__admin__page">
-      <h2 className="hr__admin__title">{__("User Settings", "swpl")}</h2>
+    <div className="swpl__page__content">
+      <h2>{__("User Settings", "swpl")}</h2>
 
-      <div className="hr__admin__section">
+      <div className="swpl__admin__section">
         {settingsError && (
           <p>
             {__("Error loading settings:", "swpl")} {settingsError}
@@ -30,29 +30,29 @@ const PluginSettings = () => {
         )}
 
         <CustomInputControl
-          label={__("Max logs threshold", "swpl")}
+          label={__("Retain Logs For", "swpl")}
           desc={__(
-            "Set the maximum number of logs to be stored in the database. Default is 1000.",
+            "Set the maximum number of days to retain logs. Default is 0, infinite.",
             "swpl"
           )}
-          value={settings?.swpl_max_logs_threshold || ""}
-          name={"swpl_max_logs_threshold"}
+          value={settings?.swpl_log_retention_days || ""}
+          name={"swpl_log_retention_days"}
           setSetting={setSetting}
         />
 
         <CustomInputControl
-          label={__("Max requests threshold", "swpl")}
+          label={__("Retain Requests for", "swpl")}
           desc={__(
-            "Set the maximum number of requests to be stored in the database. Default is 1000.",
+            "Set the maximum number of days to retain requests. Default is 0, infinite.",
             "swpl"
           )}
-          value={settings?.swpl_max_requests_threshold || ""}
-          name={"swpl_max_requests_threshold"}
+          value={settings?.swpl_request_retention_days || ""}
+          name={"swpl_request_retention_days"}
           setSetting={setSetting}
         />
       </div>
 
-      <div className="hr__admin__footer">
+      <div className="swpl__admin__footer">
         <Button
           __next40pxDefaultSize
           variant="primary"

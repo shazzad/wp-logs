@@ -40,10 +40,10 @@
 	margin-top: 5px;
 }
 
-.nav-tab-wrapper+div._note,
-.nav-tab-wrapper+div._error,
-.nav-tab-wrapper+div._updated,
-.nav-tab-wrapper+div._ok {
+.swpl__tab__wrapper+div._note,
+.swpl__tab__wrapper+div._error,
+.swpl__tab__wrapper+div._updated,
+.swpl__tab__wrapper+div._ok {
 	margin-top: 20px;
 }
 

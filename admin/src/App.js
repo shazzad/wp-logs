@@ -24,11 +24,11 @@ const App = () => {
 
   return (
     <Router>
-      <div className="swpl-app">
+      <div className="swpl-app swpl__admin">
         <h1>WP Logs</h1>
         <TabNavigation items={navItems} />
 
-        <div className="swpl-content-wrapper">
+        <div className="swpl__content__wrapper">
           <Routes>
             <Route path="/" element={<Navigate to="/logs" />} />
             <Route path="/logs" element={<Logs />} />

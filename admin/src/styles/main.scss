@@ -1,14 +1,11 @@
 // src/styles/main.scss
 
-// Minor resets only where needed - leverage WordPress admin styles
 .swpl-app {
-	// Let most styles inherit from WordPress admin
-
 	* {
 		box-sizing: border-box;
 	}
 }
 
-// Import all component styles
 @import 'tab-navigation.scss';
-@import 'logs.scss'; // Keep your existing logs.scss
+@import 'logs.scss';
+@import 'settings.scss';

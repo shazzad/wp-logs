@@ -267,7 +267,7 @@ const Requests = () => {
   };
 
   return (
-    <div className="swpl-page-content">
+    <div className="swpl__page__content">
       <h2>Requests</h2>
 
       <RequestFilters

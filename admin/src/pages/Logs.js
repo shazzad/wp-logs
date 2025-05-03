@@ -265,7 +265,7 @@ const Logs = () => {
   };
 
   return (
-    <div className="swpl-page-content">
+    <div className="swpl__page__content">
       <h2>Logs</h2>
 
       <LogFilters

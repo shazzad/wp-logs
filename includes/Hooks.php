@@ -14,13 +14,13 @@ use Mustache_Engine;
  */
 class Hooks {
 
-	public function __construct() {
-		add_action( 'swpl_log', [ $this, 'store_log' ], 10, 4 );
-		add_filter( 'swpl_format_message', [ $this, 'format_message' ], 20, 2 );
-		add_action( 'http_api_debug', [ $this, 'maybe_store_http_request' ], 10, 5 );
+	public static function setup() {
+		add_action( 'swpl_log', [ __CLASS__, 'store_log' ], 10, 4 );
+		add_filter( 'swpl_format_message', [ __CLASS__, 'format_message' ], 20, 2 );
+		add_action( 'http_api_debug', [ __CLASS__, 'maybe_store_http_request' ], 10, 5 );
 	}
 
-	public function store_log( $source, $message, $context = [], $level = 'info' ) {
+	public static function store_log( $source, $message, $context = [], $level = 'info' ) {
 		if ( empty( $message ) ) {
 			return;
 		}
@@ -39,7 +39,7 @@ class Hooks {
 		}
 	}
 
-	public function maybe_store_http_request( $response, $str, $request, $parsed_args, $url ) {
+	public static function maybe_store_http_request( $response, $str, $request, $parsed_args, $url ) {
 		$enabled = apply_filters( 'swpl_log_request', false, $url );
 
 		if ( ! $enabled ) {
@@ -82,7 +82,7 @@ class Hooks {
 		}
 	}
 
-	public function format_message( $message, $context = [] ) {
+	public static function format_message( $message, $context = [] ) {
 		if ( empty( $context ) ) {
 			return $message;
 		}
