@@ -1,7 +1,7 @@
-// src/components/BulkActions.js
+// src/components/LogsBulkActions.js
 import React from "react";
 
-const BulkActions = ({
+const LogsBulkActions = ({
   selectedCount,
   isLoading,
   isDeleting,
@@ -34,4 +34,4 @@ const BulkActions = ({
   );
 };
 
-export default BulkActions;
+export default LogsBulkActions;

@@ -75,12 +75,12 @@ The WordPress Logs Management System is a custom admin interface built using Rea
    - Handles log selection and sorting
    - Shows loading indicators when needed
 
-4. **BulkActions Component**:
+4. **LogsBulkActions Component**:
 
    - Provides controls for bulk operations
    - Shows selection count and action buttons
 
-5. **DeleteConfirmationModal Component**:
+5. **LogsDeleteConfirmationModal Component**:
 
    - Confirmation dialog for delete operations
    - Prevents accidental data loss

@@ -1,8 +1,8 @@
-// src/components/DeleteConfirmationModal.js
+// src/components/LogsDeleteConfirmationModal.js
 import React from "react";
 import { Spinner } from "@wordpress/components";
 
-const DeleteConfirmationModal = ({
+const LogsDeleteConfirmationModal = ({
   type,
   selectedCount,
   isDeleting,
@@ -52,4 +52,4 @@ const DeleteConfirmationModal = ({
   );
 };
 
-export default DeleteConfirmationModal;
+export default LogsDeleteConfirmationModal;

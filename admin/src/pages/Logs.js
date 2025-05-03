@@ -5,8 +5,8 @@ import SimplePagination from "../components/SimplePagination";
 import LogDetailsModal from "../components/LogDetailsModal";
 import LogFilters from "../components/LogFilters";
 import LogTable from "../components/LogTable";
-import BulkActions from "../components/BulkActions";
-import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
+import LogsBulkActions from "../components/LogsBulkActions";
+import LogsDeleteConfirmationModal from "../components/LogsDeleteConfirmationModal";
 
 const Logs = () => {
   const [logs, setLogs] = useState([]);
@@ -288,7 +288,7 @@ const Logs = () => {
         </div>
       )}
 
-      <BulkActions
+      <LogsBulkActions
         selectedCount={selectedLogs.length}
         isLoading={isLoading}
         isDeleting={isDeleting}
@@ -328,7 +328,7 @@ const Logs = () => {
       )}
 
       {confirmDelete && (
-        <DeleteConfirmationModal
+        <LogsDeleteConfirmationModal
           type={confirmDelete}
           selectedCount={selectedLogs.length}
           isDeleting={isDeleting}
