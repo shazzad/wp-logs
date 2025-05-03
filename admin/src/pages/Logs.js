@@ -7,7 +7,6 @@ import LogFilters from "../components/LogFilters";
 import LogTable from "../components/LogTable";
 import BulkActions from "../components/BulkActions";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
-import "../styles/logs.scss";
 
 const Logs = () => {
   const [logs, setLogs] = useState([]);
@@ -266,8 +265,8 @@ const Logs = () => {
   };
 
   return (
-    <div className="swpl-admin-page">
-      <h1 className="wpl-admin-page-heading">Logs</h1>
+    <div className="swpl-page-content">
+      <h2>Logs</h2>
 
       <LogFilters
         searchTerm={searchTerm}
@@ -293,15 +292,15 @@ const Logs = () => {
         selectedCount={selectedLogs.length}
         isLoading={isLoading}
         isDeleting={isDeleting}
-        hasLogs={displayLogs.length > 0}
+        hasLogs={logs.length > 0}
         onDeleteSelected={() => showDeleteConfirmation("selected")}
         onDeleteAll={() => showDeleteConfirmation("all")}
       />
 
       <LogTable
-        logs={displayLogs}
+        logs={logs}
         isLoading={isLoading}
-        isLoadingNewData={isLoading && displayLogs.length > 0}
+        isLoadingNewData={isLoading && logs.length > 0}
         selectedLogs={selectedLogs}
         sortField={sortField}
         sortOrder={sortOrder}
@@ -314,7 +313,7 @@ const Logs = () => {
       {totalPages > 1 && (
         <div className="swpl-pagination">
           <div className="swpl-pagination-info">
-            Showing {displayLogs.length} of {totalItems} logs
+            Showing {logs.length} of {totalItems} logs
           </div>
           <SimplePagination
             currentPage={currentPage}

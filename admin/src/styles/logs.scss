@@ -60,7 +60,6 @@ $mobile-breakpoint: 782px;
 // Filters Section
 // =============================================================================
 .swpl-admin-filters {
-	@include card;
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 20px;
