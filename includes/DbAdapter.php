@@ -14,7 +14,7 @@ class DbAdapter {
 	public static function prefix_table( $table ) {
 		global $wpdb;
 
-		if ( in_array( $table, [ 'logs' ] ) ) {
+		if ( in_array( $table, [ 'logs', 'requests' ] ) ) {
 			return "{$wpdb->prefix}swpl_{$table}";
 		} else {
 			return "{$wpdb->prefix}{$table}";

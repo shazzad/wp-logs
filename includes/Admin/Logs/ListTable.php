@@ -44,20 +44,20 @@ class ListTable extends \WP_List_Table {
 	# Queryable Columns
 	public function get_queryable_columns() {
 		return [
-			's'      => array( 'search', __( 'Search Result: ', 'shazzad-wp-logs' ) ),
-			'level'  => array( 'level', __( 'Level: ', 'shazzad-wp-logs' ) ),
-			'date'   => array( 'timestamp', __( 'Date: ', 'shazzad-wp-logs' ) ),
-			'source' => array( 'source', __( 'Source: ', 'shazzad-wp-logs' ) )
+			's'      => [ 'search', __( 'Search Result: ', 'shazzad-wp-logs' ) ],
+			'level'  => [ 'level', __( 'Level: ', 'shazzad-wp-logs' ) ],
+			'date'   => [ 'timestamp', __( 'Date: ', 'shazzad-wp-logs' ) ],
+			'source' => [ 'source', __( 'Source: ', 'shazzad-wp-logs' ) ]
 		];
 	}
 
 	# Sortable Columns
 	public function get_sortable_columns() {
 		return [
-			'id'     => array( 'id' ),
-			'level'  => array( 'level' ),
-			'source' => array( 'source' ),
-			'date'   => array( 'timestamp' )
+			'id'     => [ 'id' ],
+			'level'  => [ 'level' ],
+			'source' => [ 'source' ],
+			'date'   => [ 'timestamp' ]
 		];
 	}
 
@@ -109,21 +109,21 @@ class ListTable extends \WP_List_Table {
 
 		$this->items = $query->get_objects();
 
-		$this->set_pagination_args( array(
+		$this->set_pagination_args( [
 			'total_items' => (int) $query->found_items,
 			'total_pages' => (int) $query->max_num_pages,
 			'per_page'    => (int) $per_page,
-		) );
+		] );
 	}
 
 	# prepare / init
 	public function register_screen_options() {
 		$option = 'per_page';
-		$args   = array(
+		$args   = [
 			'label'   => __( 'Number of items per page:' ),
 			'default' => 10,
 			'option'  => 'swpl_logs_per_page'
-		);
+		];
 
 		add_screen_option( $option, $args );
 	}
@@ -188,7 +188,7 @@ class ListTable extends \WP_List_Table {
 
 	public function get_views() {
 		$base_url = remove_query_arg(
-			array(
+			[
 				'action',
 				'filter_action',
 				'paged',
@@ -199,19 +199,19 @@ class ListTable extends \WP_List_Table {
 				's',
 				'source',
 				'level',
-			)
+			]
 		);
 
 		$view_active = false;
-		$links       = array(
-			array(
+		$links       = [
+			[
 				'type'  => 'all',
 				'count' => '',
 				'name'  => __( 'All', 'shazzad-wp-logs' ),
 				'url'   => $base_url,
 				'class' => ''
-			)
-		);
+			]
+		];
 
 		foreach ( $this->get_queryable_columns() as $qr => $qc ) {
 			if ( isset( $_GET[$qr] ) && ! empty( $_GET[$qr] ) && $_GET[$qr] != '-1' ) {
@@ -222,13 +222,13 @@ class ListTable extends \WP_List_Table {
 
 				$count = urldecode( $_GET[$qr] );
 
-				$links[] = array(
+				$links[] = [
 					'type'  => $qr,
 					'count' => $count,
 					'name'  => $name,
 					'url'   => add_query_arg( $qr, $value, $base_url ),
 					'class' => 'active'
-				);
+				];
 			}
 		}
 
@@ -238,7 +238,7 @@ class ListTable extends \WP_List_Table {
 			$links['0']['name'] = __( 'All Logs', 'shazzad-wp-logs' );
 		}
 
-		$_links = array();
+		$_links = [];
 		foreach ( $links as $link ) {
 			$type     = $link['type'];
 			$type_txt = '';
@@ -273,7 +273,7 @@ class ListTable extends \WP_List_Table {
 	public function column_title( $log ) {
 		echo apply_filters( 'swpl_format_message', $log->get_message(), $log->get_context() );
 
-		$actions = array();
+		$actions = [];
 
 		$actions['delete'] = '<a href="' . add_query_arg( [ 'action' => 'delete', 'id' => $log->get_id() ] ) . '">Delete</a>';
 		$actions['view']   = '<a href="' . add_query_arg( [ 'action' => 'view', 'id' => $log->get_id() ] ) . '">View</a>';
@@ -345,7 +345,7 @@ class ListTable extends \WP_List_Table {
 			<input type="text" name="s" id="<?php echo $input_id ?>" value="<?php _admin_search_query(); ?>"
 				placeholder="<?php esc_attr_e( 'Message..', 'shazzad-wp-logs' ); ?>"
 				title="<?php esc_attr_e( 'Search by message', 'shazzad-wp-logs' ); ?>" />
-			<?php submit_button( $text, 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
+			<?php submit_button( $text, 'button', false, false, [ 'id' => 'search-submit' ] ); ?>
 		</p>
 		<?php
 	}

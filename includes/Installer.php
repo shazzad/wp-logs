@@ -6,6 +6,10 @@
  */
 namespace Shazzad\WpLogs;
 
+use Shazzad\WpLogs\DbAdapter;
+
+require_once __DIR__ . '/DbAdapter.php';
+
 class Installer {
 
 	public static function activate() {
@@ -47,13 +51,43 @@ class Installer {
 			$sql[] = "CREATE TABLE {$logs} (
 				id BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT,
 				timestamp datetime NOT NULL,
-				level VARCHAR( 9 ) NOT NULL,
 				source VARCHAR( 200 ) NOT NULL,
+				level VARCHAR( 9 ) NOT NULL,
 				message TEXT NOT NULL,
 				context LONGTEXT NULL DEFAULT '',
-				PRIMARY KEY  ( id )
+				PRIMARY KEY  ( id ),
+				KEY source (source)
 			 ) {$charset_collate};";
 		}
+
+		// Create requests table
+		$requests = DbAdapter::prefix_table( 'requests' );
+
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$requests'" ) != $requests ) {
+			$sql[] = "CREATE TABLE {$requests} (
+				id BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT,
+				timestamp datetime NOT NULL,
+				source VARCHAR( 200 ) NOT NULL,
+				request_method VARCHAR( 10 ) NOT NULL,
+				request_url VARCHAR( 255 ) NOT NULL,
+				request_hostname VARCHAR( 100 ) NOT NULL,
+				request_headers TEXT NULL DEFAULT '',
+				request_payload TEXT NULL DEFAULT '',
+				response_code SMALLINT NULL,
+				response_size BIGINT NULL,
+				response_time FLOAT NULL,
+				response_headers TEXT NULL DEFAULT '',
+				response_data LONGTEXT NULL DEFAULT '',
+				PRIMARY KEY  ( id ),
+				KEY source (source),
+				KEY request_hostname (request_hostname),
+				KEY response_code (response_code)
+			 ) {$charset_collate};";
+		}
+
+		// return $sql;
+
+		// print_r( $sql );
 
 		if ( ! empty( $sql ) ) {
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';

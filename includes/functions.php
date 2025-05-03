@@ -27,6 +27,10 @@ function swpl_get_levels() {
 	];
 }
 
+function swpl_get_logable_requests() {
+	return apply_filters( 'swpl_logable_requests', [] );
+}
+
 function swpl_clear_cache() {
 	delete_transient( 'swpl_sources' );
 }
@@ -39,4 +43,8 @@ function swpl_debug( $data, $die = false ) {
 	if ( $die ) {
 		die();
 	}
+}
+
+function swpl_log( $message, $context = [] ) {
+	do_action( 'swpl_log', 'Log', $message, $context );
 }

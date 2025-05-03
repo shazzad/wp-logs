@@ -128,6 +128,8 @@ class Page implements PageInterface {
 	}
 
 	public function render_page() {
+
+
 		$req_action = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 		$page_title    = __( 'Logs' );
@@ -149,6 +151,26 @@ class Page implements PageInterface {
 		<div class="wrap swpl-wrap">
 			<?php
 
+			// swpl_debug( wp_remote_request( 'https://reqres.in/api/users?page=1' ) );
+			// swpl_debug( wp_remote_request( 'https://reqres.in/api/users?page=2' ) );
+			// swpl_debug( \Shazzad\WpLogs\Installer::install_tables() );
+			// test
+			// add_filter( 'swpl_log_request', function ($enabled, $url) {
+			// 	if ( 0 === strpos( $url, 'https://reqres.in/api/users' ) ) {
+			// 		return true;
+			// 	}
+			// 	return $enabled;
+			// }, 10, 2 );
+			// $response = wp_remote_get( 'https://reqres.in/api/users?page=1', [
+			// 	'headers' => array(
+			// 		'Accept' => 'application/json',
+			// 	),
+			// 	'body'    => array(
+			// 		'foo' => 'bar',
+			// 	),
+			// 	'timeout' => 15,
+			// ] );
+	
 			if ( 'view' === $req_action && isset( $_REQUEST['id'] ) ) {
 				$log = new LogData( intval( $_REQUEST['id'] ) );
 				?>

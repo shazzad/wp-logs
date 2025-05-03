@@ -24,7 +24,7 @@ if ( defined( 'SWPL_PLUGIN_FILE' ) ) {
 	return;
 }
 
-define( 'SWPL_VERSION', '1.1.6' );
+define( 'SWPL_VERSION', '1.1.6.3' );
 define( 'SWPL_PLUGIN_FILE', __FILE__ );
 define( 'SWPL_DIR', plugin_dir_path( SWPL_PLUGIN_FILE ) );
 define( 'SWPL_URL', plugin_dir_url( SWPL_PLUGIN_FILE ) );
@@ -68,7 +68,6 @@ shazzad_wp_logs();
  */
 function swpl_install() {
 	require_once __DIR__ . '/includes/Installer.php';
-	require_once __DIR__ . '/includes/DbAdapter.php';
 
 	Shazzad\WpLogs\Installer::activate();
 }
