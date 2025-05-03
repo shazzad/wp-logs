@@ -14,8 +14,8 @@ use Shazzad\WpLogs\Utils;
 class Page implements PageInterface {
 
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'admin_menu' ), 200 );
-		add_filter( 'parent_file', array( $this, 'highlight_submenu' ) );
+		add_action( 'admin_menu', [ $this, 'admin_menu' ], 200 );
+		add_filter( 'parent_file', [ $this, 'highlight_submenu' ] );
 		add_filter( 'set-screen-option', [ $this, 'set_screen_option' ], 10, 3 );
 		add_filter( 'set_screen_option_swpl_requests_per_page', [ $this, 'set_screen_option' ], 10, 3 );
 	}
@@ -32,9 +32,9 @@ class Page implements PageInterface {
 			[ $this, 'render_page' ],
 		);
 
-		add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
-		add_action( "load-{$admin_page}", array( $this, 'load_page' ) );
-		add_action( "load-{$admin_page}", array( $this, 'handle_actions' ) );
+		add_action( "admin_print_styles-{$admin_page}", [ $this, 'print_scripts' ] );
+		add_action( "load-{$admin_page}", [ $this, 'load_page' ] );
+		add_action( "load-{$admin_page}", [ $this, 'handle_actions' ] );
 	}
 
 	public function set_screen_option( $status, $option, $value ) {
@@ -54,7 +54,7 @@ class Page implements PageInterface {
 			if ( 'delete' === $req_action ) {
 				$handle = $api->handle( 'delete', $_REQUEST );
 			} elseif ( 'bulk_delete' === $req_action ) {
-				$handle = $api->handle( 'batch', array( 'delete' => $_REQUEST['ids'] ) );
+				$handle = $api->handle( 'batch', [ 'delete' => $_REQUEST['ids'] ] );
 			} elseif ( 'delete_all' === $req_action ) {
 				$handle = $api->handle( 'delete_all', $_REQUEST );
 			}
@@ -74,13 +74,13 @@ class Page implements PageInterface {
 
 			wp_redirect(
 				add_query_arg(
-					array(
+					[
 						'id'      => false,
 						'ids'     => false,
 						'action'  => false,
 						'message' => $message ? urlencode( $message ) : false,
 						'error'   => $error ? urldecode( $error ) : false
-					)
+					]
 				)
 			);
 			exit;
@@ -129,27 +129,6 @@ class Page implements PageInterface {
 
 		<div class="wrap swpl-wrap">
 			<?php
-
-			// swpl_debug( wp_remote_request( 'https://reqres.in/api/users?page=1' ) );
-			// swpl_debug( wp_remote_request( 'https://reqres.in/api/users?page=2' ) );
-			// swpl_debug( \Shazzad\WpLogs\Installer::install_tables() );
-			// test
-			// add_filter( 'swpl_log_request', function ($enabled, $url) {
-			// 	if ( 0 === strpos( $url, 'https://reqres.in/api/users' ) ) {
-			// 		return true;
-			// 	}
-			// 	return $enabled;
-			// }, 10, 2 );
-			// $response = wp_remote_get( 'https://reqres.in/api/users?page=1', [
-			// 	'headers' => array(
-			// 		'Accept' => 'application/json',
-			// 	),
-			// 	'body'    => array(
-			// 		'foo' => 'bar',
-			// 	),
-			// 	'timeout' => 15,
-			// ] );
-	
 			if ( 'view' === $req_action && isset( $_REQUEST['id'] ) ) {
 				$log = new RequestData( intval( $_REQUEST['id'] ) );
 				?>
@@ -158,7 +137,7 @@ class Page implements PageInterface {
 					<?php printf( __( 'View Request: # %d', 'shazzad-wp-logs' ), $log->get_id() ); ?>
 				</h1>
 
-				<a class="page-title-action" href="<?php echo remove_query_arg( array( 'id', 'action' ) ); ?>">
+				<a class="page-title-action" href="<?php echo remove_query_arg( [ 'id', 'action' ] ); ?>">
 					<?php _e( 'Back to logs' ); ?>
 				</a>
 
@@ -180,10 +159,10 @@ class Page implements PageInterface {
 
 					<a class="page-title-action" href="<?php
 					echo add_query_arg(
-						array(
+						[
 							'action'    => 'delete_all',
 							'menu_item' => $menu_item_key
-						)
+						]
 					);
 					?>">
 					<?php _e( 'Delete All' ); ?>

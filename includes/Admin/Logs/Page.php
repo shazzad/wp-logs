@@ -13,9 +13,9 @@ use Shazzad\WpLogs\Utils;
 
 class Page implements PageInterface {
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'admin_menu' ), 100 );
-		add_action( 'admin_menu', array( $this, 'add_submenus' ), 100 );
-		add_filter( 'parent_file', array( $this, 'highlight_submenu' ) );
+		add_action( 'admin_menu', [ $this, 'admin_menu' ], 100 );
+		add_action( 'admin_menu', [ $this, 'add_submenus' ], 100 );
+		add_filter( 'parent_file', [ $this, 'highlight_submenu' ] );
 		add_filter( 'set-screen-option', [ $this, 'set_screen_option' ], 10, 3 );
 		add_filter( 'set_screen_option_swpl_logs_per_page', [ $this, 'set_screen_option' ], 10, 3 );
 	}
@@ -31,9 +31,9 @@ class Page implements PageInterface {
 			'dashicons-warning'
 		);
 
-		add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
-		add_action( "load-{$admin_page}", array( $this, 'load_page' ) );
-		add_action( "load-{$admin_page}", array( $this, 'handle_actions' ) );
+		add_action( "admin_print_styles-{$admin_page}", [ $this, 'print_scripts' ] );
+		add_action( "load-{$admin_page}", [ $this, 'load_page' ] );
+		add_action( "load-{$admin_page}", [ $this, 'handle_actions' ] );
 
 		// Register menu for each of the item.
 		$menu_items = Utils::get_menu_items();
@@ -50,9 +50,9 @@ class Page implements PageInterface {
 						[ $this, 'render_page' ]
 					);
 
-					add_action( "admin_print_styles-{$admin_page}", array( $this, 'print_scripts' ) );
-					add_action( "load-{$admin_page}", array( $this, 'load_page' ) );
-					add_action( "load-{$admin_page}", array( $this, 'handle_actions' ) );
+					add_action( "admin_print_styles-{$admin_page}", [ $this, 'print_scripts' ] );
+					add_action( "load-{$admin_page}", [ $this, 'load_page' ] );
+					add_action( "load-{$admin_page}", [ $this, 'handle_actions' ] );
 				}
 			}
 		}
@@ -75,7 +75,7 @@ class Page implements PageInterface {
 			if ( 'delete' === $req_action ) {
 				$handle = $api->handle( 'delete', $_REQUEST );
 			} elseif ( 'bulk_delete' === $req_action ) {
-				$handle = $api->handle( 'batch', array( 'delete' => $_REQUEST['ids'] ) );
+				$handle = $api->handle( 'batch', [ 'delete' => $_REQUEST['ids'] ] );
 			} elseif ( 'delete_all' === $req_action ) {
 				$handle = $api->handle( 'delete_all', $_REQUEST );
 			}
@@ -95,13 +95,13 @@ class Page implements PageInterface {
 
 			wp_redirect(
 				add_query_arg(
-					array(
+					[
 						'id'      => false,
 						'ids'     => false,
 						'action'  => false,
 						'message' => $message ? urlencode( $message ) : false,
 						'error'   => $error ? urldecode( $error ) : false
-					)
+					]
 				)
 			);
 			exit;
@@ -128,8 +128,6 @@ class Page implements PageInterface {
 	}
 
 	public function render_page() {
-
-
 		$req_action = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 		$page_title    = __( 'Logs' );
@@ -149,28 +147,10 @@ class Page implements PageInterface {
 		?>
 
 		<div class="wrap swpl-wrap">
+			<div id="homerunner-react-app"></div>
+
 			<?php
 
-			// swpl_debug( wp_remote_request( 'https://reqres.in/api/users?page=1' ) );
-			// swpl_debug( wp_remote_request( 'https://reqres.in/api/users?page=2' ) );
-			// swpl_debug( \Shazzad\WpLogs\Installer::install_tables() );
-			// test
-			// add_filter( 'swpl_log_request', function ($enabled, $url) {
-			// 	if ( 0 === strpos( $url, 'https://reqres.in/api/users' ) ) {
-			// 		return true;
-			// 	}
-			// 	return $enabled;
-			// }, 10, 2 );
-			// $response = wp_remote_get( 'https://reqres.in/api/users?page=1', [
-			// 	'headers' => array(
-			// 		'Accept' => 'application/json',
-			// 	),
-			// 	'body'    => array(
-			// 		'foo' => 'bar',
-			// 	),
-			// 	'timeout' => 15,
-			// ] );
-	
 			if ( 'view' === $req_action && isset( $_REQUEST['id'] ) ) {
 				$log = new LogData( intval( $_REQUEST['id'] ) );
 				?>
@@ -179,7 +159,7 @@ class Page implements PageInterface {
 					<?php printf( __( 'View Log: # %d', 'shazzad-wp-logs' ), $log->get_id() ); ?>
 				</h1>
 
-				<a class="page-title-action" href="<?php echo remove_query_arg( array( 'id', 'action' ) ); ?>">
+				<a class="page-title-action" href="<?php echo remove_query_arg( [ 'id', 'action' ] ); ?>">
 					<?php _e( 'Back to logs' ); ?>
 				</a>
 
@@ -212,10 +192,10 @@ class Page implements PageInterface {
 
 					<a class="page-title-action" href="<?php
 					echo add_query_arg(
-						array(
+						[
 							'action'    => 'delete_all',
 							'menu_item' => $menu_item_key
-						)
+						]
 					);
 					?>">
 					<?php _e( 'Delete All' ); ?>
@@ -258,21 +238,21 @@ class Page implements PageInterface {
 		$access_cap = apply_filters( 'shazzad_wp_logs/page_access_cap/logs', 'manage_options' );
 
 		if ( ! isset( $submenu['shazzad-wp-logs'] ) ) {
-			$submenu['shazzad-wp-logs'] = array();
+			$submenu['shazzad-wp-logs'] = [];
 		}
 
-		$submenu['shazzad-wp-logs'][] = array(
+		$submenu['shazzad-wp-logs'][] = [
 			__( 'All Logs' ),
 			$access_cap,
 			'admin.php?page=shazzad-wp-logs'
-		);
+		];
 
 		foreach ( $menu_items as $key => $menu_item ) {
-			$submenu['shazzad-wp-logs'][] = array(
+			$submenu['shazzad-wp-logs'][] = [
 				$menu_item['menu_title'],
 				$access_cap,
 				"admin.php?page=shazzad-wp-logs&menu_item={$key}"
-			);
+			];
 		}
 	}
 
@@ -295,5 +275,36 @@ class Page implements PageInterface {
 		wp_enqueue_script( 'swpl-admin-logs' );
 
 		do_action( 'shazzad_wp_logs/admin_page/print_styles/logs' );
+
+		$asset_file = include SWPL_DIR . 'admin/build/index.asset.php';
+
+		wp_enqueue_script(
+			'swpl-admin-app',
+			SWPL_URL . 'admin/build/index.js',
+			$asset_file['dependencies'],
+			$asset_file['version'],
+			true
+		);
+
+		// Pass the `homelocalApiSettings` object
+		wp_localize_script(
+			'swpl-admin-app',
+			'swplAdminAppSettings',
+			array(
+				'root'       => esc_url_raw( rest_url() ),
+				'nonce'      => wp_create_nonce( 'wp_rest' ),
+				'levels'     => swpl_get_levels(),
+				'logSources' => swpl_get_sources(),
+
+			)
+		);
+
+		// style.
+		wp_enqueue_style(
+			'swpl-admin-app',
+			SWPL_URL . 'admin/build/index.css',
+			[],
+			time()
+		);
 	}
 }

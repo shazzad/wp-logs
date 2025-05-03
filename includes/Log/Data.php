@@ -210,7 +210,6 @@ class Data extends AbstractData {
 		if ( is_object( $data ) ) {
 			$data = get_object_vars( $data );
 		}
-
 		if ( ! empty( $data ) ) {
 			$self->set_defaults();
 			$self->set_props( $self->pre_get_filter( $data ) );

@@ -1,0 +1,221 @@
+/* src/styles/logs.css */
+.swpl-admin-toolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 16px;
+}
+
+.swpl-search-control {
+	flex: 1;
+	max-width: 300px;
+}
+
+.log-level {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.log-level-debug {
+	background-color: #e7f5ff;
+	color: #0366d6;
+}
+
+.log-level-info {
+	background-color: #e6f6e6;
+	color: #28a745;
+}
+
+.log-level-warning {
+	background-color: #fff5e6;
+	color: #f0ad4e;
+}
+
+.log-level-error {
+	background-color: #ffeaea;
+	color: #dc3545;
+}
+
+.log-context {
+	background-color: #f8f9fa;
+	padding: 8px;
+	border-radius: 3px;
+	max-height: 200px;
+	overflow: auto;
+	white-space: pre-wrap;
+	word-break: break-all;
+	font-size: 12px;
+}
+
+.swpl-pagination {
+	margin-top: 16px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.swpl-pagination-info {
+	font-size: 13px;
+	color: #555;
+}
+
+.swpl-pagination-nav {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.swpl-pagination-ellipsis {
+	margin: 0 5px;
+}
+
+.swpl-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 40px 0;
+}
+
+// src/styles/logs.scss
+
+// Modal styles
+.swpl-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 100000;
+}
+
+.swpl-modal-content {
+	background-color: white;
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	width: 90%;
+	max-width: 800px;
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.swpl-modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px;
+	border-bottom: 1px solid #e2e4e7;
+}
+
+.swpl-modal-header h2 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.swpl-modal-close {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 24px;
+	color: #555;
+	padding: 0;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+
+	&:hover {
+		color: #d94f4f;
+	}
+}
+
+.swpl-modal-body {
+	padding: 16px;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.swpl-modal-footer {
+	padding: 16px;
+	border-top: 1px solid #e2e4e7;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.swpl-log-details {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.swpl-log-detail-item {
+	display: flex;
+	flex-direction: column;
+
+	strong {
+		margin-bottom: 5px;
+	}
+}
+
+.swpl-log-context {
+	background-color: #f8f9fa;
+	padding: 10px;
+	border-radius: 3px;
+	overflow: auto;
+	white-space: pre-wrap;
+	word-break: break-all;
+	max-height: 400px;
+	font-size: 13px;
+	border: 1px solid #e2e4e7;
+}
+
+// Add these styles to src/styles/logs.scss
+
+// Filter controls
+.swpl-admin-filters {
+	margin-bottom: 20px;
+	background: #fff;
+	padding: 16px;
+	border: 1px solid #e2e4e7;
+	border-radius: 4px;
+}
+
+.swpl-search-wrapper {
+	margin-bottom: 16px;
+
+	.swpl-search-control {
+		width: 100%;
+		max-width: 100%;
+	}
+}
+
+.swpl-filter-controls {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+
+	@media (max-width: 782px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.swpl-filter-buttons {
+	grid-column: 1 / -1;
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+	margin-top: 8px;
+}
+
+.swpl-filter-select {
+	width: 100%;
+}

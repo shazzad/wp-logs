@@ -1,8 +1,9 @@
 <?php
 /**
- * Rest api for property quote.
+ * REST API controller for logs management.
  *
- * @package HomerunnerLocal
+ * @package Shazzad\WpLogs
+ * @since 1.0.0
  */
 namespace Shazzad\WpLogs\RestController;
 
@@ -19,16 +20,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * QuoteController class.
+ * LogController class for handling REST API endpoints for logs management.
+ * 
+ * Provides endpoints to fetch, view, and delete log entries.
+ * 
+ * @since 1.0.0
  */
 class LogController extends WP_REST_Controller {
 
+	/**
+	 * The namespace of this controller's route.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
 	protected $namespace = 'wp/v2';
 
+	/**
+	 * The base of this controller's route.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
 	protected $rest_base = 'logs';
 
 	/**
-	 * Register routes.
+	 * Register REST API routes for log management.
+	 *
+	 * @since 1.0.0
+	 * @return void
 	 */
 	public function register_routes() {
 		register_rest_route(
@@ -62,11 +82,11 @@ class LogController extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get log items with pagination
-	 * 
-	 * @param WP_REST_Request $request
-	 * 
-	 * @return WP_REST_Response|WP_Error
+	 * Retrieves a collection of log items with support for filtering and pagination.
+	 *
+	 * @since 1.0.0
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
 		$query_args = [
@@ -98,14 +118,7 @@ class LogController extends WP_REST_Controller {
 
 		$data = [];
 		foreach ( $items as $item ) {
-			$data[] = [
-				'id'      => $item->get_id(),
-				'date'    => $item->get_timestamp(),
-				'level'   => $item->get_level(),
-				'source'  => $item->get_source(),
-				'message' => $item->get_message(),
-				'context' => $item->get_context(),
-			];
+			$data[] = $this->prepare_item( $item, $request );
 		}
 
 		$response = new WP_REST_Response( [ 'data' => $data ], 200 );
@@ -129,11 +142,33 @@ class LogController extends WP_REST_Controller {
 	}
 
 	/**
-	 * Update quote
+	 * Retrieves a single log item.
 	 *
-	 * @param WP_REST_Request $request
+	 * @since 1.0.0
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_item( $request ) {
+		$query = new Log\Query( [ 'id' => $request['id'] ] );
+		$query->query();
+
+		$items = $query->get_objects();
+
+		if ( empty( $items ) ) {
+			return new WP_Error( 'log_not_found', __( 'Log not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
+		}
+
+		$item = $items[0];
+
+		return new WP_REST_Response( [ 'data' => $this->prepare_item( $item, $request ) ], 200 );
+	}
+
+	/**
+	 * Deletes a single log item.
 	 *
-	 * @return WP_REST_Response|WP_Error
+	 * @since 1.0.0
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function delete_item( $request ) {
 		$table = DbAdapter::prefix_table( 'logs' );
@@ -152,55 +187,53 @@ class LogController extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get quote
+	 * Prepares a log item for response.
 	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return WP_REST_Response|WP_Error
+	 * @since 1.0.0
+	 * @param object          $item    Log item object.
+	 * @param WP_REST_Request $request Request object.
+	 * @return array Response data for the log item.
 	 */
-	public function get_item( $request ) {
-		$table = DbAdapter::prefix_table( 'logs' );
-
-		$query = new Log\Query( [ 'id' => $request['id'] ] );
-		$query->query();
-
-		$items = $query->get_objects();
-
-		if ( empty( $items ) ) {
-			return new WP_Error( 'log_not_found', __( 'Log not found', 'shazzad-wp-logs' ), [ 'status' => 404 ] );
-		}
-
-		return new WP_REST_Response( $items[0], 200 );
+	protected function prepare_item( $item, $request ) {
+		return [
+			'id'      => $item->get_id(),
+			'date'    => $item->get_timestamp(),
+			'level'   => $item->get_level(),
+			'source'  => $item->get_source(),
+			'message' => $item->get_message(),
+			'context' => $item->get_context(),
+		];
 	}
 
+
 	/**
-	 * Check for required parameters.
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return bool|WP_Error
+	 * Checks whether a user has permission to list logs.
+	 * 
+	 * @since 1.0.0
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return bool True if the request has permission to view logs, false otherwise.
 	 */
 	public function get_items_permission_callback( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check for required parameters.
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return bool|WP_Error
+	 * Checks whether a user has permission to view a specific log item.
+	 * 
+	 * @since 1.0.0
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return bool True if the request has permission to view the log item, false otherwise.
 	 */
 	public function get_item_permission_callback( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check for required parameters.
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return bool|WP_Error
+	 * Checks whether a user has permission to delete a specific log item.
+	 * 
+	 * @since 1.0.0
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return bool True if the request has permission to delete the log item, false otherwise.
 	 */
 	public function delete_item_permission_callback( $request ) {
 		return current_user_can( 'manage_options' );
