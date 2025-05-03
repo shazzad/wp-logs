@@ -1,5 +1,17 @@
 <?php
+/**
+ * Utility functions for Shazzad WP Logs
+ *
+ * This file contains helper functions used throughout the Shazzad WP Logs plugin.
+ *
+ * @package Shazzad\WpLogs
+ */
 
+/**
+ * Gets distinct log sources from the database.
+ *
+ * @return array Array of unique log source names.
+ */
 function swpl_get_sources() {
 	$cache_key = 'swpl_sources';
 
@@ -15,6 +27,11 @@ function swpl_get_sources() {
 	return $sources;
 }
 
+/**
+ * Gets available log levels with translations.
+ *
+ * @return array Associative array of log levels.
+ */
 function swpl_get_levels() {
 	return [
 		'debug'     => __( 'Debug', 'swpl' ),
@@ -27,6 +44,11 @@ function swpl_get_levels() {
 	];
 }
 
+/**
+ * Gets distinct request hostnames from the database.
+ *
+ * @return array Array of unique request hostnames.
+ */
 function swpl_get_request_hostnames() {
 	$cache_key = 'swpl_request_hostnames';
 
@@ -42,6 +64,11 @@ function swpl_get_request_hostnames() {
 	return $hostnames;
 }
 
+/**
+ * Gets available HTTP request methods with translations.
+ *
+ * @return array Associative array of HTTP request methods.
+ */
 function swpl_get_request_methods() {
 	return [
 		'GET'     => __( 'GET', 'swpl' ),
@@ -53,10 +80,22 @@ function swpl_get_request_methods() {
 	];
 }
 
+/**
+ * Clears the plugin's cached data.
+ *
+ * @return void
+ */
 function swpl_clear_cache() {
 	delete_transient( 'swpl_sources' );
 }
 
+/**
+ * Outputs debug information in a readable format.
+ *
+ * @param mixed $data The data to be debugged.
+ * @param bool  $die  Whether to terminate script execution after output.
+ * @return void
+ */
 function swpl_debug( $data, $die = false ) {
 	echo '<pre>';
 	print_r( $data );
@@ -67,6 +106,13 @@ function swpl_debug( $data, $die = false ) {
 	}
 }
 
+/**
+ * Logs a message.
+ *
+ * @param string $message The log message.
+ * @param array  $context Additional data to be logged.
+ * @return void
+ */
 function swpl_log( $message, $context = [] ) {
 	do_action( 'swpl_log', 'Log', $message, $context );
 }

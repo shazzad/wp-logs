@@ -1,10 +1,34 @@
 <?php
+/**
+ * WP-CLI command to generate dummy log entries.
+ *
+ * Uses Faker to create a specified number of log records for testing the log system.
+ *
+ * @package Shazzad\WpLogs\Commands
+ * @since 1.0.0
+ */
 namespace Shazzad\WpLogs\Commands;
 
 use WP_CLI;
 use Faker\Factory;
 
+/**
+ * Class GenerateLogsCommand
+ *
+ * Implements the 'swpl-generate-logs' WP-CLI command for generating dummy logs.
+ *
+ * @package Shazzad\WpLogs\Commands
+ * @since 1.0.0
+ */
 class GenerateLogsCommand {
+
+	/**
+	 * Handle the WP-CLI 'swpl-generate-logs' command invocation.
+	 *
+	 * @param array $args Positional command arguments.
+	 * @param array $assoc_args Associative command arguments; supports 'count' (int).
+	 * @return void
+	 */
 	public function __invoke( $args, $assoc_args ) {
 		$count = isset( $assoc_args['count'] ) ? (int) $assoc_args['count'] : 1000;
 
