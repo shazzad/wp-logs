@@ -7,8 +7,7 @@ namespace Shazzad\WpLogs\Admin;
  */
 
 
-interface PageInterface
-{
+interface PageInterface {
 	public function load_page();
 	public function handle_actions();
 	public function print_scripts();

@@ -8,7 +8,9 @@ import {
   useLocation,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import Logs from "./pages/Logs";
+import Requests from "./pages/Requests";
 import TabNavigation from "./components/TabNavigation";
 
 const App = () => {
@@ -30,7 +32,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/logs" />} />
             <Route path="/logs" element={<Logs />} />
-            <Route path="/requests" element={<Logs />} />{" "}
+            <Route path="/requests" element={<Requests />} />{" "}
             {/* Replace with actual Requests component when available */}
             <Route
               path="/settings"

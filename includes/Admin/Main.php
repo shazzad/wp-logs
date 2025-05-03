@@ -21,7 +21,6 @@ class Main {
 		new WpDebugLog();
 
 		new Logs\Page();
-		new Requests\Page();
 	}
 
 	public function register_hooks() {

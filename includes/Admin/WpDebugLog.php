@@ -16,7 +16,7 @@ class WpDebugLog {
 	}
 
 	public function wp_debug_log_ajax() {
-		$modal = [ 
+		$modal = [
 			'header' => __( 'WP Debug Log' )
 		];
 
@@ -45,7 +45,7 @@ class WpDebugLog {
 	public function delete_wp_debug_log_ajax() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error(
-				[ 
+				[
 					'message' => __( 'Unauthorized Request' )
 				]
 			);
@@ -53,7 +53,7 @@ class WpDebugLog {
 
 		if ( ! file_exists( $this->get_log_file() ) ) {
 			wp_send_json_error(
-				[ 
+				[
 					'message' => __( 'No logs' )
 				]
 			);
@@ -62,7 +62,7 @@ class WpDebugLog {
 		unlink( $this->get_log_file() );
 
 		wp_send_json_success(
-			[ 
+			[
 				'message' => __( 'Deleted' )
 			]
 		);
@@ -79,7 +79,7 @@ class WpDebugLog {
 
 	public function admin_bar_menu( $wp_admin_bar ) {
 		$wp_admin_bar->add_node(
-			[ 
+			[
 				'id'     => AdminBarMenu::PARENT_ID . '-debug-log',
 				'parent' => AdminBarMenu::PARENT_ID . '-secondary',
 				'title'  => __( 'WP Debug Log' ),

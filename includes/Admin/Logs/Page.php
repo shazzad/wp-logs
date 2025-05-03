@@ -54,9 +54,6 @@ class Page implements PageInterface {
 	}
 
 	public function print_scripts() {
-		// wp_enqueue_style( 'swpl-admin-logs' );
-		// wp_enqueue_script( 'swpl-admin-logs' );
-
 		do_action( 'shazzad_wp_logs/admin_page/print_styles/logs' );
 
 		$asset_file = include SWPL_DIR . 'admin/build/index.asset.php';

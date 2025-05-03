@@ -23,7 +23,7 @@ class AdminBarMenu {
 			return;
 		}
 
-		$wp_admin_bar->add_node( [ 
+		$wp_admin_bar->add_node( [
 			'id'    => self::PARENT_ID,
 			'title' => '<span class="ab-icon dashicons-before dashicons-warning"></span><span class="screen-reader-text-no">' . __( 'Logs' ) . '</span>',
 			'href'  => admin_url( 'admin.php?page=shazzad-wp-logs' ),
@@ -34,16 +34,16 @@ class AdminBarMenu {
 		if ( ! empty( $menu_items ) ) {
 			$group_main = self::PARENT_ID . '-main';
 
-			$wp_admin_bar->add_group( [ 
+			$wp_admin_bar->add_group( [
 				'id'     => $group_main,
 				'parent' => self::PARENT_ID,
-				'meta'   => [ 
+				'meta'   => [
 					'class' => 'ab-top-main',
 				],
 			] );
 
 			// Add all logs menu
-			$wp_admin_bar->add_node( [ 
+			$wp_admin_bar->add_node( [
 				'id'     => self::PARENT_ID . '-all',
 				'parent' => $group_main,
 				'title'  => __( 'All Logs' ),
@@ -61,7 +61,7 @@ class AdminBarMenu {
 				$title = ! empty( $menu_item['bar_menu_title'] ) ? $menu_item['bar_menu_title'] : ucwords( str_replace( '-', ' ', $menu_slug ) );
 				$href  = admin_url( 'admin.php?page=' . $menu_slug );
 
-				$wp_admin_bar->add_node( [ 
+				$wp_admin_bar->add_node( [
 					'id'     => $id,
 					'parent' => $group_main,
 					'title'  => $title,
@@ -72,16 +72,16 @@ class AdminBarMenu {
 
 		$group_secondary = self::PARENT_ID . '-secondary';
 
-		$wp_admin_bar->add_group( [ 
+		$wp_admin_bar->add_group( [
 			'id'     => $group_secondary,
 			'parent' => self::PARENT_ID,
-			'meta'   => [ 
+			'meta'   => [
 				'class' => 'ab-sub-secondary',
 			],
 		] );
 
 		if ( class_exists( 'WP_REST_API_Log' ) ) {
-			$wp_admin_bar->add_node( [ 
+			$wp_admin_bar->add_node( [
 				'id'     => self::PARENT_ID . '-rest-api-log',
 				'parent' => $group_secondary,
 				'title'  => __( 'Rest Api Log' ),
