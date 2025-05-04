@@ -12,28 +12,28 @@ class Query extends AbstractQuery {
 		$this->table = DbAdapter::prefix_table( 'logs' );
 
 		$this->columns = [
-			'id'          => [
+			'id'           => [
 				'type'       => 'interger',
 				'searchable' => true,
 				'sortable'   => true
 			],
-			'message'     => [
+			'message'      => [
 				'type'       => 'text',
 				'searchable' => true
 			],
-			'level'       => [
+			'level'        => [
 				'type' => 'varchar',
 			],
-			'source'      => [
+			'source'       => [
 				'type' => 'varchar',
 			],
-			'message_raw' => [
+			'message_raw'  => [
 				'type' => 'text',
 			],
-			'context'     => [
+			'context'      => [
 				'type' => 'text',
 			],
-			'timestamp'   => [
+			'date_created' => [
 				'type' => 'datetime'
 			]
 		];

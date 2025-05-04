@@ -102,10 +102,6 @@ class LogController extends WP_REST_Controller {
 			's'        => $request['search'] ?? '',
 		];
 
-		if ( 'date' === $query_args['orderby'] ) {
-			$query_args['orderby'] = 'timestamp';
-		}
-
 		if ( ! empty( $request['source'] ) ) {
 			$query_args['source'] = $request['source'];
 		}
@@ -131,13 +127,6 @@ class LogController extends WP_REST_Controller {
 
 			if ( in_array( 'message', $fields, true ) ) {
 				$fields[] = 'message_raw';
-			}
-
-			if ( in_array( 'date', $fields, true ) ) {
-				$fields[] = 'timestamp';
-
-				// remove 'date' from the fields array
-				$fields = array_diff( $fields, [ 'date' ] );
 			}
 
 			$fields = array_unique( $fields );
@@ -291,8 +280,8 @@ class LogController extends WP_REST_Controller {
 			$data['id'] = $item->get_id();
 		}
 
-		if ( in_array( 'date', $fields, true ) ) {
-			$data['date'] = $item->get_timestamp();
+		if ( in_array( 'date_created', $fields, true ) ) {
+			$data['date_created'] = $item->get_date_created();
 		}
 
 		if ( in_array( 'level', $fields, true ) ) {
@@ -317,7 +306,7 @@ class LogController extends WP_REST_Controller {
 	protected function get_fields( $request ) {
 		$allowed_fields = [
 			'id',
-			'date',
+			'date_created',
 			'level',
 			'source',
 			'message',

@@ -60,20 +60,6 @@ class AdminPage {
 	 * @return void
 	 */
 	public static function render_page() {
-		do_action(
-			'swpl_log',
-
-			// $source | string | a name from where the log is stored.
-			'Example Plugin',
-
-			// $message | string | log message.
-			'{{user}} updated his profile',
-
-			// $context | array | a data that can be replaced with placeholder inside message.
-			array(
-				'user' => 'Some User'
-			)
-		);
 		?>
 		<div class="wrap swpl-wrap">
 			<div id="homerunner-react-app"></div>

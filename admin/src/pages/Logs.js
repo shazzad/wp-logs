@@ -115,7 +115,7 @@ const Logs = () => {
       )}&order=${encodeURIComponent(sortOrder)}`;
 
       // Add fields parameter to limit the response fields.
-      queryParams += `&fields=id,message,level,source,date`;
+      queryParams += `&fields=id,message,level,source,date_created`;
 
       const response = await apiFetch({
         path: `/swpl/v1/logs${queryParams}`,

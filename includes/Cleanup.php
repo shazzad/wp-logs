@@ -60,7 +60,7 @@ class Cleanup {
 		$table = DbAdapter::prefix_table( 'logs' );
 
 		// Delete older logs than the retention days.
-		$sql = "DELETE FROM $table WHERE timestamp < DATE_SUB(NOW(), INTERVAL %d DAY)";
+		$sql = "DELETE FROM $table WHERE date_created < DATE_SUB(NOW(), INTERVAL %d DAY)";
 
 		$wpdb->query( $wpdb->prepare( $sql, $retention_days ) );
 	}
@@ -84,7 +84,7 @@ class Cleanup {
 		$table = DbAdapter::prefix_table( 'requests' );
 
 		// Delete older requests than the retention days.
-		$sql = "DELETE FROM $table WHERE timestamp < DATE_SUB(NOW(), INTERVAL %d DAY)";
+		$sql = "DELETE FROM $table WHERE date_created < DATE_SUB(NOW(), INTERVAL %d DAY)";
 
 		$wpdb->query( $wpdb->prepare( $sql, $retention_days ) );
 	}

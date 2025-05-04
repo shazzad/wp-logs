@@ -66,8 +66,8 @@ const LogTable = ({
             <th className="sortable" onClick={() => onSort("id")}>
               ID {getSortIcon("id")}
             </th>
-            <th className="sortable" onClick={() => onSort("date")}>
-              Date {getSortIcon("date")}
+            <th className="sortable" onClick={() => onSort("date_created")}>
+              Date {getSortIcon("date_created")}
             </th>
             <th>Level</th>
             <th>Source</th>
@@ -91,7 +91,7 @@ const LogTable = ({
                   />
                 </th>
                 <td>{log.id}</td>
-                <td>{formatDate(log.date)}</td>
+                <td>{formatDate(log.date_created)}</td>
                 <td>
                   <span className={`log__level log__level--${log.level}`}>
                     {log.level}

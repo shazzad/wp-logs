@@ -82,7 +82,7 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
               {[
                 {
                   name: "Date",
-                  value: new Date(requestDetails.date).toLocaleString(),
+                  value: new Date(requestDetails.date_created).toLocaleString(),
                 },
                 {
                   name: "Method",

@@ -82,7 +82,7 @@ const LogDetailsModal = ({ logId, onClose }) => {
               {[
                 {
                   name: "Date",
-                  value: new Date(logDetails.date).toLocaleString(),
+                  value: new Date(logDetails.date_created).toLocaleString(),
                 },
                 {
                   name: "Level",

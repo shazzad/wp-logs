@@ -91,7 +91,7 @@ class Installer {
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$logs'" ) != $logs ) {
 			$sql[] = "CREATE TABLE {$logs} (
                 id BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT,
-                timestamp datetime NOT NULL,
+                date_created datetime NOT NULL,
                 source VARCHAR( 200 ) NOT NULL,
                 level VARCHAR( 9 ) NOT NULL,
                 message TEXT NOT NULL,
@@ -107,7 +107,7 @@ class Installer {
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$requests'" ) != $requests ) {
 			$sql[] = "CREATE TABLE {$requests} (
                 id BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT,
-                timestamp datetime NOT NULL,
+                date_created datetime NOT NULL,
                 source VARCHAR( 200 ) NOT NULL,
                 request_method VARCHAR( 10 ) NOT NULL,
                 request_url VARCHAR( 255 ) NOT NULL,
@@ -153,6 +153,11 @@ class Installer {
 
 		if ( ! in_array( 'message_raw', $logs_table_cols ) ) {
 			$wpdb->query( "ALTER TABLE {$logs_table} ADD `message_raw` TEXT NOT NULL AFTER `level`" );
+		}
+
+		// Rename timestamp to date_created.
+		if ( in_array( 'timestamp', $logs_table_cols ) ) {
+			$wpdb->query( "ALTER TABLE {$logs_table} CHANGE `timestamp` `date_created` DATETIME NOT NULL" );
 		}
 
 		// if ( in_array( 'level', $logs_table_cols ) ) {

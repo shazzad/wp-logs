@@ -102,10 +102,6 @@ class RequestController extends WP_REST_Controller {
 			's'        => $request['search'] ?? '',
 		];
 
-		if ( 'date' === $query_args['orderby'] ) {
-			$query_args['orderby'] = 'timestamp';
-		}
-
 		if ( ! empty( $request['request_method'] ) ) {
 			$query_args['request_method'] = $request['request_method'];
 		}
@@ -255,7 +251,7 @@ class RequestController extends WP_REST_Controller {
 	protected function prepare_item( $item, $request ) {
 		return [
 			'id'               => $item->get_id(),
-			'date'             => $item->get_timestamp(),
+			'date_created'     => $item->get_date_created(),
 			'request_url'      => $item->get_request_url(),
 			'request_payload'  => $item->get_request_payload(),
 			'request_headers'  => $item->get_request_headers(),

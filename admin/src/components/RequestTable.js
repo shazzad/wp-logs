@@ -68,8 +68,8 @@ const RequestTable = ({
             <th className="sortable" onClick={() => onSort("id")}>
               ID {getSortIcon("id")}
             </th>
-            <th className="sortable" onClick={() => onSort("date")}>
-              Date {getSortIcon("date")}
+            <th className="sortable" onClick={() => onSort("date_created")}>
+              Date {getSortIcon("date_created")}
             </th>
             <th>Url</th>
             <th>Method</th>
@@ -94,7 +94,7 @@ const RequestTable = ({
                   />
                 </th>
                 <td>{log.id}</td>
-                <td>{formatDate(log.date)}</td>
+                <td>{formatDate(log.date_created)}</td>
                 <td>{log.request_url}</td>
                 <td>
                   <span

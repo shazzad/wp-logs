@@ -7,7 +7,7 @@ use Shazzad\WpLogs\Abstracts\Data as AbstractData;
 class Data extends AbstractData {
 
 	protected $data = [
-		'timestamp'        => '',
+		'date_created'     => '',
 		'source'           => '',
 		'request_method'   => '',
 		'request_url'      => '',
@@ -40,8 +40,8 @@ class Data extends AbstractData {
 		}
 	}
 
-	public function get_timestamp() {
-		return $this->get_prop( 'timestamp' );
+	public function get_date_created() {
+		return $this->get_prop( 'date_created' );
 	}
 	public function get_source() {
 		return $this->get_prop( 'source' );
@@ -94,8 +94,8 @@ class Data extends AbstractData {
 		return '';
 	}
 
-	public function set_timestamp( $value ) {
-		return $this->set_prop( 'timestamp', $value );
+	public function set_date_created( $value ) {
+		return $this->set_prop( 'date_created', $value );
 	}
 
 	public function set_source( $value ) {
@@ -229,9 +229,9 @@ class Data extends AbstractData {
 			throw new Exception( __( 'Invalid request method', 'swpl' ) );
 		}
 
-		if ( ! $this->get_timestamp() ) {
-			// Let's use gmt timestamp.
-			$this->set_timestamp( current_time( 'mysql', true ) );
+		if ( ! $this->get_date_created() ) {
+			// Let's use gmt date_created.
+			$this->set_date_created( current_time( 'mysql', true ) );
 		}
 
 		// Generate hostname from url.

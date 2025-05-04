@@ -8,7 +8,7 @@ use Shazzad\WpLogs\DbAdapter;
 class Data extends AbstractData {
 
 	protected $data = [
-		'timestamp'   => '',
+		'date_created'   => '',
 		'level'       => '',
 		'source'      => '',
 		'message'     => '',
@@ -35,8 +35,8 @@ class Data extends AbstractData {
 		}
 	}
 
-	public function get_timestamp() {
-		return $this->get_prop( 'timestamp' );
+	public function get_date_created() {
+		return $this->get_prop( 'date_created' );
 	}
 	public function get_level() {
 		return $this->get_prop( 'level' );
@@ -56,8 +56,8 @@ class Data extends AbstractData {
 		return $this->get_prop( 'context' );
 	}
 
-	public function set_timestamp( $value ) {
-		return $this->set_prop( 'timestamp', $value );
+	public function set_date_created( $value ) {
+		return $this->set_prop( 'date_created', $value );
 	}
 	public function set_level( $value ) {
 		return $this->set_prop( 'level', $value );
@@ -156,9 +156,9 @@ class Data extends AbstractData {
 		if ( ! $this->get_message() ) {
 			throw new Exception( __( 'Invalid message', 'swpl' ) );
 		} else {
-			if ( ! $this->get_timestamp() ) {
-				// Let's use gmt timestamp.
-				$this->set_timestamp( current_time( 'mysql', true ) );
+			if ( ! $this->get_date_created() ) {
+				// Let's use gmt date_created.
+				$this->set_date_created( current_time( 'mysql', true ) );
 			}
 
 			if ( ! $this->get_level() ) {
