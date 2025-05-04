@@ -35,8 +35,13 @@ class Query extends AbstractQuery {
 				'type' => 'text',
 			],
 			'response_code'    => [
-				'type' => 'interger'
-			]
+				'type'     => 'interger',
+				'sortable' => true,
+			],
+			'response_size'    => [
+				'type'     => 'interger',
+				'sortable' => true,
+			],
 		];
 
 		parent::__construct( $args );

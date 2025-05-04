@@ -87,7 +87,6 @@ class AdminPage {
 			true
 		);
 
-		// Pass the `homelocalApiSettings` object
 		wp_localize_script(
 			'swpl-admin-app',
 			'swplAdminAppSettings',

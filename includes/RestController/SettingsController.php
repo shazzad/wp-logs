@@ -126,7 +126,7 @@ class SettingsController extends WP_REST_Controller {
 	public function get_settings_permission_callback( $request ) {
 		$setting_class = $this->get_setting_class( $request );
 		if ( is_null( $setting_class ) ) {
-			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'homelocal' ), array( 'status' => 404 ) );
+			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'swpl' ), array( 'status' => 404 ) );
 		}
 
 		return current_user_can( 'manage_options' );
@@ -138,7 +138,7 @@ class SettingsController extends WP_REST_Controller {
 	public function update_settings_permission_callback( $request ) {
 		$setting_class = $this->get_setting_class( $request );
 		if ( is_null( $setting_class ) ) {
-			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'homelocal' ), array( 'status' => 404 ) );
+			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'swpl' ), array( 'status' => 404 ) );
 		}
 
 		return current_user_can( 'manage_options' );
@@ -156,7 +156,7 @@ class SettingsController extends WP_REST_Controller {
 		$settings_id = $url_params['id'];
 
 		if ( empty( $settings_id ) ) {
-			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'homelocal' ), array( 'status' => 404 ) );
+			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'swpl' ), array( 'status' => 404 ) );
 		}
 
 		$setting_class = null;

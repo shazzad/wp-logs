@@ -63,15 +63,15 @@ const LogTable = ({
                 disabled={logs.length === 0}
               />
             </td>
-            <th className="sortable" onClick={() => onSort("id")}>
-              ID {getSortIcon("id")}
-            </th>
+            <th>Message</th>
+            <th>Source</th>
+            <th>Level</th>
             <th className="sortable" onClick={() => onSort("date_created")}>
               Date {getSortIcon("date_created")}
             </th>
-            <th>Level</th>
-            <th>Source</th>
-            <th>Message</th>
+            <th className="sortable" onClick={() => onSort("id")}>
+              ID {getSortIcon("id")}
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -90,15 +90,15 @@ const LogTable = ({
                     checked={selectedLogs.includes(log.id)}
                   />
                 </th>
-                <td>{log.id}</td>
-                <td>{formatDate(log.date_created)}</td>
+                <td>{log.message}</td>
+                <td>{log.source}</td>
                 <td>
                   <span className={`log__level log__level--${log.level}`}>
                     {log.level}
                   </span>
                 </td>
-                <td>{log.source}</td>
-                <td>{log.message}</td>
+                <td>{formatDate(log.date_created)}</td>
+                <td>{log.id}</td>
                 <td>
                   <button
                     className="button button-small"

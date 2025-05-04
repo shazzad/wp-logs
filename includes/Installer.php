@@ -108,7 +108,6 @@ class Installer {
 			$sql[] = "CREATE TABLE {$requests} (
                 id BIGINT( 20 ) UNSIGNED NOT NULL AUTO_INCREMENT,
                 date_created datetime NOT NULL,
-                source VARCHAR( 200 ) NOT NULL,
                 request_method VARCHAR( 10 ) NOT NULL,
                 request_url VARCHAR( 255 ) NOT NULL,
                 request_hostname VARCHAR( 100 ) NOT NULL,
@@ -120,7 +119,6 @@ class Installer {
                 response_headers TEXT NULL DEFAULT '',
                 response_data LONGTEXT NULL DEFAULT '',
                 PRIMARY KEY  ( id ),
-                KEY source (source),
                 KEY request_hostname (request_hostname),
                 KEY response_code (response_code)
              ) {$charset_collate};";
@@ -160,9 +158,13 @@ class Installer {
 			$wpdb->query( "ALTER TABLE {$logs_table} CHANGE `timestamp` `date_created` DATETIME NOT NULL" );
 		}
 
-		// if ( in_array( 'level', $logs_table_cols ) ) {
-		// 	$wpdb->query( "ALTER TABLE {$logs_table} CHANGE `level` `group` VARCHAR( 9 ) NOT NULL" );
-		// }
+		$requests_table       = DbAdapter::prefix_table( 'requests' );
+		$lrequests_table_cols = $wpdb->get_col( "DESC {$requests_table}", 0 );
+
+		// Delete the source column if it exists.
+		if ( in_array( 'source', $lrequests_table_cols ) ) {
+			$wpdb->query( "ALTER TABLE {$requests_table} DROP COLUMN `source`" );
+		}
 
 		// if ( in_array( 'context', $logs_table_cols ) ) {
 		// 	$wpdb->query( "ALTER TABLE {$logs_table} CHANGE `context` `data` LONGTEXT NULL DEFAULT ''" );

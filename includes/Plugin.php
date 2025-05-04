@@ -108,7 +108,7 @@ final class Plugin {
 		load_plugin_textdomain(
 			'swpl',
 			false,
-			basename( dirname( HOMELOCAL_PLUGIN_FILE ) ) . '/languages'
+			basename( dirname( SWPL_PLUGIN_FILE ) ) . '/languages'
 		);
 	}
 

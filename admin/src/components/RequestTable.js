@@ -65,16 +65,18 @@ const RequestTable = ({
                 disabled={requests.length === 0}
               />
             </td>
-            <th className="sortable" onClick={() => onSort("id")}>
-              ID {getSortIcon("id")}
-            </th>
-            <th className="sortable" onClick={() => onSort("date_created")}>
-              Date {getSortIcon("date_created")}
-            </th>
             <th>Url</th>
             <th>Method</th>
             <th>Status</th>
-            <th>Size</th>
+            <th className="sortable" onClick={() => onSort("date_created")}>
+              Date {getSortIcon("date_created")}
+            </th>
+            <th className="sortable" onClick={() => onSort("response_size")}>
+              Size {getSortIcon("response_size")}
+            </th>
+            <th className="sortable" onClick={() => onSort("id")}>
+              ID {getSortIcon("id")}
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -93,8 +95,6 @@ const RequestTable = ({
                     checked={selectedLogs.includes(log.id)}
                   />
                 </th>
-                <td>{log.id}</td>
-                <td>{formatDate(log.date_created)}</td>
                 <td>{log.request_url}</td>
                 <td>
                   <span
@@ -104,7 +104,9 @@ const RequestTable = ({
                   </span>
                 </td>
                 <td>{log.response_code}</td>
+                <td>{formatDate(log.date_created)}</td>
                 <td>{log.response_size}</td>
+                <td>{log.id}</td>
                 <td>
                   <button
                     className="button button-small"

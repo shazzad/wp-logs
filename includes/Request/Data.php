@@ -7,8 +7,6 @@ use Shazzad\WpLogs\Abstracts\Data as AbstractData;
 class Data extends AbstractData {
 
 	protected $data = [
-		'date_created'     => '',
-		'source'           => '',
 		'request_method'   => '',
 		'request_url'      => '',
 		'request_hostname' => '',
@@ -19,6 +17,7 @@ class Data extends AbstractData {
 		'response_data'    => '',
 		'response_time'    => '',
 		'response_size'    => '',
+		'date_created'     => '',
 	];
 
 	// fields than can be updated
@@ -42,9 +41,6 @@ class Data extends AbstractData {
 
 	public function get_date_created() {
 		return $this->get_prop( 'date_created' );
-	}
-	public function get_source() {
-		return $this->get_prop( 'source' );
 	}
 	public function get_request_method() {
 		return $this->get_prop( 'request_method' );
@@ -96,10 +92,6 @@ class Data extends AbstractData {
 
 	public function set_date_created( $value ) {
 		return $this->set_prop( 'date_created', $value );
-	}
-
-	public function set_source( $value ) {
-		return $this->set_prop( 'source', trim( $value ) );
 	}
 
 	public function set_request_method( $value ) {
