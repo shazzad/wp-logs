@@ -157,6 +157,7 @@ class Data extends AbstractData {
 				'method' => 'get_row',
 				'output' => 'ARRAY_A'
 			] );
+
 			$query->query();
 			$id_row = $query->get_results();
 		}

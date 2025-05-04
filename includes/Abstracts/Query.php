@@ -163,7 +163,13 @@ abstract class Query {
 				}
 
 				if ( isset( $args['searchable'] ) && $args['searchable'] ) {
-					$search_args[$column] = $this->get( 's' );
+					$keyword = $this->get( 's' );
+
+					if ( in_array( $args['type'], [ 'text', 'varchar' ] ) ) {
+						$search_args[$column] = $keyword;
+					} elseif ( is_numeric( $keyword ) && in_array( $args['type'], [ 'interger', 'number' ] ) ) {
+						$search_args[$column] = $keyword;
+					}
 				}
 			}
 		}

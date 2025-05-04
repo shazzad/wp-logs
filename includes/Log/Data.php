@@ -1,17 +1,19 @@
 <?php
 namespace Shazzad\WpLogs\Log;
 
+use Exception;
 use Shazzad\WpLogs\Abstracts\Data as AbstractData;
 use Shazzad\WpLogs\DbAdapter;
 
 class Data extends AbstractData {
 
 	protected $data = [
-		'timestamp' => '',
-		'level'     => '',
-		'source'    => '',
-		'message'   => '',
-		'context'   => []
+		'timestamp'   => '',
+		'level'       => '',
+		'source'      => '',
+		'message'     => '',
+		'message_raw' => '',
+		'context'     => []
 	];
 
 	// fields than can be updated
@@ -45,6 +47,11 @@ class Data extends AbstractData {
 	public function get_message() {
 		return $this->get_prop( 'message' );
 	}
+
+	public function get_message_raw() {
+		return $this->get_prop( 'message_raw' );
+	}
+
 	public function get_context() {
 		return $this->get_prop( 'context' );
 	}
@@ -61,6 +68,9 @@ class Data extends AbstractData {
 	public function set_message( $value ) {
 		return $this->set_prop( 'message', $value );
 	}
+	public function set_message_raw( $value ) {
+		return $this->set_prop( 'message_raw', $value );
+	}
 	public function set_context( $value ) {
 		return $this->set_prop( 'context', $value );
 	}
@@ -72,6 +82,7 @@ class Data extends AbstractData {
 			$this->create();
 		}
 	}
+
 	public function read() {
 		if ( $this->get_id() > 0 ) {
 			$query = new Query( [
@@ -103,7 +114,8 @@ class Data extends AbstractData {
 
 		$data = $this->pre_save_filter( $data );
 
-		$id = DbAdapter::insert( DbAdapter::prefix_table( 'logs' ), $data );
+		$query = new Query();
+		$id    = $query->create( $data );
 
 		$this->set_id( $id );
 		$this->apply_changes();
@@ -119,11 +131,8 @@ class Data extends AbstractData {
 			$data = $this->get_changes();
 			$data = $this->pre_save_filter( $data );
 
-			DbAdapter::update(
-				DbAdapter::prefix_table( 'logs' ),
-				$data,
-				[ 'id' => $this->get_id() ]
-			);
+			$query = new Query();
+			$query->update( $this->get_id(), $data );
 		}
 
 		$this->apply_changes();
@@ -132,19 +141,20 @@ class Data extends AbstractData {
 
 	public function delete() {
 		if ( ! $this->get_id() ) {
-			throw new \Exception( __( 'Log not exists' ) );
+			throw new Exception( __( 'Log not exists' ) );
 		}
 
 		do_action( 'swpl_log_delete', $this->get_id() );
 
-		DbAdapter::delete( DbAdapter::prefix_table( 'logs' ), array( 'id' => $this->get_id() ) );
+		$query = new Query();
+		$query->delete( $this->get_id() );
 
 		do_action( 'swpl_log_deleted', $this->get_id() );
 	}
 
 	public function validate_save() {
 		if ( ! $this->get_message() ) {
-			throw new \Exception( __( 'Invalid message', 'swpl' ) );
+			throw new Exception( __( 'Invalid message', 'swpl' ) );
 		} else {
 			if ( ! $this->get_timestamp() ) {
 				// Let's use gmt timestamp.
@@ -160,37 +170,28 @@ class Data extends AbstractData {
 	}
 
 	public function pre_save_filter( $data ) {
-		if ( empty( $data['context'] ) ) {
-			$data['context'] = [];
-		}
-
 		// Maximum size for mysql LONGTEXT field.
-		$max_size = 4294967295;
+		// $max_size = 4294967295;
+		// Maximum size for mysql TEXT field.
+		// $max_size = 65535;
 
-		if ( is_array( $data['context'] ) ) {
-			$data['context'] = $this->remove_size_recursive( $data['context'] );
-		}
+		$data_fields = [
+			'context' => 4294967295,
+		];
 
-		$data['context'] = maybe_serialize( $data['context'] );
-
-		if ( strlen( $data['context'] ) > $max_size ) {
-			$data['context'] = maybe_serialize( 'REMOVED LARGE DATA' );
-		}
-
-		return $data;
-	}
-
-	protected function remove_size_recursive( $data, $filled = 0 ) {
-		$max_chunk_size = 4294967295 / 20;
-
-		if ( is_string( $data ) || is_numeric( $data ) ) {
-			if ( strlen( $data ) > $max_chunk_size ) {
-				$data = substr( $data, 0, 10 ) . ' REMOVED LARGE DATA';
+		foreach ( $data_fields as $name => $max_size ) {
+			if ( empty( $data[$name] ) ) {
+				$data[$name] = [];
 			}
 
-		} else if ( is_array( $data ) ) {
-			foreach ( $data as $k => $v ) {
-				$data[$k] = $this->remove_size_recursive( $v, $filled );
+			if ( is_array( $data[$name] ) ) {
+				$data[$name] = $this->remove_size_recursive( $data[$name], $max_size / 20 );
+			}
+
+			$data[$name] = maybe_serialize( $data[$name] );
+
+			if ( strlen( $data[$name] ) > $max_size ) {
+				$data[$name] = maybe_serialize( 'REMOVED LARGE DATA' );
 			}
 		}
 
@@ -219,5 +220,20 @@ class Data extends AbstractData {
 		$self->set_object_read( true );
 
 		return $self;
+	}
+
+	protected function remove_size_recursive( $data, $max_chunk_size = 65535 ) {
+		if ( is_string( $data ) || is_numeric( $data ) ) {
+			if ( strlen( $data ) > $max_chunk_size ) {
+				$data = substr( $data, 0, 65000 ) . ' REMOVED LARGE DATA';
+			}
+
+		} else if ( is_array( $data ) ) {
+			foreach ( $data as $k => $v ) {
+				$data[$k] = $this->remove_size_recursive( $v, $max_chunk_size );
+			}
+		}
+
+		return $data;
 	}
 }

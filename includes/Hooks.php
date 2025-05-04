@@ -48,9 +48,20 @@ class Hooks {
 			$log = new Log\Data();
 
 			$log->set_source( $source );
-			$log->set_message( $message );
 			$log->set_context( $context );
 			$log->set_level( $level );
+
+			$log->set_message_raw( $message );
+
+			$message_raw = $message;
+
+			if ( ! empty( $message ) && ! empty( $context ) ) {
+				$mustache = new Mustache_Engine();
+				$message  = $mustache->render( $message, $context );
+			}
+
+			$log->set_message( $message );
+
 			$log->save();
 		}
 		catch (Exception $e) {

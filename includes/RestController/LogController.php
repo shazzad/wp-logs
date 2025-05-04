@@ -91,7 +91,7 @@ class LogController extends WP_REST_Controller {
 	 *
 	 * @since 1.0.0
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error|array Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
 		$query_args = [
@@ -122,6 +122,31 @@ class LogController extends WP_REST_Controller {
 			$query_args['s'] = '"' . $query_args['s'] . '"';
 		}
 
+		if ( ! empty( $request['fields'] ) ) {
+			$fields = $this->get_fields( $request );
+
+			if ( empty( $fields ) ) {
+				return new WP_Error( 'invalid_fields', __( 'Invalid fields', 'swpl' ), [ 'status' => 400 ] );
+			}
+
+			if ( in_array( 'message', $fields, true ) ) {
+				$fields[] = 'message_raw';
+			}
+
+			if ( in_array( 'date', $fields, true ) ) {
+				$fields[] = 'timestamp';
+
+				// remove 'date' from the fields array
+				$fields = array_diff( $fields, [ 'date' ] );
+			}
+
+			$fields = array_unique( $fields );
+
+			$query_args['columns'] = $fields;
+		}
+
+		// return $query_args;
+
 		$query = new Log\Query( $query_args );
 		$query->query();
 
@@ -142,14 +167,15 @@ class LogController extends WP_REST_Controller {
 
 		// Add pagination data to response
 		$response->set_data( [
-			'data'  => $data,
-			'meta'  => [
+			'data'       => $data,
+			'meta'       => [
 				'total'       => $total,
 				'total_pages' => $total_pages,
 				'page'        => (int) $query_args['page'],
 				'per_page'    => (int) $query_args['per_page'],
 			],
-			'query' => $query,
+			'query'      => $query,
+			'query_args' => $query_args,
 		] );
 
 		return $response;
@@ -258,14 +284,61 @@ class LogController extends WP_REST_Controller {
 	 * @return array Response data for the log item.
 	 */
 	protected function prepare_item( $item, $request ) {
-		return [
-			'id'      => $item->get_id(),
-			'date'    => $item->get_timestamp(),
-			'level'   => $item->get_level(),
-			'source'  => $item->get_source(),
-			'message' => $item->get_message(),
-			'context' => $item->get_context(),
+		$fields = $this->get_fields( $request );
+
+		$data = [];
+		if ( in_array( 'id', $fields, true ) ) {
+			$data['id'] = $item->get_id();
+		}
+
+		if ( in_array( 'date', $fields, true ) ) {
+			$data['date'] = $item->get_timestamp();
+		}
+
+		if ( in_array( 'level', $fields, true ) ) {
+			$data['level'] = $item->get_level();
+		}
+
+		if ( in_array( 'source', $fields, true ) ) {
+			$data['source'] = $item->get_source();
+		}
+
+		if ( in_array( 'message', $fields, true ) ) {
+			$data['message'] = $item->get_message();
+		}
+
+		if ( in_array( 'context', $fields, true ) ) {
+			$data['context'] = $item->get_context();
+		}
+
+		return $data;
+	}
+
+	protected function get_fields( $request ) {
+		$allowed_fields = [
+			'id',
+			'date',
+			'level',
+			'source',
+			'message',
+			'context',
 		];
+
+		if ( ! empty( $request['fields'] ) ) {
+			$fields = explode( ',', $request['fields'] );
+			$fields = array_map( 'trim', $fields );
+			$fields = array_map( 'sanitize_key', $fields );
+
+			$fields = array_intersect( $fields, $allowed_fields );
+
+			if ( empty( $fields ) ) {
+				return [];
+			}
+
+			return $fields;
+		}
+
+		return $allowed_fields;
 	}
 
 

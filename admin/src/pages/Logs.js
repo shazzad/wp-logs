@@ -114,6 +114,9 @@ const Logs = () => {
         sortField
       )}&order=${encodeURIComponent(sortOrder)}`;
 
+      // Add fields parameter to limit the response fields.
+      queryParams += `&fields=id,message,level,source,date`;
+
       const response = await apiFetch({
         path: `/swpl/v1/logs${queryParams}`,
         // Parse headers to get pagination information
