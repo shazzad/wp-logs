@@ -105,7 +105,7 @@ class AdminPage {
 			'swpl-admin-app',
 			SWPL_URL . 'admin/build/index.css',
 			[],
-			time()
+			$asset_file['version']
 		);
 	}
 }

@@ -50,7 +50,7 @@ class WpDebugLog {
 			'swpl-wp-debug-log',
 			SWPL_URL . 'assets/js/wp-debug-log.js',
 			[],
-			time(),
+			SWPL_VERSION,
 			true
 		);
 
