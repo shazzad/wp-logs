@@ -160,12 +160,10 @@ abstract class Query {
 			foreach ( $this->columns as $column => $args ) {
 				if ( ! empty( $search_args[$column] ) ) {
 					continue;
-				} elseif ( isset( $args['searchable'] ) ) {
-					if ( in_array( $args['type'], [ 'text', 'varchar' ] ) ) {
-						$search_args[$column] = $this->get( 's' );
-					} elseif ( in_array( $args['type'], [ 'interger', 'number' ] ) ) {
-						$search_args[$column] = (int) $this->get( 's' );
-					}
+				}
+
+				if ( isset( $args['searchable'] ) && $args['searchable'] ) {
+					$search_args[$column] = $this->get( 's' );
 				}
 			}
 		}

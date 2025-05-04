@@ -13,11 +13,12 @@ class Query extends AbstractQuery {
 
 		$this->columns = [
 			'id'        => [
-				'type' => 'interger'
+				'type'       => 'interger',
+				'searchable' => true,
+				'sortable'   => true
 			],
 			'level'     => [
-				'type'       => 'varchar',
-				'searchable' => true
+				'type' => 'varchar',
 			],
 			'source'    => [
 				'type'       => 'varchar',
@@ -28,8 +29,7 @@ class Query extends AbstractQuery {
 				'searchable' => true
 			],
 			'context'   => [
-				'type'       => 'text',
-				'searchable' => false
+				'type' => 'text',
 			],
 			'timestamp' => [
 				'type' => 'datetime'

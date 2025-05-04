@@ -67,7 +67,6 @@ final class Plugin {
 	 */
 	private function include_files() {
 		require_once SWPL_DIR . 'vendor/autoload.php';
-
 		require_once SWPL_DIR . 'includes/functions.php';
 	}
 
@@ -85,11 +84,11 @@ final class Plugin {
 
 		Cleanup::setup();
 		RestApi::setup();
-		Assets::setup();
 
 		Hooks::setup();
 
 		AdminBarMenu::setup();
+		WpDebugLog::setup();
 
 		if ( is_admin() ) {
 			Admin\Main::setup();

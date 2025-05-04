@@ -2,18 +2,10 @@
  * Admin Bar Menu Js
  */
 
-(function ($) {
+(function ($, config) {
   ("use strict");
 
-  /* confirm action */
-  $(document.body).on("click", ".swpl_ca", function () {
-    var d = $(this).data("confirm") || "Are you sure you want to do this ?";
-    if (!confirm(d)) {
-      return false;
-    }
-  });
-
-  $(document.body).on("swpl__modal--init", function () {
+  $(document.body).on("swpl__modal__init", function () {
     if ($("#swpl-modal").length === 0) {
       $("body").append(
         '<div id="swpl-modal">' +
@@ -86,12 +78,20 @@
   });
 
   $(document).ready(function () {
-    $(document.body).trigger("swpl__modal--init");
+    $(document.body).trigger("swpl__modal__init");
   });
 
   $(document.body).on("click", "#swpl-wp-debug-log-delete-btn", function () {
     $(document.body).trigger("swpl__modal--hide");
-    $.post(ajaxurl, { action: "swpl_delete_wp_debug_log" });
+
+    $.ajax({
+      url: `${config.root}swpl/v1/debug-log`,
+      headers: {
+        "X-WP-Nonce": config.nonce,
+      },
+      method: "DELETE",
+    });
+
     return false;
   });
 
@@ -99,21 +99,24 @@
     "click",
     "#wp-admin-bar-shazzad-wp-logs-debug-log a",
     function () {
-      $(document.body).trigger("swpl__modal--init");
+      $(document.body).trigger("swpl__modal__init");
       $(document.body).trigger("swpl__modal--loading", "Loading...");
       $(document.body).trigger("swpl__modal--show");
 
-      $.post(ajaxurl, { action: "swpl_wp_debug_log" })
+      $.ajax({
+        url: `${config.root}swpl/v1/debug-log`,
+        // add nonce to the request
+        headers: {
+          "X-WP-Nonce": config.nonce,
+        },
+        method: "GET",
+        dataType: "json",
+      })
         .done(function (r) {
-          if (r.data.modal) {
-            for (var key in r.data.modal) {
-              $(document.body).trigger(
-                "swpl__modal--" + key,
-                r.data.modal[key]
-              );
+          if (r.data) {
+            for (var key in r.data) {
+              $(document.body).trigger("swpl__modal--" + key, r.data[key]);
             }
-          } else {
-            $(document.body).trigger("swpl__modal--body", r.data.message);
           }
         })
         .fail(function (xhr) {
@@ -140,4 +143,4 @@
       return false;
     }
   );
-})(jQuery);
+})(jQuery, swplWpDebugLog);

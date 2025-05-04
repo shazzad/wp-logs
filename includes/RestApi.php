@@ -43,6 +43,7 @@ class RestApi {
 			__NAMESPACE__ . '\\RestController\\LogController',
 			__NAMESPACE__ . '\\RestController\\RequestController',
 			__NAMESPACE__ . '\\RestController\\SettingsController',
+			__NAMESPACE__ . '\\RestController\\DebugLogController',
 		];
 
 		foreach ( $classes as $class ) {

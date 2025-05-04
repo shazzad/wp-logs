@@ -17,7 +17,7 @@ class Data extends AbstractData {
 	// fields than can be updated
 	protected $updatable_fields = [];
 
-	function __construct( $id = 0 ) {
+	public function __construct( $id = 0 ) {
 		parent::__construct( $id );
 
 		if ( is_numeric( $id ) && $id > 0 ) {

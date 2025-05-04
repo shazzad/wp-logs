@@ -83,13 +83,13 @@ const LogTable = ({
           ) : (
             logs.map((log) => (
               <tr key={log.id}>
-                <td className="manage-column column-cb check-column">
+                <th className="manage-column column-cb check-column">
                   <input
                     type="checkbox"
                     onChange={() => onToggleLogSelection(log.id)}
                     checked={selectedLogs.includes(log.id)}
                   />
-                </td>
+                </th>
                 <td>{log.id}</td>
                 <td>{formatDate(log.date)}</td>
                 <td>

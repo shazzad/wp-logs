@@ -113,10 +113,6 @@ $mobile-breakpoint: 782px;
 .check-column {
 	width: 30px;
 	text-align: center;
-
-	input[type="checkbox"] {
-		margin: 0;
-	}
 }
 
 // Log Levels
@@ -194,29 +190,37 @@ $mobile-breakpoint: 782px;
 	}
 }
 
-// Sortable columns
-.sort-icon {
-	position: absolute;
-	right: 8px;
-	top: 50%;
-	transform: translateY(-50%);
-	font-size: 16px;
-	color: #555;
+.swpl__admin {
 
-	&.sort-asc,
-	&.sort-desc {
-		color: $primary-color;
+	// Sortable columns
+	.sort-icon {
+		position: absolute;
+		right: 8px;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 16px;
+		color: #555;
+
+		&.sort-asc,
+		&.sort-desc {
+			color: $primary-color;
+		}
 	}
-}
 
-th.sortable {
-	cursor: pointer;
-	position: relative;
-	padding-right: 25px;
-	user-select: none;
+	th.sortable {
+		cursor: pointer;
+		position: relative;
+		padding-right: 25px;
+		user-select: none;
 
-	&:hover {
-		background-color: #f0f0f1;
+		&:hover {
+			background-color: #f0f0f1;
+		}
+	}
+
+	.widefat th.sortable,
+	.widefat th.sorted {
+		padding: 0 10px;
 	}
 }
 
