@@ -69,8 +69,23 @@ $mobile-breakpoint: 782px;
 // =============================================================================
 .swpl__admin__filters {
 	display: flex;
+	gap: $spacing-sm;
 	margin-bottom: 20px;
 	justify-content: space-between;
+
+	@media (max-width: $mobile-breakpoint) {
+		flex-direction: column;
+	}
+}
+
+.swpl__admin .button {
+	margin: 0;
+
+	@media (max-width: $mobile-breakpoint) {
+		height: 32px !important;
+		min-height: 32px !important;
+		line-height: 32px !important;
+	}
 }
 
 .swpl__filter__controls {
@@ -86,14 +101,6 @@ $mobile-breakpoint: 782px;
 	width: 100%;
 }
 
-.swpl__filter--buttons {
-	grid-column: 1 / -1;
-	display: flex;
-	gap: $spacing-sm;
-	justify-content: flex-end;
-	margin-top: $spacing-sm;
-}
-
 // =============================================================================
 // Bulk Actions
 // =============================================================================
@@ -101,11 +108,20 @@ $mobile-breakpoint: 782px;
 	display: flex;
 	gap: $spacing-sm;
 	align-items: center;
+
+	@media (max-width: $mobile-breakpoint) {
+		flex-direction: column;
+	}
 }
 
 .swpl__bulk__actions--buttons {
 	display: flex;
 	gap: $spacing-sm;
+
+	@media (max-width: $mobile-breakpoint) {
+		width: 100%;
+		flex-direction: column;
+	}
 }
 
 .swpl__bulk__actions--info {
@@ -307,6 +323,11 @@ button .components-spinner {
 	max-height: 90vh;
 	display: flex;
 	flex-direction: column;
+
+	@media screen and (max-width: $mobile-breakpoint) {
+		width: 100%;
+		max-height: 100vh;
+	}
 }
 
 .swpl__modal--header {
@@ -438,6 +459,8 @@ button .components-spinner {
 
 .swpl__table--container {
 	position: relative;
+	max-width: 100%;
+	overflow-x: auto;
 }
 
 .swpl__table--loading-overlay {

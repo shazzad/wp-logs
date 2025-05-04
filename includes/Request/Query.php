@@ -13,7 +13,8 @@ class Query extends AbstractQuery {
 
 		$this->columns = [
 			'id'               => [
-				'type' => 'interger'
+				'type'       => 'interger',
+				'searchable' => true
 			],
 			'source'           => [
 				'type'       => 'varchar',
@@ -28,12 +29,10 @@ class Query extends AbstractQuery {
 				'searchable' => true
 			],
 			'request_method'   => [
-				'type'       => 'text',
-				'searchable' => false
+				'type' => 'text',
 			],
 			'request_hostname' => [
-				'type'       => 'text',
-				'searchable' => false
+				'type' => 'text',
 			],
 			'response_code'    => [
 				'type' => 'interger'

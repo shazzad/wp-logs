@@ -3,7 +3,7 @@
 // Tab navigation styles that integrate with WordPress admin
 .swpl__admin {
 	// Override WordPress default spacing
-	margin: 10px 20px 0 2px;
+	// margin: 10px 20px 0 2px;
 
 	.wp-heading-inline {
 		margin-top: 0.5em;
@@ -63,13 +63,11 @@
 			}
 		}
 
-		&:focus {
-			box-shadow: none;
-		}
-
-		&-active {
-			background-color: #fff;
-			border-bottom-color: #fff;
+		&:focus,
+		&-active,
+		&-active:hover {
+			color: #fff;
+			background-color: #2271b1;
 		}
 	}
 }

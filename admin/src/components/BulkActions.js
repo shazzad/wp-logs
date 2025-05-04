@@ -11,17 +11,7 @@ const BulkActions = ({
 }) => {
   return (
     <div className="swpl__bulk__actions">
-      <div className="swpl__bulk__actions--info">
-        {selectedCount > 0 && <span>{selectedCount} log(s) selected</span>}
-      </div>
       <div className="swpl__bulk__actions--buttons">
-        <button
-          className="button"
-          onClick={onDeleteSelected}
-          disabled={isLoading || isDeleting || selectedCount === 0}
-        >
-          Delete Selected
-        </button>
         <button
           className="button button-link-delete"
           onClick={onDeleteAll}
@@ -29,6 +19,16 @@ const BulkActions = ({
         >
           Delete all
         </button>
+        <button
+          className="button"
+          onClick={onDeleteSelected}
+          disabled={isLoading || isDeleting || selectedCount === 0}
+        >
+          Delete Selected
+        </button>
+      </div>
+      <div className="swpl__bulk__actions--info">
+        {selectedCount > 0 && <span>{selectedCount} log(s) selected</span>}
       </div>
     </div>
   );
