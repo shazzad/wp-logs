@@ -50,16 +50,16 @@ const LogDetailsModal = ({ logId, onClose }) => {
         className="swpl__modal__content"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="swpl-modal-header">
+        <div className="swpl__modal--header">
           <h2>Log Details</h2>
-          <button className="swpl-modal-close" onClick={onClose}>
+          <button className="swpl__modal--close-btn" onClick={onClose}>
             &times;
           </button>
         </div>
 
-        <div className="swpl__modal__body">
+        <div className="swpl__modal--body">
           {isLoading ? (
-            <div className="swpl-loading">
+            <div className="swpl__loading">
               <Spinner />
               <p>Loading log details...</p>
             </div>
@@ -68,7 +68,7 @@ const LogDetailsModal = ({ logId, onClose }) => {
               <p>{error}</p>
             </div>
           ) : logDetails ? (
-            <div className="swpl__modal__content__rows">
+            <div className="swpl__modal--content-rows">
               {[
                 {
                   name: "Date",
@@ -88,15 +88,15 @@ const LogDetailsModal = ({ logId, onClose }) => {
                 { name: "Message", value: logDetails.message },
                 { name: "ID", value: logDetails.id },
               ].map((item, index) => (
-                <div className="swpl__modal__meta" key={index}>
-                  <div className="swpl__modal__meta--name">{item.name}:</div>
-                  <div className="swpl__modal__meta--value">{item.value}</div>
+                <div className="swpl__modal--meta" key={index}>
+                  <div className="swpl__modal--meta-name">{item.name}:</div>
+                  <div className="swpl__modal--meta-value">{item.value}</div>
                 </div>
               ))}
 
               <div className="swpl-log-detail-item">
                 <strong>Data:</strong>
-                <pre className="swpl-log-context">
+                <pre className="swpl__print">
                   {formatContext(logDetails.context)}
                 </pre>
               </div>
@@ -106,7 +106,7 @@ const LogDetailsModal = ({ logId, onClose }) => {
           )}
         </div>
 
-        <div className="swpl-modal-footer">
+        <div className="swpl__modal--footer">
           <button className="button" onClick={onClose}>
             Close
           </button>

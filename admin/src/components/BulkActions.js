@@ -1,7 +1,7 @@
-// src/components/LogsBulkActions.js
+// src/components/BulkActions.js
 import React from "react";
 
-const LogsBulkActions = ({
+const BulkActions = ({
   selectedCount,
   isLoading,
   isDeleting,
@@ -10,11 +10,11 @@ const LogsBulkActions = ({
   onDeleteAll,
 }) => {
   return (
-    <div className="swpl-bulk-actions">
-      <div className="swpl-bulk-actions-info">
+    <div className="swpl__bulk__actions">
+      <div className="swpl__bulk__actions--info">
         {selectedCount > 0 && <span>{selectedCount} log(s) selected</span>}
       </div>
-      <div className="swpl-bulk-actions-buttons">
+      <div className="swpl__bulk__actions--buttons">
         <button
           className="button"
           onClick={onDeleteSelected}
@@ -27,11 +27,11 @@ const LogsBulkActions = ({
           onClick={onDeleteAll}
           disabled={isLoading || isDeleting || !hasLogs}
         >
-          Delete All Logs
+          Delete all
         </button>
       </div>
     </div>
   );
 };
 
-export default LogsBulkActions;
+export default BulkActions;

@@ -33,7 +33,7 @@ const LogTable = ({
   // Only show the full-page loading state on initial load when we have no logs yet
   if (isLoading && logs.length === 0) {
     return (
-      <div className="swpl-loading">
+      <div className="swpl__loading">
         <Spinner />
         <p>Loading logs...</p>
       </div>
@@ -41,11 +41,11 @@ const LogTable = ({
   }
 
   return (
-    <div className="swpl-table-container">
+    <div className="swpl__table--container">
       {/* Loading overlay that only appears when refreshing data but keeping existing content */}
       {isLoadingNewData && (
-        <div className="swpl-table-loading-overlay">
-          <div className="swpl-loading-indicator">
+        <div className="swpl__table--loading-overlay">
+          <div className="swpl__loading-indicator">
             <Spinner />
             <p>Updating...</p>
           </div>
@@ -93,7 +93,7 @@ const LogTable = ({
                 <td>{log.id}</td>
                 <td>{formatDate(log.date)}</td>
                 <td>
-                  <span className={`log-level log-level-${log.level}`}>
+                  <span className={`log__level log__level--${log.level}`}>
                     {log.level}
                   </span>
                 </td>

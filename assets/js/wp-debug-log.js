@@ -18,11 +18,11 @@
       $("body").append(
         '<div id="swpl-modal">' +
           '<div id="swpl-modal-inner">' +
-          '<a id="swpl-modal-close-btn" class="dashicons dashicons-no-alt" href="#"></a>' +
+          '<a id="swpl__modal--close-btn-btn" class="dashicons dashicons-no-alt" href="#"></a>' +
           '<div id="swpl-modal-body">' +
-          '<div class="swpl-modal-header"></div>' +
+          '<div class="swpl__modal--header"></div>' +
           '<div class="swpl-modal-content"></div>' +
-          '<div class="swpl-modal-footer"></div>' +
+          '<div class="swpl__modal--footer"></div>' +
           "</div>" +
           '<div id="swpl-modal-loading" style="display:none;"></div>' +
           "</div>" +
@@ -43,7 +43,7 @@
     $("#swpl-modal-body").html(html);
   });
 
-  ["swpl-modal-header", "swpl-modal-content", "swpl-modal-footer"].forEach(
+  ["swpl__modal--header", "swpl-modal-content", "swpl__modal--footer"].forEach(
     function (target) {
       $(document.body).on(target, function (e, html) {
         if (html) {
@@ -68,7 +68,7 @@
     $("#swpl-modal-body > div").empty().hide();
   });
 
-  $(document.body).on("click", "#swpl-modal-close-btn", function () {
+  $(document.body).on("click", "#swpl__modal--close-btn-btn", function () {
     $(document.body).trigger("swpl-modal-hide");
     return false;
   });
@@ -125,7 +125,7 @@
             content = xhr.responseJSON.message;
           }
 
-          $(document.body).trigger("swpl-modal-header", header);
+          $(document.body).trigger("swpl__modal--header", header);
           $(document.body).trigger("swpl-modal-content", content);
         })
         .always(function () {

@@ -1,7 +1,7 @@
 // src/styles/tab-navigation.scss
 
 // Tab navigation styles that integrate with WordPress admin
-.swpl-app {
+.swpl__admin {
 	// Override WordPress default spacing
 	margin: 10px 20px 0 2px;
 
@@ -61,7 +61,7 @@
 
 // Make sure the tabs look good on mobile
 @media screen and (max-width: 782px) {
-	.swpl-app {
+	.swpl__admin {
 		.swpl__tab__navigation {
 			.swpl__tab__wrapper {
 				.swpl__nav__tab {

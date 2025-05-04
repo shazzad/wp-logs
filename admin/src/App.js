@@ -24,7 +24,7 @@ const App = () => {
 
   return (
     <Router>
-      <div className="swpl-app swpl__admin">
+      <div className="swpl__admin">
         <h1>WP Logs</h1>
         <TabNavigation items={navItems} />
 

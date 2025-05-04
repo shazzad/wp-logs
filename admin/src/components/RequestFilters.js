@@ -43,8 +43,8 @@ const RequestFilters = ({
   };
 
   return (
-    <div className="swpl-admin-filters">
-      <div className="swpl-filter-controls">
+    <div className="swpl__admin__filters">
+      <div className="swpl__filter__controls">
         <SearchControl
           value={localSearchTerm}
           onChange={handleSearchInputChange} // Use the local handler
@@ -58,7 +58,7 @@ const RequestFilters = ({
           value={methodFilter}
           options={methodOptions}
           onChange={onMethodChange}
-          className="swpl-filter-select"
+          className="swpl__filter--select"
           __nextHasNoMarginBottom
           __next40pxDefaultSize
         />
@@ -67,12 +67,12 @@ const RequestFilters = ({
           value={hostnameFilter}
           options={hostnameOptions}
           onChange={onSourceChange}
-          className="swpl-filter-select"
+          className="swpl__filter--select"
           __nextHasNoMarginBottom
           __next40pxDefaultSize
         />
       </div>
-      <div className="swpl-filter-buttons">
+      <div className="swpl__filter--buttons">
         <button
           className="button"
           onClick={onApplyFilters}

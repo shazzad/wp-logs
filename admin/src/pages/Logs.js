@@ -5,7 +5,7 @@ import SimplePagination from "../components/SimplePagination";
 import LogDetailsModal from "../components/LogDetailsModal";
 import LogFilters from "../components/LogFilters";
 import LogTable from "../components/LogTable";
-import LogsBulkActions from "../components/LogsBulkActions";
+import BulkActions from "../components/BulkActions";
 import LogsDeleteConfirmationModal from "../components/LogsDeleteConfirmationModal";
 
 const Logs = () => {
@@ -288,7 +288,7 @@ const Logs = () => {
         </div>
       )}
 
-      <LogsBulkActions
+      <BulkActions
         selectedCount={selectedLogs.length}
         isLoading={isLoading}
         isDeleting={isDeleting}
@@ -311,8 +311,8 @@ const Logs = () => {
       />
 
       {totalPages > 1 && (
-        <div className="swpl-pagination">
-          <div className="swpl-pagination-info">
+        <div className="swpl__pagination">
+          <div className="swpl__pagination--info">
             Showing {logs.length} of {totalItems} logs
           </div>
           <SimplePagination

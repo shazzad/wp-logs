@@ -49,7 +49,7 @@ $mobile-breakpoint: 782px;
 // Core Layout
 // =============================================================================
 
-.swpl-loading {
+.swpl__loading {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -59,13 +59,13 @@ $mobile-breakpoint: 782px;
 // =============================================================================
 // Filters Section
 // =============================================================================
-.swpl-admin-filters {
+.swpl__admin__filters {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 20px;
 }
 
-.swpl-filter-controls {
+.swpl__filter__controls {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	gap: $spacing-md;
@@ -75,11 +75,11 @@ $mobile-breakpoint: 782px;
 	}
 }
 
-.swpl-filter-select {
+.swpl__filter--select {
 	width: 100%;
 }
 
-.swpl-filter-buttons {
+.swpl__filter--buttons {
 	grid-column: 1 / -1;
 	display: flex;
 	gap: $spacing-sm;
@@ -90,18 +90,18 @@ $mobile-breakpoint: 782px;
 // =============================================================================
 // Bulk Actions
 // =============================================================================
-.swpl-bulk-actions {
+.swpl__bulk__actions {
 	@include flex-between;
 	padding: 10px 0;
 	margin-bottom: 10px;
 }
 
-.swpl-bulk-actions-buttons {
+.swpl__bulk__actions--buttons {
 	display: flex;
 	gap: $spacing-sm;
 }
 
-.swpl-bulk-actions-info {
+.swpl__bulk__actions--info {
 	font-size: 13px;
 	color: #555;
 }
@@ -223,7 +223,7 @@ th.sortable {
 // =============================================================================
 // Pagination
 // =============================================================================
-.swpl-pagination {
+.swpl__pagination {
 	margin-top: $spacing-md;
 	display: flex;
 	flex-direction: column;
@@ -231,18 +231,18 @@ th.sortable {
 	gap: $spacing-sm;
 }
 
-.swpl-pagination-info {
+.swpl__pagination--info {
 	font-size: 13px;
 	color: #555;
 }
 
-.swpl-pagination-nav {
+.swpl__pagination--nav {
 	display: flex;
 	gap: 5px;
 	align-items: center;
 }
 
-.swpl-pagination-ellipsis {
+.swpl__pagination--ellipsis {
 	margin: 0 5px;
 }
 
@@ -298,7 +298,7 @@ button .components-spinner {
 	flex-direction: column;
 }
 
-.swpl-modal-header {
+.swpl__modal--header {
 	@include flex-between;
 	padding: $spacing-md;
 	border-bottom: 1px solid $border-color;
@@ -309,7 +309,7 @@ button .components-spinner {
 	}
 }
 
-.swpl-modal-close {
+.swpl__modal--close-btn {
 	background: none;
 	border: none;
 	cursor: pointer;
@@ -326,13 +326,13 @@ button .components-spinner {
 	}
 }
 
-.swpl__modal__body {
+.swpl__modal--body {
 	padding: $spacing-md;
 	overflow-y: auto;
 	flex: 1;
 }
 
-.swpl-modal-footer {
+.swpl__modal--footer {
 	padding: $spacing-md;
 	border-top: 1px solid $border-color;
 	display: flex;
@@ -343,7 +343,7 @@ button .components-spinner {
 // =============================================================================
 // Log Details in Modal
 // =============================================================================
-.swpl__modal__content__rows {
+.swpl__modal--content-rows {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
@@ -359,19 +359,18 @@ button .components-spinner {
 	}
 }
 
-.swpl__modal__meta {
+.swpl__modal--meta {
 	display: flex;
 
-	.swpl__modal__meta--name {
+	.swpl__modal--meta-name {
 		width: 150px;
 	}
 
-	.swpl__modal__meta--value {
+	.swpl__modal--meta-value {
 		flex: 1;
 	}
 }
 
-.swpl-log-context,
 .swpl__print {
 	background-color: $light-bg;
 	padding: 10px;
@@ -387,14 +386,14 @@ button .components-spinner {
 // =============================================================================
 // Confirmation Modal
 // =============================================================================
-.swpl-confirmation-modal {
+.swpl__confirmation__modal {
 	background-color: white;
 	border-radius: 4px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	width: 500px;
 	max-width: 90%;
 
-	.swpl-modal-header {
+	.swpl__modal--header {
 		padding: $spacing-md;
 		border-bottom: 1px solid $border-color;
 
@@ -404,7 +403,7 @@ button .components-spinner {
 		}
 	}
 
-	.swpl__modal__body {
+	.swpl__modal--body {
 		padding: $spacing-lg $spacing-md;
 		font-size: 14px;
 
@@ -413,7 +412,7 @@ button .components-spinner {
 		}
 	}
 
-	.swpl-modal-footer {
+	.swpl__modal--footer {
 		padding: $spacing-md;
 		border-top: 1px solid $border-color;
 		display: flex;
@@ -425,11 +424,11 @@ button .components-spinner {
 
 /* Add this to your styles/logs.scss file */
 
-.swpl-table-container {
+.swpl__table--container {
 	position: relative;
 }
 
-.swpl-table-loading-overlay {
+.swpl__table--loading-overlay {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -442,7 +441,7 @@ button .components-spinner {
 	align-items: center;
 }
 
-.swpl-loading-indicator {
+.swpl__loading-indicator {
 	background-color: white;
 	padding: 15px 25px;
 	border-radius: 4px;
@@ -452,12 +451,12 @@ button .components-spinner {
 	align-items: center;
 }
 
-.swpl-loading-indicator p {
+.swpl__loading-indicator p {
 	margin: 8px 0 0 0;
 }
 
 /* This helps to visually indicate that the content below is disabled */
-.swpl-table-loading-overlay+table {
+.swpl__table--loading-overlay+table {
 	opacity: 0.7;
 	pointer-events: none;
 }

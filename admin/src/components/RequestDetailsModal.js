@@ -50,16 +50,16 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
         className="swpl__modal__content"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="swpl-modal-header">
+        <div className="swpl__modal--header">
           <h2>Request Details</h2>
-          <button className="swpl-modal-close" onClick={onClose}>
+          <button className="swpl__modal--close-btn" onClick={onClose}>
             &times;
           </button>
         </div>
 
-        <div className="swpl__modal__body">
+        <div className="swpl__modal--body">
           {isLoading ? (
-            <div className="swpl-loading">
+            <div className="swpl__loading">
               <Spinner />
               <p>Loading request details...</p>
             </div>
@@ -68,7 +68,7 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
               <p>{error}</p>
             </div>
           ) : requestDetails ? (
-            <div className="swpl__modal__content__rows">
+            <div className="swpl__modal--content-rows">
               {[
                 {
                   name: "Date",
@@ -88,9 +88,9 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
                 { name: "Status", value: requestDetails.response_code },
                 { name: "ID", value: requestDetails.id },
               ].map((item, index) => (
-                <div className="swpl__modal__meta" key={index}>
-                  <div className="swpl__modal__meta--name">{item.name}:</div>
-                  <div className="swpl__modal__meta--value">{item.value}</div>
+                <div className="swpl__modal--meta" key={index}>
+                  <div className="swpl__modal--meta-name">{item.name}:</div>
+                  <div className="swpl__modal--meta-value">{item.value}</div>
                 </div>
               ))}
 
@@ -137,7 +137,7 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
           )}
         </div>
 
-        <div className="swpl-modal-footer">
+        <div className="swpl__modal--footer">
           <button className="button" onClick={onClose}>
             Close
           </button>

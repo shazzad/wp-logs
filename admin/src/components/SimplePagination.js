@@ -18,7 +18,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange }) => {
   }
 
   return (
-    <div className="swpl-pagination-nav">
+    <div className="swpl__pagination--nav">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -33,7 +33,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange }) => {
             1
           </button>
           {startPage > 2 && (
-            <span className="swpl-pagination-ellipsis">...</span>
+            <span className="swpl__pagination--ellipsis">...</span>
           )}
         </>
       )}
@@ -51,7 +51,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange }) => {
       {endPage < totalPages && (
         <>
           {endPage < totalPages - 1 && (
-            <span className="swpl-pagination-ellipsis">...</span>
+            <span className="swpl__pagination--ellipsis">...</span>
           )}
           <button onClick={() => onPageChange(totalPages)} className="button">
             {totalPages}
