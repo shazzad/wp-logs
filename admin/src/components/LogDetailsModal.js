@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import apiFetch from "@wordpress/api-fetch";
 import { Spinner } from "@wordpress/components";
+import ReactJsonView from "@microlink/react-json-view";
 
 const LogDetailsModal = ({ logId, onClose }) => {
   const [logDetails, setLogDetails] = useState(null);
@@ -34,13 +35,22 @@ const LogDetailsModal = ({ logId, onClose }) => {
     }
   };
 
-  const formatContext = (context) => {
-    if (!context) return "";
+  const jsonView = (data) => {
+    if (!data) return "";
 
     try {
-      return JSON.stringify(context, null, 2);
+      JSON.stringify(data, null, 2);
+      return (
+        <ReactJsonView
+          src={data}
+          name={null}
+          enableClipboard={false}
+          displayDataTypes={false}
+          displayObjectSize={false}
+        />
+      );
     } catch (e) {
-      return "Unable to display context";
+      return "Unable to display data";
     }
   };
 
@@ -97,7 +107,7 @@ const LogDetailsModal = ({ logId, onClose }) => {
               <div className="swpl-log-detail-item">
                 <strong>Data:</strong>
                 <pre className="swpl__print">
-                  {formatContext(logDetails.context)}
+                  {jsonView(logDetails.context)}
                 </pre>
               </div>
             </div>
