@@ -25,7 +25,7 @@ const Requests = () => {
   const [selectedLogs, setSelectedLogs] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null); // null, 'selected', or 'all'
-  const perPage = 10;
+  const [perPage, setPerPage] = useState(10); // Default to 10 items per page
 
   // Get available levels and sources from the global settings
   const availableMethods = window.swplAdminAppSettings?.methods || {};
@@ -61,6 +61,14 @@ const Requests = () => {
         }))),
   ];
 
+  // Per page options
+  const perPageOptions = [
+    { label: "10 per page", value: 10 },
+    { label: "25 per page", value: 25 },
+    { label: "50 per page", value: 50 },
+    { label: "100 per page", value: 100 },
+  ];
+
   useEffect(() => {
     // Set up API authentication with the provided credentials
     if (swplAdminAppSettings) {
@@ -77,6 +85,7 @@ const Requests = () => {
     hostnameFilter,
     sortField,
     sortOrder,
+    perPage,
   ]);
 
   // Clear selected requests when page changes or filters change
@@ -165,6 +174,11 @@ const Requests = () => {
     setCurrentPage(1); // Reset to first page when filter changes
   };
 
+  const handlePerPageChange = (value) => {
+    setPerPage(parseInt(value));
+    setCurrentPage(1); // Reset to first page when per page changes
+  };
+
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -189,6 +203,7 @@ const Requests = () => {
     setSourceFilter("");
     setSortField("id");
     setSortOrder("desc");
+    setPerPage(10); // Reset to default per page
     setCurrentPage(1);
   };
 
@@ -292,6 +307,9 @@ const Requests = () => {
           onSourceChange={handleSourceChange}
           onApplyFilters={fetchLogs}
           onResetFilters={resetFilters}
+          perPage={perPage}
+          perPageOptions={perPageOptions}
+          onPerPageChange={handlePerPageChange}
         />
 
         <BulkActions

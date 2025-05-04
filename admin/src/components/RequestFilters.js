@@ -9,6 +9,9 @@ const RequestFilters = ({
   methodOptions,
   hostnameOptions,
   isLoading,
+  perPage,
+  perPageOptions,
+  onPerPageChange,
   onSearchChange,
   onMethodChange,
   onSourceChange,
@@ -66,6 +69,15 @@ const RequestFilters = ({
         value={hostnameFilter}
         options={hostnameOptions}
         onChange={onSourceChange}
+        className="swpl__filter--select"
+        __nextHasNoMarginBottom
+        __next40pxDefaultSize
+      />
+      <SelectControl
+        // label="Per Page"
+        value={perPage}
+        options={perPageOptions}
+        onChange={onPerPageChange}
         className="swpl__filter--select"
         __nextHasNoMarginBottom
         __next40pxDefaultSize

@@ -25,7 +25,7 @@ const Logs = () => {
   const [selectedLogs, setSelectedLogs] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null); // null, 'selected', or 'all'
-  const perPage = 10;
+  const [perPage, setPerPage] = useState(10); // Default to 10 items per page
 
   // Get available levels and sources from the global settings
   const availableLevels = window.swplAdminAppSettings?.levels || {};
@@ -61,6 +61,14 @@ const Logs = () => {
         }))),
   ];
 
+  // Per page options
+  const perPageOptions = [
+    { label: "10 per page", value: 10 },
+    { label: "25 per page", value: 25 },
+    { label: "50 per page", value: 50 },
+    { label: "100 per page", value: 100 },
+  ];
+
   useEffect(() => {
     // Set up API authentication with the provided credentials
     if (swplAdminAppSettings) {
@@ -77,12 +85,13 @@ const Logs = () => {
     sourceFilter,
     sortField,
     sortOrder,
+    perPage, // Add perPage to dependency array
   ]);
 
   // Clear selected logs when page changes or filters change
   useEffect(() => {
     setSelectedLogs([]);
-  }, [currentPage, searchTerm, levelFilter, sourceFilter]);
+  }, [currentPage, searchTerm, levelFilter, sourceFilter, perPage]); // Add perPage to dependency array
 
   // Update displayLogs when logs state is updated
   useEffect(() => {
@@ -163,6 +172,11 @@ const Logs = () => {
     setCurrentPage(1); // Reset to first page when filter changes
   };
 
+  const handlePerPageChange = (value) => {
+    setPerPage(parseInt(value));
+    setCurrentPage(1); // Reset to first page when per page changes
+  };
+
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -187,6 +201,7 @@ const Logs = () => {
     setSourceFilter("");
     setSortField("id");
     setSortOrder("desc");
+    setPerPage(10); // Reset to default per page
     setCurrentPage(1);
   };
 
@@ -282,12 +297,15 @@ const Logs = () => {
           searchTerm={searchTerm}
           levelFilter={levelFilter}
           sourceFilter={sourceFilter}
+          perPage={perPage}
           levelOptions={levelOptions}
           sourceOptions={sourceOptions}
+          perPageOptions={perPageOptions}
           isLoading={isLoading}
           onSearchChange={handleSearch}
           onLevelChange={handleLevelChange}
           onSourceChange={handleSourceChange}
+          onPerPageChange={handlePerPageChange}
           onApplyFilters={fetchLogs}
           onResetFilters={resetFilters}
         />

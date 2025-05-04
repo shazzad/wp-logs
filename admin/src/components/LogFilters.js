@@ -6,12 +6,15 @@ const LogFilters = ({
   searchTerm,
   levelFilter,
   sourceFilter,
+  perPage,
   levelOptions,
   sourceOptions,
+  perPageOptions,
   isLoading,
   onSearchChange,
   onLevelChange,
   onSourceChange,
+  onPerPageChange,
   onApplyFilters,
   onResetFilters,
 }) => {
@@ -66,6 +69,15 @@ const LogFilters = ({
         value={sourceFilter}
         options={sourceOptions}
         onChange={onSourceChange}
+        className="swpl__filter--select"
+        __nextHasNoMarginBottom
+        __next40pxDefaultSize
+      />
+      <SelectControl
+        // label="Per Page"
+        value={perPage}
+        options={perPageOptions}
+        onChange={onPerPageChange}
         className="swpl__filter--select"
         __nextHasNoMarginBottom
         __next40pxDefaultSize
