@@ -24,6 +24,29 @@ do_action(
 );
 ```
 
+## Save HTTP Requests.
+
+Add the following code to your plugin or theme to log HTTP requests for specific URLs.
+
+```php
+add_filter( 'swpl_log_request', function ( $enabled, $url ) {
+	$target_urls = [
+		'https://example.com',
+		'https://wordpress.org',
+		'https://api.wordpress.org',
+		get_option( 'api_endpoint' ),
+	];
+
+	foreach ( $target_urls as $target_url ) {
+		if ( 0 === strpos( $url, $target_url ) ) {
+			return true;
+		}
+	}
+
+	return $enabled;
+}, 10, 2 );
+```
+
 ## View Log
 
 All logs can be viewed at `Wp Admin > Logs` page.
