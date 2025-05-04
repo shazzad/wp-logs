@@ -111,8 +111,6 @@ class Hooks {
 			'response_data'    => $response['body'],
 		];
 
-		swpl_log( 'http_api_debug', $props );
-
 		try {
 			$request = new Request\Data();
 
