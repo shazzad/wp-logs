@@ -1,5 +1,6 @@
 // src/components/RequestDetailsModal.js
 import React, { useState, useEffect } from "react";
+import ReactJsonView from "@microlink/react-json-view";
 import apiFetch from "@wordpress/api-fetch";
 import { Spinner, TabPanel } from "@wordpress/components";
 
@@ -34,13 +35,22 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
     }
   };
 
-  const formatContext = (context) => {
-    if (!context) return "";
+  const jsonView = (data) => {
+    if (!data) return "";
 
     try {
-      return JSON.stringify(context, null, 2);
+      JSON.stringify(data, null, 2);
+      return (
+        <ReactJsonView
+          src={data}
+          name={null}
+          enableClipboard={false}
+          displayDataTypes={false}
+          displayObjectSize={false}
+        />
+      );
     } catch (e) {
-      return "Unable to display context";
+      return "Unable to display data";
     }
   };
 
@@ -109,8 +119,8 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
                   <div className="swpl-request-detail-item">
                     <pre className="swpl__print">
                       {tab.name === "payload"
-                        ? formatContext(requestDetails.request_payload)
-                        : formatContext(requestDetails.request_headers)}
+                        ? jsonView(requestDetails.request_payload)
+                        : jsonView(requestDetails.request_headers)}
                     </pre>
                   </div>
                 )}
@@ -128,8 +138,8 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
                   <div className="swpl-request-detail-item">
                     <pre className="swpl__print">
                       {tab.name === "data"
-                        ? formatContext(requestDetails.response_data)
-                        : formatContext(requestDetails.response_headers)}
+                        ? jsonView(requestDetails.response_data)
+                        : jsonView(requestDetails.response_headers)}
                     </pre>
                   </div>
                 )}
