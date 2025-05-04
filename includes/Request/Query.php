@@ -1,5 +1,5 @@
 <?php
-namespace Shazzad\WpLogs\Log;
+namespace Shazzad\WpLogs\Request;
 
 use Shazzad\WpLogs\Abstracts\Query as AbstractQuery;
 use Shazzad\WpLogs\DbAdapter;
@@ -9,33 +9,39 @@ class Query extends AbstractQuery {
 	public $use_found_rows = false;
 
 	public function __construct( $args = [] ) {
-		$this->table = DbAdapter::prefix_table( 'logs' );
+		$this->table = DbAdapter::prefix_table( 'requests' );
 
 		$this->columns = [
-			'id'           => [
+			'id'               => [
 				'type'       => 'interger',
-				'searchable' => true,
-				'sortable'   => true
+				'searchable' => true
 			],
-			'message'      => [
+			'source'           => [
+				'type'       => 'varchar',
+				'searchable' => true
+			],
+			'method'           => [
+				'type'       => 'method',
+				'searchable' => true
+			],
+			'request_url'      => [
 				'type'       => 'text',
 				'searchable' => true
 			],
-			'level'        => [
-				'type' => 'varchar',
-			],
-			'source'       => [
-				'type' => 'varchar',
-			],
-			'message_raw'  => [
+			'request_method'   => [
 				'type' => 'text',
 			],
-			'context'      => [
+			'request_hostname' => [
 				'type' => 'text',
 			],
-			'date_created' => [
-				'type' => 'datetime'
-			]
+			'response_code'    => [
+				'type'     => 'interger',
+				'sortable' => true,
+			],
+			'response_size'    => [
+				'type'     => 'interger',
+				'sortable' => true,
+			],
 		];
 
 		parent::__construct( $args );

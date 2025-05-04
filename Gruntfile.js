@@ -24,8 +24,12 @@ module.exports = function (grunt) {
           archive: "build/shazzad-wp-logs.v" + pkgJson.version + ".zip",
         },
         files: [
+          // include include admin/build folder
+          { src: "admin/build/**", dest: "shazzad-wp-logs/" },
           { src: "assets/**", dest: "shazzad-wp-logs/" },
+          { src: "commands/**", dest: "shazzad-wp-logs/" },
           { src: "includes/**", dest: "shazzad-wp-logs/" },
+          { src: "languages/**", dest: "shazzad-wp-logs/" },
           { src: "vendor/**", dest: "shazzad-wp-logs/" },
           {
             src: "shazzad-wp-logs.php",

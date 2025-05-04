@@ -7,63 +7,124 @@
 namespace Shazzad\WpLogs;
 
 /**
- * Plugin
+ * Main plugin class for Shazzad WP Logs.
+ *
+ * This singleton class is responsible for initializing the plugin,
+ * loading dependencies, and setting up core functionality.
+ *
+ * @since 1.0.0
+ * @package Shazzad\WpLogs
  */
 final class Plugin {
 	/**
-	 * @var object Plugin instance.
+	 * Plugin instance.
+	 *
+	 * @since 1.0.0
+	 * @var Plugin|null Single instance of the plugin.
 	 */
-	protected static $_instance = null;
-
-	/**
-	 * Class instance getter.
-	 */
-	public static function instance() {
-		if ( self::$_instance === null ) {
-			self::$_instance = new self();
-		}
-
-		return self::$_instance;
-	}
+	protected static $instance = null;
 
 	/**
 	 * Constructor.
+	 *
+	 * Private constructor to prevent direct instantiation.
+	 *
+	 * @since 1.0.0
 	 */
 	private function __construct() {
-		$this->define_constants();
-		$this->initialize();
-
-		do_action( 'shazzad_wp_logs/loaded' );
 	}
 
-	/*
-	 * Define constants.
+	/**
+	 * Class instance getter.
+	 *
+	 * Ensures only one instance of the plugin is loaded.
+	 *
+	 * @since 1.0.0
+	 * @return Plugin Single plugin instance.
 	 */
-	private function define_constants() {
-		define( 'SWPL_DIR', plugin_dir_path( SWPL_PLUGIN_FILE ) );
-		define( 'SWPL_URL', plugin_dir_url( SWPL_PLUGIN_FILE ) );
-		define( 'SWPL_BASENAME', plugin_basename( SWPL_PLUGIN_FILE ) );
+	public static function instance() {
+		if ( self::$instance === null ) {
+			self::$instance = new self();
+			self::$instance->include_files();
+			self::$instance->initialize();
+
+			add_action( 'init', [ self::$instance, 'load_plugin_translations' ] );
+			add_action( 'init', [ self::$instance, 'maybe_upgrade_db' ] );
+
+			do_action( 'swpl_loaded' );
+		}
+
+		return self::$instance;
 	}
 
-	/*
-	 * Boot plugin features.
+	/**
+	 * Include required files.
+	 *
+	 * Loads the autoloader and functions file.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	private function include_files() {
+		require_once SWPL_DIR . 'vendor/autoload.php';
+		require_once SWPL_DIR . 'includes/functions.php';
+	}
+
+	/**
+	 * Initialize plugin components.
+	 *
+	 * Sets up Mustache templating and initializes all plugin components.
+	 *
+	 * @since 1.0.0
+	 * @return void
 	 */
 	private function initialize() {
-		load_plugin_textdomain(
-			'shazzad-wp-logs',
-			false,
-			basename( dirname( SWPL_PLUGIN_FILE ) ) . '/languages'
-		);
-
 		// Load mustache, it is used for parsing message.
 		\Mustache_Autoloader::register();
 
-		// Filter/action hook callbacks.
-		new Hooks();
+		Cleanup::setup();
+		RestApi::setup();
+
+		Hooks::setup();
+
+		AdminBarMenu::setup();
+		WpDebugLog::setup();
 
 		if ( is_admin() ) {
-			// Admin interface.
-			new Admin\Main();
+			Admin\Main::setup();
+		}
+	}
+
+
+	/**
+	 * Load plugin translation file.
+	 *
+	 * Loads the plugin's text domain for internationalization.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function load_plugin_translations() {
+		load_plugin_textdomain(
+			'swpl',
+			false,
+			basename( dirname( SWPL_PLUGIN_FILE ) ) . '/languages'
+		);
+	}
+
+	/**
+	 * Upgrade/migrate database if required.
+	 *
+	 * Checks if the plugin version has changed and runs upgrade routines if needed.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function maybe_upgrade_db() {
+		if ( ! get_option( 'swpl_version' )
+			|| version_compare( get_option( 'swpl_version' ), SWPL_VERSION, '!=' ) ) {
+
+			Installer::upgrade();
 		}
 	}
 }

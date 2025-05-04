@@ -61,12 +61,12 @@ abstract class Query {
 
 	// Set a query argument
 	public function set( $key, $val ) {
-		$this->query_args[ $key ] = $val;
+		$this->query_args[$key] = $val;
 	}
 
 	// Get a query argument with a default value
 	public function get( $key, $default = '' ) {
-		return array_key_exists( $key, $this->query_args ) ? $this->query_args[ $key ] : $default;
+		return array_key_exists( $key, $this->query_args ) ? $this->query_args[$key] : $default;
 	}
 
 	// Parse and validate query variables
@@ -98,6 +98,8 @@ abstract class Query {
 
 		if ( '' != $this->get( 'limit' ) ) {
 			$this->limit = absint( $this->get( 'limit' ) );
+		} elseif ( '' != $this->get( 'per_page' ) ) {
+			$this->limit = absint( $this->get( 'per_page' ) );
 		}
 
 		if ( '' != $this->get( 'method' ) ) {
@@ -132,18 +134,18 @@ abstract class Query {
 				case 'text':
 				case 'varchar':
 				case 'price':
-					$this->parse_text_fields( [ 
+					$this->parse_text_fields( [
 						$column => "TB.{$column}"
 					] );
 					if ( $this->get( "{$column}__like" ) ) {
-						$search_args[ $column ] = $this->get( "{$column}__like" );
+						$search_args[$column] = $this->get( "{$column}__like" );
 					}
 					break;
 				case 'interger':
-					$this->parse_interger_fields( [ 
+					$this->parse_interger_fields( [
 						$column => "TB.{$column}"
 					] );
-					$this->parse_interger_fields( [ 
+					$this->parse_interger_fields( [
 						"{$column}__not" => "TB.{$column}"
 					], 'NOT IN' );
 					break;
@@ -153,16 +155,20 @@ abstract class Query {
 		}
 
 		if ( $this->get( 'sb' ) != '' ) {
-			$search_args[ $this->get( 'sb' ) ] = $this->get( 's' );
+			$search_args[$this->get( 'sb' )] = $this->get( 's' );
 		} else {
 			foreach ( $this->columns as $column => $args ) {
-				if ( ! empty( $search_args[ $column ] ) ) {
+				if ( ! empty( $search_args[$column] ) ) {
 					continue;
-				} elseif ( isset( $args['searchable'] ) ) {
+				}
+
+				if ( isset( $args['searchable'] ) && $args['searchable'] ) {
+					$keyword = $this->get( 's' );
+
 					if ( in_array( $args['type'], [ 'text', 'varchar' ] ) ) {
-						$search_args[ $column ] = $this->get( 's' );
-					} elseif ( in_array( $args['type'], [ 'interger', 'number' ] ) ) {
-						$search_args[ $column ] = (int) $this->get( 's' );
+						$search_args[$column] = $keyword;
+					} elseif ( is_numeric( $keyword ) && in_array( $args['type'], [ 'interger', 'number' ] ) ) {
+						$search_args[$column] = $keyword;
 					}
 				}
 			}
@@ -380,9 +386,9 @@ abstract class Query {
 
 		if ( '' != $this->limit ) {
 			if ( $this->use_found_rows ) {
-				$this->found_items = DbAdapter::get_found_rows();
+				$this->found_items = (int) DbAdapter::get_found_rows();
 			} else {
-				$this->found_items = DbAdapter::get_var( $this->get_count_query() );
+				$this->found_items = (int) DbAdapter::get_var( $this->get_count_query() );
 			}
 
 			$this->max_num_pages = ceil( $this->found_items / $this->limit );
@@ -391,7 +397,7 @@ abstract class Query {
 			$this->max_num_pages = 1;
 		}
 
-		$this->paginations = [ 
+		$this->paginations = [
 			'current' => $this->get( 'paged' ),
 			'items'   => $this->found_items,
 			'pages'   => $this->max_num_pages
@@ -400,7 +406,7 @@ abstract class Query {
 		// If cache enabled, keep the data on cache
 		if ( $this->use_cache ) {
 			wp_cache_set( "result_{$request_hash}", $this->data, '', $this->cache_ttl );
-			wp_cache_set( "attrs_{$request_hash}", [ 
+			wp_cache_set( "attrs_{$request_hash}", [
 				'found_items'   => $this->found_items,
 				'max_num_pages' => $this->max_num_pages
 			], '', $this->cache_ttl );

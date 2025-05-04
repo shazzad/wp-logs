@@ -1,0 +1,217 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Shazzad Wp Logs\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-04 22:07+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.7.2; wp-6.8.1\n"
+"X-Domain: swpl"
+
+#: includes/RestController/DebugLogController.php:89
+msgid "<code>debug.log</code> file does not exists."
+msgstr ""
+
+#: includes/RestController/DebugLogController.php:95
+msgid "<code>debug.log</code> file empty."
+msgstr ""
+
+#: includes/functions.php:42
+msgid "Critical"
+msgstr ""
+
+#: includes/functions.php:37
+msgid "Debug"
+msgstr ""
+
+#: includes/functions.php:77
+msgid "DELETE"
+msgstr ""
+
+#: includes/RestController/DebugLogController.php:125
+msgid "Deleted"
+msgstr ""
+
+#: includes/functions.php:43
+msgid "Emergency"
+msgstr ""
+
+#: includes/Settings/PluginSettings.php:86
+msgid ""
+"Enter one URL pattern per line. HTTP requests matching these patterns will "
+"be logged."
+msgstr ""
+
+#: includes/functions.php:41
+msgid "Error"
+msgstr ""
+
+#: includes/functions.php:74
+msgid "GET"
+msgstr ""
+
+#: includes/Settings/PluginSettings.php:61
+msgid "Guest Setting"
+msgstr ""
+
+#: includes/functions.php:78
+msgid "HEAD"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://shazzad.me"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://w4dev.com"
+msgstr ""
+
+#: includes/functions.php:38
+msgid "Info"
+msgstr ""
+
+#: includes/RestController/RequestController.php:126
+#: includes/RestController/LogController.php:125
+msgid "Invalid fields"
+msgstr ""
+
+#: includes/RestController/LogController.php:111
+msgid "Invalid log level"
+msgstr ""
+
+#: includes/Log/Data.php:157
+msgid "Invalid message"
+msgstr ""
+
+#: includes/Request/Data.php:229
+msgid "Invalid request method"
+msgstr ""
+
+#: includes/Request/Data.php:225
+msgid "Invalid url"
+msgstr ""
+
+#: includes/Log/Api.php:10
+msgid "Log"
+msgstr ""
+
+#: includes/RestController/RequestController.php:180
+#: includes/RestController/RequestController.php:208
+#: includes/RestController/LogController.php:183
+#: includes/RestController/LogController.php:211
+msgid "Log not found"
+msgstr ""
+
+#: includes/AdminBarMenu.php:59 includes/AdminBarMenu.php:62
+#: includes/Admin/AdminPage.php:43 includes/Admin/AdminPage.php:44
+#: includes/Admin/Main.php:44 includes/Log/Api.php:12
+msgid "Logs"
+msgstr ""
+
+#: includes/Log/Api.php:31
+msgid "Logs deleted"
+msgstr ""
+
+#: includes/RestController/RequestController.php:252
+#: includes/RestController/LogController.php:260
+msgid "Logs not found"
+msgstr ""
+
+#: includes/RestController/DebugLogController.php:116
+msgid "No logs"
+msgstr ""
+
+#: includes/functions.php:39
+msgid "Notice"
+msgstr ""
+
+#: includes/functions.php:79
+msgid "OPTIONS"
+msgstr ""
+
+#: includes/Settings/PluginSettings.php:49
+msgid "Plugin Settings"
+msgstr ""
+
+#: includes/functions.php:75
+msgid "POST"
+msgstr ""
+
+#: includes/functions.php:76
+msgid "PUT"
+msgstr ""
+
+#: includes/Request/Api.php:10
+msgid "Request"
+msgstr ""
+
+#: includes/Settings/PluginSettings.php:85
+msgid "Request URLs to Log"
+msgstr ""
+
+#: includes/Request/Api.php:12
+msgid "Requests"
+msgstr ""
+
+#: includes/Request/Api.php:32
+msgid "Requests deleted"
+msgstr ""
+
+#: includes/AdminBarMenu.php:81
+msgid "REST API Log"
+msgstr ""
+
+#: includes/Settings/PluginSettings.php:69
+msgid "Retain Logs For"
+msgstr ""
+
+#: includes/Settings/PluginSettings.php:77
+msgid "Retain Requests For"
+msgstr ""
+
+#: includes/Settings/PluginSettings.php:70
+msgid "Set the maximum number of days to retain logs. Default is 0, infinite."
+msgstr ""
+
+#: includes/Settings/PluginSettings.php:78
+msgid ""
+"Set the maximum number of days to retain requests. Default is 0, infinite."
+msgstr ""
+
+#. Author of the plugin
+msgid "Shazzad Hossain Khan"
+msgstr ""
+
+#. Name of the plugin
+msgid "Shazzad Wp Logs"
+msgstr ""
+
+#: shazzad-wp-logs.php:38
+msgid ""
+"Shazzad Wp Logs plugin is missing vendor folder. Please run <code>composer "
+"install</code> to import vendors."
+msgstr ""
+
+#. Description of the plugin
+msgid "Store and view logs for debugging."
+msgstr ""
+
+#: includes/RestController/DebugLogController.php:84
+msgid "Unauthorized Request"
+msgstr ""
+
+#: includes/functions.php:40
+msgid "Warning"
+msgstr ""
+
+#: includes/WpDebugLog.php:89 includes/RestController/DebugLogController.php:80
+msgid "WP Debug Log"
+msgstr ""

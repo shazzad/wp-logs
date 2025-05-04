@@ -1,8 +1,7 @@
 # WP Logs
 
-A WordPress plugin that can store & display runtime log data. Logs 
+A WordPress plugin that can store & display runtime log data. Logs
 data are stored in custom database table.
-
 
 ## Save Log
 
@@ -16,7 +15,7 @@ do_action(
 	'Example Plugin',
 
 	// $message | string | log message.
-	'{user} updated his profile',
+	'{{user}} updated his profile',
 
 	// $context | array | a data that can be replaced with placeholder inside message.
 	array(
@@ -25,37 +24,27 @@ do_action(
 );
 ```
 
-## Register Log menu
+## Save HTTP Requests.
 
-One can register zero to multiple menu items to display logs. Unless `parent_slug` 
-value is defined, the log will be displayed as a submenu under this plugins admin menu.
+Add the following code to your plugin or theme to log HTTP requests for specific URLs.
 
 ```php
-add_filter( 'swpl_menu_items', function( $menu_items ){
+add_filter( 'swpl_log_request', function ( $enabled, $url ) {
+	$target_urls = [
+		'https://example.com',
+		'https://wordpress.org',
+		'https://api.wordpress.org',
+		get_option( 'api_endpoint' ),
+	];
 
-	$menu_items['my-example-logs'] = array(
-	
-		// Logs menu label
-		'menu_title'  => __( 'Logs' ),
+	foreach ( $target_urls as $target_url ) {
+		if ( 0 === strpos( $url, $target_url ) ) {
+			return true;
+		}
+	}
 
-		// Logs page title.
-		'page_title'  => __( 'Logs' ),
-		
-		// Label displayed on admin bar menu
-		'bar_menu_title'  => __( 'Example Plugin' ),
-		
-		// You plugin's admin menu page name / slug
-		'parent_slug' => 'example-plugin-options',
-		
-		// Log page access capability
-		'capability'  => 'manage_options',
-		
-		// Limit showing logs from give sources
-		'sources'     => array( 'Example Plugin' ),
-	);
-
-	return $menu_items;
-});
+	return $enabled;
+}, 10, 2 );
 ```
 
 ## View Log
@@ -64,6 +53,6 @@ All logs can be viewed at `Wp Admin > Logs` page.
 
 ### Requirements
 
-* WordPress: 5.0
-* PHP: 5.7
-* Tested: 6.0.1
+- WordPress: 5.0
+- PHP: 5.7
+- Tested: 6.0.1

@@ -1,0 +1,73 @@
+// src/styles/tab-navigation.scss
+
+// Tab navigation styles that integrate with WordPress admin
+.swpl__admin {
+	// Override WordPress default spacing
+	// margin: 10px 20px 0 2px;
+
+	.wp-heading-inline {
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+
+	// Content wrapper for the selected tab
+	.swpl__content__wrapper {
+		margin-top: 20px;
+	}
+
+	// Page content container
+	.swpl__page__content {
+		background-color: #fff;
+		border: 1px solid #ccd0d4;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+		padding: 20px;
+
+		h2 {
+			margin-top: 0;
+		}
+	}
+}
+
+.swpl__tab {
+	margin-bottom: 20px;
+
+	&--navigation {
+		margin-bottom: 20px;
+	}
+
+	// Customize the WordPress nav tabs
+	&--wrapper {
+		gap: 10px;
+		display: flex;
+		margin-bottom: 0;
+	}
+
+	&--nav {
+		padding: 10px 15px;
+		text-decoration: none;
+
+		// Make sure the tabs look good on mobile
+		@media screen and (max-width: 782px) {
+			margin: 0 4px 4px 0;
+			padding: 8px 10px;
+		}
+
+		.dashicons {
+			margin-right: 6px;
+			font-size: 18px;
+			line-height: 1.3;
+
+			// Make sure the tabs look good on mobile
+			@media screen and (max-width: 782px) {
+				margin-right: 4px;
+			}
+		}
+
+		&:focus,
+		&-active,
+		&-active:hover {
+			color: #fff;
+			background-color: #2271b1;
+		}
+	}
+}
