@@ -428,11 +428,10 @@ $sidebar-break-point: 1200px;
 
 			&:hover,
 			&:focus {
+				color: #000;
 				cursor: pointer;
 			}
 
-			&:hover,
-			&:focus,
 			&.swpl__tab--active {
 				color: #000;
 				border-color: #e2e4e7;

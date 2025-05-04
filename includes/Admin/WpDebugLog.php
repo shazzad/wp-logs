@@ -45,22 +45,22 @@ class WpDebugLog {
 	 */
 	public static function wp_debug_log_ajax() {
 		$modal = [
-			'header' => __( 'WP Debug Log' )
+			'header' => __( 'WP Debug Log', 'swpl' )
 		];
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			$modal['content'] = __( 'Unauthorized Request' );
+			$modal['content'] = __( 'Unauthorized Request', 'swpl' );
 			wp_send_json_error( [ 'modal' => $modal ] );
 		}
 
 		if ( ! file_exists( self::get_log_file() ) ) {
-			$modal['content'] = __( '<code>debug.log</code> file does not exists.' );
+			$modal['content'] = __( '<code>debug.log</code> file does not exists.', 'swpl' );
 			wp_send_json_error( [ 'modal' => $modal ] );
 		}
 
 		$content = file_get_contents( self::get_log_file() );
 		if ( empty( $content ) ) {
-			$modal['content'] = __( '<code>debug.log</code> file empty.' );
+			$modal['content'] = __( '<code>debug.log</code> file empty.', 'swpl' );
 			wp_send_json_error( [ 'modal' => $modal ] );
 		}
 
@@ -82,7 +82,7 @@ class WpDebugLog {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'Unauthorized Request' )
+					'message' => __( 'Unauthorized Request', 'swpl' )
 				]
 			);
 		}
@@ -90,7 +90,7 @@ class WpDebugLog {
 		if ( ! file_exists( self::get_log_file() ) ) {
 			wp_send_json_error(
 				[
-					'message' => __( 'No logs' )
+					'message' => __( 'No logs', 'swpl' )
 				]
 			);
 		}
@@ -99,7 +99,7 @@ class WpDebugLog {
 
 		wp_send_json_success(
 			[
-				'message' => __( 'Deleted' )
+				'message' => __( 'Deleted', 'swpl' )
 			]
 		);
 	}
@@ -133,7 +133,7 @@ class WpDebugLog {
 			[
 				'id'     => AdminBarMenu::PARENT_ID . '-debug-log',
 				'parent' => AdminBarMenu::PARENT_ID . '-secondary',
-				'title'  => __( 'WP Debug Log' ),
+				'title'  => __( 'WP Debug Log', 'swpl' ),
 				'href'   => site_url( '/wp-content/debug.log' )
 			]
 		);

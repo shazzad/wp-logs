@@ -34,7 +34,7 @@ class LogController extends WP_REST_Controller {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $namespace = 'wp/v2';
+	protected $namespace = 'swpl/v1';
 
 	/**
 	 * The base of this controller's route.

@@ -8,7 +8,7 @@
  * Requires PHP: 5.5
  * Author: Shazzad Hossain Khan
  * Author URI: https://shazzad.me
- * Text Domain: shazzad-wp-logs
+ * Text Domain: swpl
  * Domain Path: /languages
  * 
  * @package Shazzad\WpLogs
@@ -35,7 +35,7 @@ function swpl_missing_vendor_notice() {
 	<div class="notice notice-error is-dismissible">
 		<p>
 			<?php
-			_e( 'Shazzad Wp Logs plugin is missing vendor folder. Please run <code>composer install</code> to import vendors.', 'shazzad-wp-logs' );
+			_e( 'Shazzad Wp Logs plugin is missing vendor folder. Please run <code>composer install</code> to import vendors.', 'swpl' );
 			?>
 		</p>
 	</div>

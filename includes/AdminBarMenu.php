@@ -56,8 +56,12 @@ class AdminBarMenu {
 
 		$wp_admin_bar->add_node( [
 			'id'    => self::PARENT_ID,
-			'title' => '<span class="ab-icon dashicons-before dashicons-warning"></span><span class="screen-reader-text-no">' . __( 'Logs' ) . '</span>',
-			'href'  => admin_url( 'admin.php?page=shazzad-wp-logs' ),
+			'title' => '<span class="ab-icon dashicons-before dashicons-warning"></span><span class="screen-reader-text-no">' . __( 'Logs', 'swpl' ) . '</span>',
+			'href'  => admin_url( 'admin.php?page=shazzad-wp-logs' ) . '#logs',
+			'meta'  => [
+				'title' => __( 'Logs', 'swpl' ),
+				'class' => 'ab-sub-secondary',
+			],
 		] );
 
 		$group_secondary = self::PARENT_ID . '-secondary';
@@ -74,7 +78,7 @@ class AdminBarMenu {
 			$wp_admin_bar->add_node( [
 				'id'     => self::PARENT_ID . '-rest-api-log',
 				'parent' => $group_secondary,
-				'title'  => __( 'Rest Api Log' ),
+				'title'  => __( 'REST API Log', 'swpl' ),
 				'href'   => admin_url( 'edit.php?post_type=wp-rest-api-log' ),
 			] );
 		}

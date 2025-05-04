@@ -61,6 +61,7 @@ const PluginSettings = () => {
           value={settings?.swpl_logged_request_urls || ""}
           name={"swpl_logged_request_urls"}
           setSetting={setSetting}
+          rows={10}
         />
       </div>
 

@@ -48,8 +48,8 @@ final class Plugin {
 			self::$instance->include_files();
 			self::$instance->initialize();
 
-			add_action( 'init', array( self::$instance, 'load_plugin_translations' ) );
-			add_action( 'init', array( self::$instance, 'maybe_upgrade_db' ) );
+			add_action( 'init', [ self::$instance, 'load_plugin_translations' ] );
+			add_action( 'init', [ self::$instance, 'maybe_upgrade_db' ] );
 
 			do_action( 'swpl_loaded' );
 		}
@@ -107,7 +107,7 @@ final class Plugin {
 	 */
 	public function load_plugin_translations() {
 		load_plugin_textdomain(
-			'shazzad-wp-logs',
+			'swpl',
 			false,
 			basename( dirname( HOMELOCAL_PLUGIN_FILE ) ) . '/languages'
 		);

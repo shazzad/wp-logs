@@ -19,7 +19,7 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
     try {
       setIsLoading(true);
       const response = await apiFetch({
-        path: `/wp/v2/requests/${id}`,
+        path: `/swpl/v1/requests/${id}`,
       });
 
       if (response && response.data) {

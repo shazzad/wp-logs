@@ -115,7 +115,7 @@ const Logs = () => {
       )}&order=${encodeURIComponent(sortOrder)}`;
 
       const response = await apiFetch({
-        path: `/wp/v2/logs${queryParams}`,
+        path: `/swpl/v1/logs${queryParams}`,
         // Parse headers to get pagination information
         parse: false,
       });
@@ -236,13 +236,13 @@ const Logs = () => {
       if (confirmDelete === "all") {
         // Delete all logs
         await apiFetch({
-          path: "/wp/v2/logs",
+          path: "/swpl/v1/logs",
           method: "DELETE",
         });
       } else if (confirmDelete === "selected" && selectedLogs.length > 0) {
         // Delete selected logs
         await apiFetch({
-          path: "/wp/v2/logs",
+          path: "/swpl/v1/logs",
           method: "DELETE",
           data: { ids: selectedLogs },
         });
