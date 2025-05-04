@@ -2,6 +2,7 @@ import React from "react";
 import { __ } from "@wordpress/i18n";
 import { Button } from "@wordpress/components";
 import CustomInputControl from "../components/CustomInputControl";
+import CustomTextareaControl from "../components/CustomTextareaControl";
 
 import useSettings from "../hooks/useSettings";
 
@@ -48,6 +49,17 @@ const PluginSettings = () => {
           )}
           value={settings?.swpl_request_retention_days || ""}
           name={"swpl_request_retention_days"}
+          setSetting={setSetting}
+        />
+
+        <CustomTextareaControl
+          label={__("Request URLs to Log", "swpl")}
+          desc={__(
+            "Enter one url address per line. We will match it against the left part of the url.",
+            "swpl"
+          )}
+          value={settings?.swpl_logged_request_urls || ""}
+          name={"swpl_logged_request_urls"}
           setSetting={setSetting}
         />
       </div>

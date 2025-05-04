@@ -84,7 +84,10 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
                     </span>
                   ),
                 },
-                { name: "URL", value: requestDetails.request_url },
+                {
+                  name: "URL",
+                  value: decodeURIComponent(requestDetails.request_url),
+                },
                 { name: "Status", value: requestDetails.response_code },
                 { name: "ID", value: requestDetails.id },
               ].map((item, index) => (

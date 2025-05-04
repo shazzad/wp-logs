@@ -326,7 +326,7 @@ class Data extends AbstractData {
 	protected function remove_size_recursive( $data, $max_chunk_size = 65535 ) {
 		if ( is_string( $data ) || is_numeric( $data ) ) {
 			if ( strlen( $data ) > $max_chunk_size ) {
-				$data = substr( $data, 0, 10 ) . ' REMOVED LARGE DATA';
+				$data = substr( $data, 0, 65000 ) . ' REMOVED LARGE DATA';
 			}
 
 		} else if ( is_array( $data ) ) {

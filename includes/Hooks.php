@@ -24,8 +24,9 @@ class Hooks {
 	 * @return void
 	 */
 	public static function setup() {
-		add_action( 'swpl_log', [ __CLASS__, 'store_log' ], 10, 4 );
 		add_filter( 'swpl_format_message', [ __CLASS__, 'format_message' ], 20, 2 );
+		add_filter( 'swpl_log_request', [ __CLASS__, 'filter_allowed_urls' ], 10, 2 );
+		add_action( 'swpl_log', [ __CLASS__, 'store_log' ], 10, 4 );
 		add_action( 'http_api_debug', [ __CLASS__, 'maybe_store_http_request' ], 10, 5 );
 	}
 
@@ -133,5 +134,23 @@ class Hooks {
 
 		$mustache = new Mustache_Engine();
 		return $mustache->render( $message, $context );
+	}
+
+	public static function filter_allowed_urls( $allow, $url ) {
+		$allowed_urls = get_option( 'swpl_logged_request_urls', [] );
+
+		if ( ! empty( $allowed_urls ) ) {
+			$allowed_urls = array_map( 'trim', explode( "\n", $allowed_urls ) );
+			$allowed_urls = array_filter( $allowed_urls );
+
+			foreach ( $allowed_urls as $allowed_url ) {
+				if ( strpos( $url, $allowed_url ) !== false ) {
+					$allow = true;
+					break;
+				}
+			}
+		}
+
+		return $allow;
 	}
 }
