@@ -6,6 +6,491 @@
 	}
 }
 
+// Main Variables
+$primary-color: #2271b1;
+$error-color: #b32d2e;
+$border-color: #e2e4e7;
+$light-bg: #f8f9fa;
+
+// Log Level Colors
+$debug-bg: #e7f5ff;
+$debug-color: #0366d6;
+$info-bg: #e6f6e6;
+$info-color: #28a745;
+$warning-bg: #fff5e6;
+$warning-color: #f0ad4e;
+$error-bg: #ffeaea;
+$error-color: #dc3545;
+
+// Spacing
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 20px;
+
+// Z-index
+$modal-z-index: 100000;
+
+// Breakpoints
+$mobile-breakpoint: 782px;
+
+// Mixins
+@mixin flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@mixin flex-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+@mixin card {
+	background: #fff;
+	border: 1px solid $border-color;
+	border-radius: 4px;
+	padding: $spacing-md;
+}
+
+// =============================================================================
+// Core Layout
+// =============================================================================
+
+.swpl__loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 40px 0;
+}
+
+// =============================================================================
+// Filters Section
+// =============================================================================
+.swpl__admin__filters {
+	display: flex;
+	margin-bottom: 20px;
+	justify-content: space-between;
+}
+
+.swpl__filter__controls {
+	display: flex;
+	gap: $spacing-sm;
+
+	@media (max-width: $mobile-breakpoint) {
+		flex-direction: column;
+	}
+}
+
+.swpl__filter--select {
+	width: 100%;
+}
+
+.swpl__filter--buttons {
+	grid-column: 1 / -1;
+	display: flex;
+	gap: $spacing-sm;
+	justify-content: flex-end;
+	margin-top: $spacing-sm;
+}
+
+// =============================================================================
+// Bulk Actions
+// =============================================================================
+.swpl__bulk__actions {
+	display: flex;
+	gap: $spacing-sm;
+	align-items: center;
+}
+
+.swpl__bulk__actions--buttons {
+	display: flex;
+	gap: $spacing-sm;
+}
+
+.swpl__bulk__actions--info {
+	font-size: 13px;
+	color: #555;
+}
+
+// =============================================================================
+// Tables & Data Display
+// =============================================================================
+// Check column
+.check-column {
+	width: 30px;
+	text-align: center;
+}
+
+// Log Levels
+.log__level {
+	display: inline-block;
+	padding: 2px $spacing-sm;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: bold;
+	text-transform: uppercase;
+
+	&--debug {
+		background-color: $debug-bg;
+		color: $debug-color;
+	}
+
+	&--info {
+		background-color: $info-bg;
+		color: $info-color;
+	}
+
+	&--warning {
+		background-color: $warning-bg;
+		color: $warning-color;
+	}
+
+	&--error {
+		background-color: $error-bg;
+		color: $error-color;
+	}
+}
+
+// Log Levels
+.request__method {
+	display: inline-block;
+	padding: 2px $spacing-sm;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: bold;
+	text-transform: uppercase;
+
+	&--get {
+		background-color: #e7f5ff;
+		color: #0366d6;
+	}
+
+	&--post {
+		background-color: #e6f6e6;
+		color: #28a745;
+	}
+
+	&--put {
+		background-color: #fff5e6;
+		color: #f0ad4e;
+	}
+
+	&--delete {
+		background-color: #ffeaea;
+		color: #dc3545;
+	}
+
+	&--patch {
+		background-color: #fff5e6;
+		color: #f0ad4e;
+	}
+
+	&--options {
+		background-color: #e7f5ff;
+		color: #0366d6;
+	}
+
+	&--head {
+		background-color: #e7f5ff;
+		color: #0366d6;
+	}
+}
+
+.swpl__admin {
+
+	// Sortable columns
+	.sort-icon {
+		position: absolute;
+		right: 8px;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 16px;
+		color: #555;
+
+		&.sort-asc,
+		&.sort-desc {
+			color: $primary-color;
+		}
+	}
+
+	th.sortable {
+		cursor: pointer;
+		position: relative;
+		padding-right: 25px;
+		user-select: none;
+
+		&:hover {
+			background-color: #f0f0f1;
+		}
+	}
+
+	.widefat th.sortable,
+	.widefat th.sorted {
+		padding: 0 10px;
+	}
+}
+
+// =============================================================================
+// Pagination
+// =============================================================================
+.swpl__pagination {
+	margin-top: $spacing-md;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: $spacing-sm;
+}
+
+.swpl__pagination--info {
+	font-size: 13px;
+	color: #555;
+}
+
+.swpl__pagination--nav {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.swpl__pagination--ellipsis {
+	margin: 0 5px;
+}
+
+// =============================================================================
+// Buttons & Actions
+// =============================================================================
+.button-link-delete {
+	color: $error-color;
+	border-color: $error-color;
+
+	&:hover,
+	&:focus {
+		color: #fff;
+		background-color: $error-color;
+		border-color: $error-color;
+	}
+}
+
+button.button-link-delete {
+
+	&:hover,
+	&:focus {
+		color: #fff;
+	}
+}
+
+button .components-spinner {
+	margin-right: 5px;
+}
+
+// =============================================================================
+// Modal Components
+// =============================================================================
+.swpl__modal__overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	@include flex-center;
+	z-index: $modal-z-index;
+}
+
+.swpl__modal__content {
+	background-color: white;
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	width: 90%;
+	max-width: 800px;
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.swpl__modal--header {
+	@include flex-between;
+	padding: $spacing-md;
+	border-bottom: 1px solid $border-color;
+
+	h2 {
+		margin: 0;
+		font-size: 18px;
+	}
+}
+
+.swpl__modal--close-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 24px;
+	color: #555;
+	padding: 0;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+
+	&:hover {
+		color: #d94f4f;
+	}
+}
+
+.swpl__modal--body {
+	flex: 1;
+	overflow-y: auto;
+	padding: $spacing-lg;
+}
+
+.swpl__modal--footer {
+	display: flex;
+	gap: $spacing-sm;
+	padding: $spacing-md;
+	justify-content: flex-end;
+	border-top: 1px solid $border-color;
+}
+
+// =============================================================================
+// Log Details in Modal
+// =============================================================================
+.swpl__modal--content-rows {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.swpl-log-detail-item,
+.swpl-request-detail-item {
+	display: flex;
+	flex-direction: column;
+
+	strong {
+		margin-bottom: 5px;
+	}
+}
+
+.swpl__modal--meta {
+	display: flex;
+
+	.swpl__modal--meta-name {
+		width: 150px;
+	}
+
+	.swpl__modal--meta-value {
+		flex: 1;
+		word-break: break-all;
+	}
+}
+
+.swpl__print {
+	background-color: $light-bg;
+	padding: 10px;
+	overflow: auto;
+	white-space: pre-wrap;
+	word-break: break-all;
+	max-height: 400px;
+	font-size: 13px;
+	margin: 0;
+	border: 1px solid $border-color;
+}
+
+// =============================================================================
+// Confirmation Modal
+// =============================================================================
+.swpl__confirmation__modal {
+	background-color: white;
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	width: 500px;
+	max-width: 90%;
+
+	.swpl__modal--header {
+		padding: $spacing-md;
+		border-bottom: 1px solid $border-color;
+
+		h2 {
+			margin: 0;
+			font-size: 18px;
+		}
+	}
+
+	.swpl__modal--body {
+		padding: $spacing-lg $spacing-md;
+		font-size: 14px;
+
+		p {
+			margin: 0;
+		}
+	}
+
+	.swpl__modal--footer {
+		padding: $spacing-md;
+		border-top: 1px solid $border-color;
+		display: flex;
+		justify-content: flex-end;
+		gap: $spacing-sm;
+	}
+}
+
+
+/* Add this to your styles/logs.scss file */
+
+.swpl__table--container {
+	position: relative;
+}
+
+.swpl__table--loading-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255, 255, 255, 0.7);
+	z-index: 10;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.swpl__loading-indicator {
+	background-color: white;
+	padding: 15px 25px;
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.swpl__loading-indicator p {
+	margin: 8px 0 0 0;
+}
+
+/* This helps to visually indicate that the content below is disabled */
+.swpl__table--loading-overlay+table {
+	opacity: 0.7;
+	pointer-events: none;
+}
+
+.swpl__admin {
+
+	.swpl__filter--select select {
+		height: 32px !important;
+		min-height: 32px !important;
+	}
+
+	.swpl__filter--search input {
+		height: 30px !important;
+		min-height: 30px !important;
+		min-width: 250px;
+	}
+
+	.swpl__filter--search .components-input-control__container {
+		background-color: #fff;
+		border: 1px solid #aaa;
+	}
+}
+
 @import 'tab-navigation.scss';
-@import 'logs.scss';
 @import 'settings.scss';

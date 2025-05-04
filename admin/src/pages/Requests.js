@@ -270,34 +270,36 @@ const Requests = () => {
     <div className="swpl__page__content">
       <h2>Requests</h2>
 
-      <RequestFilters
-        searchTerm={searchTerm}
-        methodFilter={methodFilter}
-        hostnameFilter={hostnameFilter}
-        methodOptions={methodOptions}
-        hostnameOptions={hostnameOptions}
-        isLoading={isLoading}
-        onSearchChange={handleSearch}
-        onMethodChange={handleLevelChange}
-        onSourceChange={handleSourceChange}
-        onApplyFilters={fetchLogs}
-        onResetFilters={resetFilters}
-      />
-
       {error && (
         <div className="notice notice-error">
           <p>{error}</p>
         </div>
       )}
 
-      <BulkActions
-        selectedCount={selectedLogs.length}
-        isLoading={isLoading}
-        isDeleting={isDeleting}
-        hasLogs={requests.length > 0}
-        onDeleteSelected={() => showDeleteConfirmation("selected")}
-        onDeleteAll={() => showDeleteConfirmation("all")}
-      />
+      <div className="swpl__admin__filters">
+        <RequestFilters
+          searchTerm={searchTerm}
+          methodFilter={methodFilter}
+          hostnameFilter={hostnameFilter}
+          methodOptions={methodOptions}
+          hostnameOptions={hostnameOptions}
+          isLoading={isLoading}
+          onSearchChange={handleSearch}
+          onMethodChange={handleLevelChange}
+          onSourceChange={handleSourceChange}
+          onApplyFilters={fetchLogs}
+          onResetFilters={resetFilters}
+        />
+
+        <BulkActions
+          selectedCount={selectedLogs.length}
+          isLoading={isLoading}
+          isDeleting={isDeleting}
+          hasLogs={requests.length > 0}
+          onDeleteSelected={() => showDeleteConfirmation("selected")}
+          onDeleteAll={() => showDeleteConfirmation("all")}
+        />
+      </div>
 
       <RequestTable
         requests={requests}

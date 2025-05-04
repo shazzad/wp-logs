@@ -43,51 +43,39 @@ const RequestFilters = ({
   };
 
   return (
-    <div className="swpl__admin__filters">
-      <div className="swpl__filter__controls">
-        <SearchControl
-          value={localSearchTerm}
-          onChange={handleSearchInputChange} // Use the local handler
-          label="Search logs"
-          placeholder="Search logs..."
-          className="swpl-search-control"
-          __nextHasNoMarginBottom
-        />
-        <SelectControl
-          // label="Log Level"
-          value={methodFilter}
-          options={methodOptions}
-          onChange={onMethodChange}
-          className="swpl__filter--select"
-          __nextHasNoMarginBottom
-          __next40pxDefaultSize
-        />
-        <SelectControl
-          // label="Log Source"
-          value={hostnameFilter}
-          options={hostnameOptions}
-          onChange={onSourceChange}
-          className="swpl__filter--select"
-          __nextHasNoMarginBottom
-          __next40pxDefaultSize
-        />
-      </div>
-      <div className="swpl__filter--buttons">
-        <button
-          className="button"
-          onClick={onApplyFilters}
-          disabled={isLoading}
-        >
-          Apply Filters
-        </button>
-        <button
-          className="button"
-          onClick={onResetFilters}
-          disabled={isLoading}
-        >
-          Reset Filters
-        </button>
-      </div>
+    <div className="swpl__filter__controls">
+      <SearchControl
+        value={localSearchTerm}
+        onChange={handleSearchInputChange} // Use the local handler
+        label="Search logs"
+        placeholder="Search logs..."
+        className="swpl__filter--search"
+        __nextHasNoMarginBottom
+      />
+      <SelectControl
+        // label="Log Level"
+        value={methodFilter}
+        options={methodOptions}
+        onChange={onMethodChange}
+        className="swpl__filter--select"
+        __nextHasNoMarginBottom
+        __next40pxDefaultSize
+      />
+      <SelectControl
+        // label="Log Source"
+        value={hostnameFilter}
+        options={hostnameOptions}
+        onChange={onSourceChange}
+        className="swpl__filter--select"
+        __nextHasNoMarginBottom
+        __next40pxDefaultSize
+      />
+      <button className="button" onClick={onApplyFilters} disabled={isLoading}>
+        Apply Filters
+      </button>
+      <button className="button" onClick={onResetFilters} disabled={isLoading}>
+        Reset Filters
+      </button>
     </div>
   );
 };

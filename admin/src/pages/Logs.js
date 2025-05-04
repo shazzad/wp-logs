@@ -268,34 +268,36 @@ const Logs = () => {
     <div className="swpl__page__content">
       <h2>Logs</h2>
 
-      <LogFilters
-        searchTerm={searchTerm}
-        levelFilter={levelFilter}
-        sourceFilter={sourceFilter}
-        levelOptions={levelOptions}
-        sourceOptions={sourceOptions}
-        isLoading={isLoading}
-        onSearchChange={handleSearch}
-        onLevelChange={handleLevelChange}
-        onSourceChange={handleSourceChange}
-        onApplyFilters={fetchLogs}
-        onResetFilters={resetFilters}
-      />
-
       {error && (
         <div className="notice notice-error">
           <p>{error}</p>
         </div>
       )}
 
-      <BulkActions
-        selectedCount={selectedLogs.length}
-        isLoading={isLoading}
-        isDeleting={isDeleting}
-        hasLogs={logs.length > 0}
-        onDeleteSelected={() => showDeleteConfirmation("selected")}
-        onDeleteAll={() => showDeleteConfirmation("all")}
-      />
+      <div className="swpl__admin__filters">
+        <LogFilters
+          searchTerm={searchTerm}
+          levelFilter={levelFilter}
+          sourceFilter={sourceFilter}
+          levelOptions={levelOptions}
+          sourceOptions={sourceOptions}
+          isLoading={isLoading}
+          onSearchChange={handleSearch}
+          onLevelChange={handleLevelChange}
+          onSourceChange={handleSourceChange}
+          onApplyFilters={fetchLogs}
+          onResetFilters={resetFilters}
+        />
+
+        <BulkActions
+          selectedCount={selectedLogs.length}
+          isLoading={isLoading}
+          isDeleting={isDeleting}
+          hasLogs={logs.length > 0}
+          onDeleteSelected={() => showDeleteConfirmation("selected")}
+          onDeleteAll={() => showDeleteConfirmation("all")}
+        />
+      </div>
 
       <LogTable
         logs={logs}
