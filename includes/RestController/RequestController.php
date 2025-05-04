@@ -119,6 +119,18 @@ class RequestController extends WP_REST_Controller {
 			$query_args['s'] = '"' . $query_args['s'] . '"';
 		}
 
+		if ( ! empty( $request['fields'] ) ) {
+			$fields = $this->get_fields( $request );
+
+			if ( empty( $fields ) ) {
+				return new WP_Error( 'invalid_fields', __( 'Invalid fields', 'swpl' ), [ 'status' => 400 ] );
+			}
+
+			$fields = array_unique( $fields );
+
+			$query_args['columns'] = $fields;
+		}
+
 		$query = new Request\Query( $query_args );
 		$query->query();
 
@@ -249,18 +261,81 @@ class RequestController extends WP_REST_Controller {
 	 * @return array Response data for the log item.
 	 */
 	protected function prepare_item( $item, $request ) {
-		return [
-			'id'               => $item->get_id(),
-			'date_created'     => $item->get_date_created(),
-			'request_url'      => $item->get_request_url(),
-			'request_payload'  => $item->get_request_payload(),
-			'request_headers'  => $item->get_request_headers(),
-			'request_method'   => $item->get_request_method(),
-			'response_code'    => $item->get_response_code(),
-			'response_size'    => $item->get_response_size(),
-			'response_headers' => $item->get_response_headers(),
-			'response_data'    => $item->get_response_data(),
+		$fields = $this->get_fields( $request );
+
+		if ( empty( $fields ) ) {
+			return [];
+		}
+
+		$data = [];
+
+		foreach ( $fields as $field ) {
+			switch ( $field ) {
+				case 'id':
+					$data['id'] = $item->get_id();
+					break;
+				case 'date_created':
+					$data['date_created'] = $item->get_date_created();
+					break;
+				case 'request_url':
+					$data['request_url'] = $item->get_request_url();
+					break;
+				case 'request_payload':
+					$data['request_payload'] = $item->get_request_payload();
+					break;
+				case 'request_headers':
+					$data['request_headers'] = $item->get_request_headers();
+					break;
+				case 'request_method':
+					$data['request_method'] = $item->get_request_method();
+					break;
+				case 'response_code':
+					$data['response_code'] = $item->get_response_code();
+					break;
+				case 'response_size':
+					$data['response_size'] = $item->get_response_size();
+					break;
+				case 'response_headers':
+					$data['response_headers'] = $item->get_response_headers();
+					break;
+				case 'response_data':
+					$data['response_data'] = $item->get_response_data();
+					break;
+			}
+		}
+
+		return $data;
+	}
+
+	protected function get_fields( $request ) {
+		$allowed_fields = [
+			'id',
+			'date_created',
+			'request_url',
+			'request_payload',
+			'request_headers',
+			'request_method',
+			'response_code',
+			'response_size',
+			'response_headers',
+			'response_data',
 		];
+
+		if ( ! empty( $request['fields'] ) ) {
+			$fields = explode( ',', $request['fields'] );
+			$fields = array_map( 'trim', $fields );
+			$fields = array_map( 'sanitize_key', $fields );
+
+			$fields = array_intersect( $fields, $allowed_fields );
+
+			if ( empty( $fields ) ) {
+				return [];
+			}
+
+			return $fields;
+		}
+
+		return $allowed_fields;
 	}
 
 

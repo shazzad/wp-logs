@@ -125,10 +125,6 @@ class LogController extends WP_REST_Controller {
 				return new WP_Error( 'invalid_fields', __( 'Invalid fields', 'swpl' ), [ 'status' => 400 ] );
 			}
 
-			if ( in_array( 'message', $fields, true ) ) {
-				$fields[] = 'message_raw';
-			}
-
 			$fields = array_unique( $fields );
 
 			$query_args['columns'] = $fields;
@@ -329,7 +325,6 @@ class LogController extends WP_REST_Controller {
 
 		return $allowed_fields;
 	}
-
 
 	/**
 	 * Checks whether a user has permission to list logs.
