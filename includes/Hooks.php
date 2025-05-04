@@ -80,8 +80,8 @@ class Hooks {
 				'request_url'     => $url,
 				'request_headers' => $parsed_args['headers'],
 				'request_payload' => $parsed_args['body'],
-				'response_code'   => $response->get_error_code(),
-				'response_data'   => $response->get_error_message(),
+				'response_code'   => 0,
+				'response_data'   => $response,
 			];
 		} else {
 			if ( ! isset( $response['response'] ) ) {
@@ -99,10 +99,19 @@ class Hooks {
 			'response_data'    => $response['body'],
 		];
 
+		swpl_log( 'http_api_debug', $props );
+
 		try {
 			$request = new Request\Data();
 
 			$request->set_props( $props );
+
+			// If response header content type is json, decode it.
+			$content_type = $request->get_response_header( 'content-type' );
+			if ( ! empty( $content_type ) && strpos( $content_type, 'application/json' ) !== false ) {
+				$request->set_response_data( json_decode( $request->get_response_data(), true ) );
+			}
+
 			$request->save();
 		}
 		catch (Exception $e) {

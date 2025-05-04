@@ -13,82 +13,84 @@
     }
   });
 
-  $(document.body).on("swpl-modal-init", function () {
+  $(document.body).on("swpl__modal--init", function () {
     if ($("#swpl-modal").length === 0) {
       $("body").append(
         '<div id="swpl-modal">' +
-          '<div id="swpl-modal-inner">' +
-          '<a id="swpl__modal--close-btn-btn" class="dashicons dashicons-no-alt" href="#"></a>' +
-          '<div id="swpl-modal-body">' +
+          '<div id="swpl__modal--inner">' +
+          '<a id="swpl__modal--close-btn" class="dashicons dashicons-no-alt" href="#"></a>' +
+          '<div id="swpl__modal--body">' +
           '<div class="swpl__modal--header"></div>' +
-          '<div class="swpl-modal-content"></div>' +
+          '<div class="swpl__modal--content"></div>' +
           '<div class="swpl__modal--footer"></div>' +
           "</div>" +
-          '<div id="swpl-modal-loading" style="display:none;"></div>' +
+          '<div id="swpl__modal--loading" style="display:none;"></div>' +
           "</div>" +
           "</div>"
       );
     }
   });
 
-  $(document.body).on("swpl-modal-loading", function (e, html) {
+  $(document.body).on("swpl__modal--loading", function (e, html) {
     if (false !== html) {
-      $("#swpl-modal-loading").html(html).show();
+      $("#swpl__modal--loading").html(html).show();
     } else {
-      $("#swpl-modal-loading").empty().hide();
+      $("#swpl__modal--loading").empty().hide();
     }
   });
 
-  $(document.body).on("swpl-modal-body", function (e, html) {
-    $("#swpl-modal-body").html(html);
+  $(document.body).on("swpl__modal--body", function (e, html) {
+    $("#swpl__modal--body").html(html);
   });
 
-  ["swpl__modal--header", "swpl-modal-content", "swpl__modal--footer"].forEach(
-    function (target) {
-      $(document.body).on(target, function (e, html) {
-        if (html) {
-          $("#swpl-modal-body ." + target)
-            .html(html)
-            .show();
-        } else {
-          $("#swpl-modal-body ." + target)
-            .empty()
-            .hide();
-        }
-      });
-    }
-  );
-
-  $(document.body).on("swpl-modal-show", function (e, show) {
-    $("html,body").addClass("swpl-modal-active");
+  [
+    "swpl__modal--header",
+    "swpl__modal--content",
+    "swpl__modal--footer",
+  ].forEach(function (target) {
+    $(document.body).on(target, function (e, html) {
+      if (html) {
+        $("#swpl__modal--body ." + target)
+          .html(html)
+          .show();
+      } else {
+        $("#swpl__modal--body ." + target)
+          .empty()
+          .hide();
+      }
+    });
   });
 
-  $(document.body).on("swpl-modal-hide", function () {
-    $("html,body").removeClass("swpl-modal-active");
-    $("#swpl-modal-body > div").empty().hide();
+  $(document.body).on("swpl__modal--show", function (e, show) {
+    $("html,body").addClass("swpl__modal--active");
   });
 
-  $(document.body).on("click", "#swpl__modal--close-btn-btn", function () {
-    $(document.body).trigger("swpl-modal-hide");
+  $(document.body).on("swpl__modal--hide", function () {
+    $("html,body").removeClass("swpl__modal--active");
+    $("#swpl__modal--body > div").empty().hide();
+  });
+
+  $(document.body).on("click", "#swpl__modal--close-btn", function () {
+    $(document.body).trigger("swpl__modal--hide");
     return false;
   });
 
   // Cancel update button event
   $(document.body).on("click", "#swpl-modal", function (e) {
     e.preventDefault();
-    if (0 === $(e.target).closest("#swpl-modal-inner").length) {
-      $(document.body).trigger("swpl-modal-hide");
+    if (0 === $(e.target).closest("#swpl__modal--inner").length) {
+      $(document.body).trigger("swpl__modal--hide");
     }
 
     return false;
   });
 
   $(document).ready(function () {
-    $(document.body).trigger("swpl-modal-init");
+    $(document.body).trigger("swpl__modal--init");
   });
 
   $(document.body).on("click", "#swpl-wp-debug-log-delete-btn", function () {
-    $(document.body).trigger("swpl-modal-hide");
+    $(document.body).trigger("swpl__modal--hide");
     $.post(ajaxurl, { action: "swpl_delete_wp_debug_log" });
     return false;
   });
@@ -97,18 +99,21 @@
     "click",
     "#wp-admin-bar-shazzad-wp-logs-debug-log a",
     function () {
-      $(document.body).trigger("swpl-modal-init");
-      $(document.body).trigger("swpl-modal-loading", "Loading...");
-      $(document.body).trigger("swpl-modal-show");
+      $(document.body).trigger("swpl__modal--init");
+      $(document.body).trigger("swpl__modal--loading", "Loading...");
+      $(document.body).trigger("swpl__modal--show");
 
       $.post(ajaxurl, { action: "swpl_wp_debug_log" })
         .done(function (r) {
           if (r.data.modal) {
             for (var key in r.data.modal) {
-              $(document.body).trigger("swpl-modal-" + key, r.data.modal[key]);
+              $(document.body).trigger(
+                "swpl__modal--" + key,
+                r.data.modal[key]
+              );
             }
           } else {
-            $(document.body).trigger("swpl-modal-body", r.data.message);
+            $(document.body).trigger("swpl__modal--body", r.data.message);
           }
         })
         .fail(function (xhr) {
@@ -126,10 +131,10 @@
           }
 
           $(document.body).trigger("swpl__modal--header", header);
-          $(document.body).trigger("swpl-modal-content", content);
+          $(document.body).trigger("swpl__modal--content", content);
         })
         .always(function () {
-          $(document.body).trigger("swpl-modal-loading", false);
+          $(document.body).trigger("swpl__modal--loading", false);
         });
 
       return false;

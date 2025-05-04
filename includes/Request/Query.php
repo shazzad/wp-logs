@@ -81,4 +81,43 @@ class Query extends AbstractQuery {
 
 		return $objects;
 	}
+
+	public function delete( $id ) {
+		if ( empty( $id ) ) {
+			return;
+		}
+
+		DbAdapter::delete( $this->table, array( 'id' => $id ) );
+	}
+
+	/**
+	 * Create a new request.
+	 * 
+	 * @param array $data The data to create the request with.
+	 */
+	public function create( $data ) {
+		if ( empty( $data ) ) {
+			return;
+		}
+
+		// Insert the data into the database.
+		$id = DbAdapter::insert( $this->table, $data );
+
+		return $id;
+	}
+
+
+	/**
+	 * Update a request.
+	 *
+	 * @param int   $id   The ID of the request to update.
+	 * @param array $data The data to update the request with.
+	 */
+	public function update( $id, $data ) {
+		if ( empty( $id ) || empty( $data ) ) {
+			return;
+		}
+
+		DbAdapter::update( $this->table, $data, [ 'id' => $id ] );
+	}
 }

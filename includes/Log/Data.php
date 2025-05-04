@@ -135,11 +135,11 @@ class Data extends AbstractData {
 			throw new \Exception( __( 'Log not exists' ) );
 		}
 
-		do_action( 'shazzad_wp_logs/log/delete', $this->get_id() );
+		do_action( 'swpl_log_delete', $this->get_id() );
 
 		DbAdapter::delete( DbAdapter::prefix_table( 'logs' ), array( 'id' => $this->get_id() ) );
 
-		do_action( 'shazzad_wp_logs/log/deleted', $this->get_id() );
+		do_action( 'swpl_log_deleted', $this->get_id() );
 	}
 
 	public function validate_save() {

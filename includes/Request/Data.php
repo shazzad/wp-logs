@@ -1,8 +1,8 @@
 <?php
 namespace Shazzad\WpLogs\Request;
 
+use Exception;
 use Shazzad\WpLogs\Abstracts\Data as AbstractData;
-use Shazzad\WpLogs\DbAdapter;
 
 class Data extends AbstractData {
 
@@ -77,6 +77,22 @@ class Data extends AbstractData {
 		return $this->get_prop( 'response_headers' );
 	}
 
+	public function get_response_header( $header ) {
+		$header = strtolower( $header );
+
+		$headers = $this->get_response_headers();
+
+		// Lower all keys to lowercase.
+		if ( is_array( $headers ) ) {
+			$headers = array_change_key_case( $headers );
+		}
+
+		if ( is_array( $headers ) && array_key_exists( $header, $headers ) ) {
+			return $headers[$header];
+		}
+
+		return '';
+	}
 
 	public function set_timestamp( $value ) {
 		return $this->set_prop( 'timestamp', $value );
@@ -165,7 +181,8 @@ class Data extends AbstractData {
 
 		$data = $this->pre_save_filter( $data );
 
-		$id = DbAdapter::insert( DbAdapter::prefix_table( 'requests' ), $data );
+		$query = new Query();
+		$id    = $query->create( $data );
 
 		$this->set_id( $id );
 		$this->apply_changes();
@@ -181,11 +198,8 @@ class Data extends AbstractData {
 			$data = $this->get_changes();
 			$data = $this->pre_save_filter( $data );
 
-			DbAdapter::update(
-				DbAdapter::prefix_table( 'requests' ),
-				$data,
-				[ 'id' => $this->get_id() ]
-			);
+			$query = new Query();
+			$query->update( $this->get_id(), $data );
 		}
 
 		$this->apply_changes();
@@ -194,22 +208,24 @@ class Data extends AbstractData {
 
 	public function delete() {
 		if ( ! $this->get_id() ) {
-			throw new \Exception( __( 'Request not exists' ) );
+			throw new Exception( __( 'Request not exists' ) );
 		}
 
-		do_action( 'shazzad_wp_logs/request/delete', $this->get_id() );
+		do_action( 'swpl_request_delete', $this->get_id() );
 
-		DbAdapter::delete( DbAdapter::prefix_table( 'requests' ), array( 'id' => $this->get_id() ) );
+		$query = new Query();
+		$query->delete( $this->get_id() );
 
-		do_action( 'shazzad_wp_logs/request/deleted', $this->get_id() );
+		do_action( 'swpl_request_deleted', $this->get_id() );
 	}
 
 	public function validate_save() {
 		if ( ! $this->get_request_url() ) {
-			throw new \Exception( __( 'Invalid url', 'swpl' ) );
+			throw new Exception( __( 'Invalid url', 'swpl' ) );
 		}
+
 		if ( ! $this->get_request_method() ) {
-			throw new \Exception( __( 'Invalid request method', 'swpl' ) );
+			throw new Exception( __( 'Invalid request method', 'swpl' ) );
 		}
 
 		if ( ! $this->get_timestamp() ) {
@@ -219,20 +235,32 @@ class Data extends AbstractData {
 
 		// Generate hostname from url.
 		$parsed_url = parse_url( $this->get_request_url() );
-
 		if ( ! empty( $parsed_url['host'] ) ) {
 			$this->set_request_hostname( $parsed_url['host'] );
 		}
 
 		if ( ! $this->get_response_size() ) {
-			$headers = $this->get_response_headers();
-			if ( is_array( $headers ) && array_key_exists( 'content-length', $headers ) ) {
-				$this->set_response_size( $headers['content-length'] );
-			} elseif ( is_numeric( $this->get_response_data() ) ) {
-				$this->set_response_size( $this->get_response_data() );
-			} elseif ( $this->get_response_data() ) {
-				$this->set_response_size( strlen( $this->get_response_data() ) );
+			// Determine size from Content-Length header if valid.
+			$contentLength = $this->get_response_header( 'content-length' );
+			if ( is_numeric( $contentLength ) && $contentLength >= 0 ) {
+				$size = (int) $contentLength;
+			} else {
+				$data = $this->get_response_data();
+				if ( is_array( $data ) ) {
+					$encoded = json_encode( $data );
+					$size    = strlen( $encoded ?: '' );
+				} elseif ( is_string( $data ) ) {
+					$size = strlen( $data );
+				} elseif ( is_object( $data ) && method_exists( $data, '__toString' ) ) {
+					$string = (string) $data;
+					$size   = strlen( $string );
+				} else {
+					$string = print_r( $data, true );
+					$size   = strlen( $string );
+				}
 			}
+
+			$this->set_response_size( $size );
 		}
 	}
 
@@ -247,42 +275,31 @@ class Data extends AbstractData {
 	}
 
 	public function pre_save_filter( $data ) {
-		foreach ( [ 'request_headers', 'request_payload', 'response_data', 'response_headers',] as $array_field ) {
-			if ( empty( $data[$array_field] ) ) {
-				$data[$array_field] = [];
+		// Maximum size for mysql LONGTEXT field.
+		// $max_size = 4294967295;
+		// Maximum size for mysql TEXT field.
+		// $max_size = 65535;
+
+		$data_fields = [
+			'request_headers'  => 65535,
+			'request_payload'  => 65535,
+			'response_headers' => 65535,
+			'response_data'    => 4294967295,
+		];
+
+		foreach ( $data_fields as $name => $max_size ) {
+			if ( empty( $data[$name] ) ) {
+				$data[$name] = [];
 			}
 
-			// Maximum size for mysql LONGTEXT field.
-			$max_size = 4294967295;
-
-			// Maximum size for mysql TEXT field.
-			// $max_size = 65535;
-
-			if ( is_array( $data[$array_field] ) ) {
-				$data[$array_field] = $this->remove_size_recursive( $data[$array_field] );
+			if ( is_array( $data[$name] ) ) {
+				$data[$name] = $this->remove_size_recursive( $data[$name], $max_size / 20 );
 			}
 
-			$data[$array_field] = maybe_serialize( $data[$array_field] );
+			$data[$name] = maybe_serialize( $data[$name] );
 
-			if ( strlen( $data[$array_field] ) > $max_size ) {
-				$data[$array_field] = maybe_serialize( 'REMOVED LARGE DATA' );
-			}
-		}
-
-		return $data;
-	}
-
-	protected function remove_size_recursive( $data, $filled = 0 ) {
-		$max_chunk_size = 4294967295 / 20;
-
-		if ( is_string( $data ) || is_numeric( $data ) ) {
-			if ( strlen( $data ) > $max_chunk_size ) {
-				$data = substr( $data, 0, 10 ) . ' REMOVED LARGE DATA';
-			}
-
-		} else if ( is_array( $data ) ) {
-			foreach ( $data as $k => $v ) {
-				$data[$k] = $this->remove_size_recursive( $v, $filled );
+			if ( strlen( $data[$name] ) > $max_size ) {
+				$data[$name] = maybe_serialize( 'REMOVED LARGE DATA' );
 			}
 		}
 
@@ -304,5 +321,20 @@ class Data extends AbstractData {
 		$self->set_object_read( true );
 
 		return $self;
+	}
+
+	protected function remove_size_recursive( $data, $max_chunk_size = 65535 ) {
+		if ( is_string( $data ) || is_numeric( $data ) ) {
+			if ( strlen( $data ) > $max_chunk_size ) {
+				$data = substr( $data, 0, 10 ) . ' REMOVED LARGE DATA';
+			}
+
+		} else if ( is_array( $data ) ) {
+			foreach ( $data as $k => $v ) {
+				$data[$k] = $this->remove_size_recursive( $v, $max_chunk_size );
+			}
+		}
+
+		return $data;
 	}
 }

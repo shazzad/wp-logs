@@ -38,7 +38,7 @@ class AdminPage {
 	 * @return void
 	 */
 	public static function admin_menu() {
-		$access_cap = apply_filters( 'shazzad_wp_logs/page_access_cap/logs', 'manage_options' );
+		$access_cap = apply_filters( 'swpl_page_access_cap/logs', 'manage_options' );
 		$admin_page = add_menu_page(
 			__( 'Logs', 'swpl' ),
 			__( 'Logs', 'swpl' ),

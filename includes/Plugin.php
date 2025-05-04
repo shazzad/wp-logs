@@ -51,7 +51,7 @@ final class Plugin {
 			add_action( 'init', array( self::$instance, 'load_plugin_translations' ) );
 			add_action( 'init', array( self::$instance, 'maybe_upgrade_db' ) );
 
-			do_action( 'shazzad_wp_logs/loaded' );
+			do_action( 'swpl_loaded' );
 		}
 
 		return self::$instance;
