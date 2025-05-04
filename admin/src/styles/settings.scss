@@ -412,29 +412,39 @@ $sidebar-break-point: 1200px;
 
 	.components-tab-panel {
 		&__tabs {
+			gap: 10px;
+			bottom: -1px;
 			overflow-x: auto;
 			display: flex;
 			flex-wrap: nowrap;
 			white-space: nowrap;
+			position: relative;
 		}
 
 		&__tabs-item {
-			border: none;
 			padding: 10px 15px;
+			border: 1px solid transparent;
 			background-color: transparent;
 
 			&:hover,
 			&:focus {
 				cursor: pointer;
-				background-color: $menu-hover-bg;
 			}
 
-			&.active-tab {
-				color: $menu-active;
-				background-color: $menu-active-bg;
+			&:hover,
+			&:focus,
+			&.swpl__tab--active {
+				color: #000;
+				border-color: #e2e4e7;
+				border-bottom-color: transparent;
+				background-color: #f8f9fa;
 			}
 		}
 	}
+}
+
+.swpl-request-tabpanel {
+	margin: 20px 0;
 }
 
 .swpl__admin__toggle-btn {

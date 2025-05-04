@@ -45,7 +45,7 @@ const LogDetailsModal = ({ logId, onClose }) => {
   };
 
   return (
-    <div className="swpl-modal-overlay" onClick={onClose}>
+    <div className="swpl__modal__overlay" onClick={onClose}>
       <div
         className="swpl__modal__content"
         onClick={(e) => e.stopPropagation()}
@@ -57,7 +57,7 @@ const LogDetailsModal = ({ logId, onClose }) => {
           </button>
         </div>
 
-        <div className="swpl-modal-body">
+        <div className="swpl__modal__body">
           {isLoading ? (
             <div className="swpl-loading">
               <Spinner />
@@ -68,28 +68,34 @@ const LogDetailsModal = ({ logId, onClose }) => {
               <p>{error}</p>
             </div>
           ) : logDetails ? (
-            <div className="swpl-log-details">
+            <div className="swpl__modal__content__rows">
+              {[
+                {
+                  name: "Date",
+                  value: new Date(logDetails.date).toLocaleString(),
+                },
+                {
+                  name: "Level",
+                  value: (
+                    <span
+                      className={`log__level log__level--${logDetails.level}`}
+                    >
+                      {logDetails.level}
+                    </span>
+                  ),
+                },
+                { name: "Source", value: logDetails.source },
+                { name: "Message", value: logDetails.message },
+                { name: "ID", value: logDetails.id },
+              ].map((item, index) => (
+                <div className="swpl__modal__meta" key={index}>
+                  <div className="swpl__modal__meta--name">{item.name}:</div>
+                  <div className="swpl__modal__meta--value">{item.value}</div>
+                </div>
+              ))}
+
               <div className="swpl-log-detail-item">
-                <strong>ID:</strong> {logDetails.id}
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Date:</strong>{" "}
-                {new Date(logDetails.date).toLocaleString()}
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Level:</strong>
-                <span className={`log-level log-level-${logDetails.level}`}>
-                  {logDetails.level}
-                </span>
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Source:</strong> {logDetails.source}
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Message:</strong> {logDetails.message}
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Context:</strong>
+                <strong>Data:</strong>
                 <pre className="swpl-log-context">
                   {formatContext(logDetails.context)}
                 </pre>

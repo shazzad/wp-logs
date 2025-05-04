@@ -9,8 +9,8 @@ import LogsBulkActions from "../components/LogsBulkActions";
 import LogsDeleteConfirmationModal from "../components/LogsDeleteConfirmationModal";
 
 const Requests = () => {
-  const [logs, setLogs] = useState([]);
-  const [displayLogs, setDisplayLogs] = useState([]); // New state for displayed logs
+  const [requests, setRequests] = useState([]);
+  const [displayLogs, setDisplayLogs] = useState([]); // New state for displayed requests
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,7 +68,7 @@ const Requests = () => {
       apiFetch.use(apiFetch.createRootURLMiddleware(swplAdminAppSettings.root));
     }
 
-    // Fetch logs when component mounts, page changes, or filters change
+    // Fetch requests when component mounts, page changes, or filters change
     fetchLogs();
   }, [
     currentPage,
@@ -79,20 +79,20 @@ const Requests = () => {
     sortOrder,
   ]);
 
-  // Clear selected logs when page changes or filters change
+  // Clear selected requests when page changes or filters change
   useEffect(() => {
     setSelectedLogs([]);
   }, [currentPage, searchTerm, methodFilter, hostnameFilter]);
 
-  // Update displayLogs when logs state is updated
+  // Update displayLogs when requests state is updated
   useEffect(() => {
-    setDisplayLogs(logs);
-  }, [logs]);
+    setDisplayLogs(requests);
+  }, [requests]);
 
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
-      // We don't clear the logs here, which keeps the existing content visible
+      // We don't clear the requests here, which keeps the existing content visible
 
       // Build query parameters for pagination, search, filters, and sorting
       let queryParams = `?page=${currentPage}&per_page=${perPage}`;
@@ -132,16 +132,16 @@ const Requests = () => {
 
       // Check if the response has data in the expected format
       if (data && data.data && Array.isArray(data.data)) {
-        setLogs(data.data);
+        setRequests(data.data);
         setTotalItems(totalItems);
         setTotalPages(totalPages);
       } else {
-        setLogs([]);
+        setRequests([]);
         setError("Unexpected response format from API");
       }
     } catch (err) {
-      console.error("Error fetching logs:", err);
-      setError("Failed to fetch logs. Please try again later.");
+      console.error("Error fetching requests:", err);
+      setError("Failed to fetch requests. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -208,13 +208,13 @@ const Requests = () => {
     });
   };
 
-  // Handle select all logs on current page
+  // Handle select all requests on current page
   const toggleSelectAll = () => {
     if (selectedLogs.length === displayLogs.length) {
       // Deselect all if all are selected
       setSelectedLogs([]);
     } else {
-      // Select all logs on the current page
+      // Select all requests on the current page
       setSelectedLogs(displayLogs.map((log) => log.id));
     }
   };
@@ -234,15 +234,15 @@ const Requests = () => {
     try {
       setIsDeleting(true);
 
-      // Determine whether to delete selected or all logs
+      // Determine whether to delete selected or all requests
       if (confirmDelete === "all") {
-        // Delete all logs
+        // Delete all requests
         await apiFetch({
           path: "/wp/v2/requests",
           method: "DELETE",
         });
       } else if (confirmDelete === "selected" && selectedLogs.length > 0) {
-        // Delete selected logs
+        // Delete selected requests
         await apiFetch({
           path: "/wp/v2/requests",
           method: "DELETE",
@@ -253,14 +253,14 @@ const Requests = () => {
       // Close confirmation modal
       setConfirmDelete(null);
 
-      // Refresh the logs list
+      // Refresh the requests list
       fetchLogs();
 
-      // Clear selected logs
+      // Clear selected requests
       setSelectedLogs([]);
     } catch (err) {
-      console.error("Error deleting logs:", err);
-      setError("Failed to delete logs. Please try again later.");
+      console.error("Error deleting requests:", err);
+      setError("Failed to delete requests. Please try again later.");
     } finally {
       setIsDeleting(false);
     }
@@ -294,15 +294,15 @@ const Requests = () => {
         selectedCount={selectedLogs.length}
         isLoading={isLoading}
         isDeleting={isDeleting}
-        hasLogs={logs.length > 0}
+        hasLogs={requests.length > 0}
         onDeleteSelected={() => showDeleteConfirmation("selected")}
         onDeleteAll={() => showDeleteConfirmation("all")}
       />
 
       <RequestTable
-        logs={logs}
+        requests={requests}
         isLoading={isLoading}
-        isLoadingNewData={isLoading && logs.length > 0}
+        isLoadingNewData={isLoading && requests.length > 0}
         selectedLogs={selectedLogs}
         sortField={sortField}
         sortOrder={sortOrder}
@@ -315,7 +315,7 @@ const Requests = () => {
       {totalPages > 1 && (
         <div className="swpl-pagination">
           <div className="swpl-pagination-info">
-            Showing {logs.length} of {totalItems} logs
+            Showing {requests.length} of {totalItems} requests
           </div>
           <SimplePagination
             currentPage={currentPage}
@@ -326,7 +326,10 @@ const Requests = () => {
       )}
 
       {selectedLogId && (
-        <RequestDetailsModal logId={selectedLogId} onClose={closeLogDetails} />
+        <RequestDetailsModal
+          requestId={selectedLogId}
+          onClose={closeLogDetails}
+        />
       )}
 
       {confirmDelete && (

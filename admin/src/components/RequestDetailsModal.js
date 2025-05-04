@@ -1,18 +1,18 @@
 // src/components/RequestDetailsModal.js
 import React, { useState, useEffect } from "react";
 import apiFetch from "@wordpress/api-fetch";
-import { Spinner } from "@wordpress/components";
+import { Spinner, TabPanel } from "@wordpress/components";
 
-const RequestDetailsModal = ({ logId, onClose }) => {
-  const [logDetails, setLogDetails] = useState(null);
+const RequestDetailsModal = ({ requestId, onClose }) => {
+  const [requestDetails, setRequestDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (logId) {
-      fetchDetails(logId);
+    if (requestId) {
+      fetchDetails(requestId);
     }
-  }, [logId]);
+  }, [requestId]);
 
   const fetchDetails = async (id) => {
     try {
@@ -22,13 +22,13 @@ const RequestDetailsModal = ({ logId, onClose }) => {
       });
 
       if (response && response.data) {
-        setLogDetails(response.data);
+        setRequestDetails(response.data);
       } else {
-        setError("Failed to retrieve log details");
+        setError("Failed to retrieve request details");
       }
     } catch (err) {
-      console.error("Error fetching log details:", err);
-      setError("Failed to fetch log details. Please try again later.");
+      console.error("Error fetching request details:", err);
+      setError("Failed to fetch request details. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -45,7 +45,7 @@ const RequestDetailsModal = ({ logId, onClose }) => {
   };
 
   return (
-    <div className="swpl-modal-overlay" onClick={onClose}>
+    <div className="swpl__modal__overlay" onClick={onClose}>
       <div
         className="swpl__modal__content"
         onClick={(e) => e.stopPropagation()}
@@ -57,62 +57,83 @@ const RequestDetailsModal = ({ logId, onClose }) => {
           </button>
         </div>
 
-        <div className="swpl-modal-body">
+        <div className="swpl__modal__body">
           {isLoading ? (
             <div className="swpl-loading">
               <Spinner />
-              <p>Loading log details...</p>
+              <p>Loading request details...</p>
             </div>
           ) : error ? (
             <div className="notice notice-error">
               <p>{error}</p>
             </div>
-          ) : logDetails ? (
-            <div className="swpl-log-details">
-              <div className="swpl-log-detail-item">
-                <strong>ID:</strong> {logDetails.id}
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Date:</strong>{" "}
-                {new Date(logDetails.date).toLocaleString()}
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Url:</strong>
-                <span>{logDetails.request_url}</span>
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Method:</strong> {logDetails.request_method}
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Status:</strong> {logDetails.response_code}
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Response Data:</strong>
-                <pre className="swpl-log-context">
-                  {formatContext(logDetails.response_data)}
-                </pre>
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Response Headers:</strong>
-                <pre className="swpl-log-context">
-                  {formatContext(logDetails.response_headers)}
-                </pre>
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Request Payload:</strong>
-                <pre className="swpl-log-context">
-                  {formatContext(logDetails.request_payload)}
-                </pre>
-              </div>
-              <div className="swpl-log-detail-item">
-                <strong>Request Headers:</strong>
-                <pre className="swpl-log-context">
-                  {formatContext(logDetails.request_headers)}
-                </pre>
-              </div>
+          ) : requestDetails ? (
+            <div className="swpl__modal__content__rows">
+              {[
+                {
+                  name: "Date",
+                  value: new Date(requestDetails.date).toLocaleString(),
+                },
+                {
+                  name: "Method",
+                  value: (
+                    <span
+                      className={`request__method request__method--${requestDetails.request_method.toLowerCase()}`}
+                    >
+                      {requestDetails.request_method}
+                    </span>
+                  ),
+                },
+                { name: "URL", value: requestDetails.request_url },
+                { name: "Status", value: requestDetails.response_code },
+                { name: "ID", value: requestDetails.id },
+              ].map((item, index) => (
+                <div className="swpl__modal__meta" key={index}>
+                  <div className="swpl__modal__meta--name">{item.name}:</div>
+                  <div className="swpl__modal__meta--value">{item.value}</div>
+                </div>
+              ))}
+
+              <TabPanel
+                className="swpl-request-tabpanel"
+                activeClass="swpl__tab--active"
+                tabs={[
+                  { name: "payload", title: "Payload" },
+                  { name: "headers", title: "Headers" },
+                ]}
+              >
+                {(tab) => (
+                  <div className="swpl-request-detail-item">
+                    <pre className="swpl__print">
+                      {tab.name === "payload"
+                        ? formatContext(requestDetails.request_payload)
+                        : formatContext(requestDetails.request_headers)}
+                    </pre>
+                  </div>
+                )}
+              </TabPanel>
+
+              <TabPanel
+                className="swpl-response-tabpanel"
+                activeClass="swpl__tab--active"
+                tabs={[
+                  { name: "data", title: "Response" },
+                  { name: "headers", title: "Headers" },
+                ]}
+              >
+                {(tab) => (
+                  <div className="swpl-request-detail-item">
+                    <pre className="swpl__print">
+                      {tab.name === "data"
+                        ? formatContext(requestDetails.response_data)
+                        : formatContext(requestDetails.response_headers)}
+                    </pre>
+                  </div>
+                )}
+              </TabPanel>
             </div>
           ) : (
-            <p>No log details available</p>
+            <p>No request details available</p>
           )}
         </div>
 

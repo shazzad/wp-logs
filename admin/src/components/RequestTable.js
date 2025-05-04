@@ -3,7 +3,7 @@ import React from "react";
 import { Spinner } from "@wordpress/components";
 
 const RequestTable = ({
-  logs,
+  requests,
   isLoading,
   isLoadingNewData,
   selectedLogs,
@@ -30,12 +30,12 @@ const RequestTable = ({
     );
   };
 
-  // Only show the full-page loading state on initial load when we have no logs yet
-  if (isLoading && logs.length === 0) {
+  // Only show the full-page loading state on initial load when we have no requests yet
+  if (isLoading && requests.length === 0) {
     return (
       <div className="swpl-loading">
         <Spinner />
-        <p>Loading logs...</p>
+        <p>Loading requests...</p>
       </div>
     );
   }
@@ -59,8 +59,10 @@ const RequestTable = ({
               <input
                 type="checkbox"
                 onChange={onToggleSelectAll}
-                checked={logs.length > 0 && selectedLogs.length === logs.length}
-                disabled={logs.length === 0}
+                checked={
+                  requests.length > 0 && selectedLogs.length === requests.length
+                }
+                disabled={requests.length === 0}
               />
             </td>
             <th className="sortable" onClick={() => onSort("id")}>
@@ -77,12 +79,12 @@ const RequestTable = ({
           </tr>
         </thead>
         <tbody>
-          {logs.length === 0 ? (
+          {requests.length === 0 ? (
             <tr>
-              <td colSpan="7">No logs found.</td>
+              <td colSpan="7">No requests found.</td>
             </tr>
           ) : (
-            logs.map((log) => (
+            requests.map((log) => (
               <tr key={log.id}>
                 <td className="manage-column column-cb check-column">
                   <input
@@ -94,7 +96,13 @@ const RequestTable = ({
                 <td>{log.id}</td>
                 <td>{formatDate(log.date)}</td>
                 <td>{log.request_url}</td>
-                <td>{log.request_method}</td>
+                <td>
+                  <span
+                    className={`request__method request__method--${log.request_method.toLowerCase()}`}
+                  >
+                    {log.request_method}
+                  </span>
+                </td>
                 <td>{log.response_code}</td>
                 <td>{log.response_size}</td>
                 <td>

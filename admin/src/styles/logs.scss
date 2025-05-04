@@ -120,7 +120,7 @@ $mobile-breakpoint: 782px;
 }
 
 // Log Levels
-.log-level {
+.log__level {
 	display: inline-block;
 	padding: 2px $spacing-sm;
 	border-radius: 3px;
@@ -128,24 +128,69 @@ $mobile-breakpoint: 782px;
 	font-weight: bold;
 	text-transform: uppercase;
 
-	&-debug {
+	&--debug {
 		background-color: $debug-bg;
 		color: $debug-color;
 	}
 
-	&-info {
+	&--info {
 		background-color: $info-bg;
 		color: $info-color;
 	}
 
-	&-warning {
+	&--warning {
 		background-color: $warning-bg;
 		color: $warning-color;
 	}
 
-	&-error {
+	&--error {
 		background-color: $error-bg;
 		color: $error-color;
+	}
+}
+
+// Log Levels
+.request__method {
+	display: inline-block;
+	padding: 2px $spacing-sm;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: bold;
+	text-transform: uppercase;
+
+	&--get {
+		background-color: #e7f5ff;
+		color: #0366d6;
+	}
+
+	&--post {
+		background-color: #e6f6e6;
+		color: #28a745;
+	}
+
+	&--put {
+		background-color: #fff5e6;
+		color: #f0ad4e;
+	}
+
+	&--delete {
+		background-color: #ffeaea;
+		color: #dc3545;
+	}
+
+	&--patch {
+		background-color: #fff5e6;
+		color: #f0ad4e;
+	}
+
+	&--options {
+		background-color: #e7f5ff;
+		color: #0366d6;
+	}
+
+	&--head {
+		background-color: #e7f5ff;
+		color: #0366d6;
 	}
 }
 
@@ -231,7 +276,7 @@ button .components-spinner {
 // =============================================================================
 // Modal Components
 // =============================================================================
-.swpl-modal-overlay {
+.swpl__modal__overlay {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -281,7 +326,7 @@ button .components-spinner {
 	}
 }
 
-.swpl-modal-body {
+.swpl__modal__body {
 	padding: $spacing-md;
 	overflow-y: auto;
 	flex: 1;
@@ -298,13 +343,14 @@ button .components-spinner {
 // =============================================================================
 // Log Details in Modal
 // =============================================================================
-.swpl-log-details {
+.swpl__modal__content__rows {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 }
 
-.swpl-log-detail-item {
+.swpl-log-detail-item,
+.swpl-request-detail-item {
 	display: flex;
 	flex-direction: column;
 
@@ -313,16 +359,28 @@ button .components-spinner {
 	}
 }
 
+.swpl__modal__meta {
+	display: flex;
+
+	.swpl__modal__meta--name {
+		width: 150px;
+	}
+
+	.swpl__modal__meta--value {
+		flex: 1;
+	}
+}
+
 .swpl-log-context,
-.log-context {
+.swpl__print {
 	background-color: $light-bg;
 	padding: 10px;
-	border-radius: 3px;
 	overflow: auto;
 	white-space: pre-wrap;
 	word-break: break-all;
 	max-height: 400px;
 	font-size: 13px;
+	margin: 0;
 	border: 1px solid $border-color;
 }
 
@@ -346,7 +404,7 @@ button .components-spinner {
 		}
 	}
 
-	.swpl-modal-body {
+	.swpl__modal__body {
 		padding: $spacing-lg $spacing-md;
 		font-size: 14px;
 

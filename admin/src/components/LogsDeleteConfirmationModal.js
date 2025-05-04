@@ -10,12 +10,12 @@ const LogsDeleteConfirmationModal = ({
   onConfirm,
 }) => {
   return (
-    <div className="swpl-modal-overlay">
+    <div className="swpl__modal__overlay">
       <div className="swpl-confirmation-modal">
         <div className="swpl-modal-header">
           <h2>Confirm Deletion</h2>
         </div>
-        <div className="swpl-modal-body">
+        <div className="swpl__modal__body">
           {type === "all" ? (
             <p>
               Are you sure you want to delete ALL logs? This action cannot be
