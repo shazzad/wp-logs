@@ -43,6 +43,9 @@ jobs:
       - name: Install Deps
         run: npm ci
 
+      - name: Build Admin
+        run: npm run build-admin
+
       - name: Build Plugin Zip
         run: npm run build
 
