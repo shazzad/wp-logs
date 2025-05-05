@@ -404,16 +404,21 @@ button .components-spinner {
 	}
 }
 
-.swpl__print {
-	background-color: $light-bg;
+.swpl__data {
 	padding: 10px;
+	font-size: 13px;
+	background-color: $light-bg;
+	border: 1px solid $border-color;
+}
+
+.swpl__data--preview {
+	margin: 0;
+	padding: 0;
 	overflow: auto;
+	font-size: 13px;
+	max-height: 400px;
 	white-space: pre-wrap;
 	word-break: break-all;
-	max-height: 400px;
-	font-size: 13px;
-	margin: 0;
-	border: 1px solid $border-color;
 }
 
 // =============================================================================

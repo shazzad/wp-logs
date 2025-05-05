@@ -38,6 +38,15 @@ const LogDetailsModal = ({ logId, onClose }) => {
   const jsonView = (data) => {
     if (!data) return "";
 
+    // check if valid JSON
+    if (typeof data === "string") {
+      try {
+        data = JSON.parse(data);
+      } catch (e) {
+        return <pre className="swpl__data--preview">{data}</pre>;
+      }
+    }
+
     try {
       JSON.stringify(data, null, 2);
       return (
@@ -106,9 +115,9 @@ const LogDetailsModal = ({ logId, onClose }) => {
 
               <div className="swpl-log-detail-item">
                 <strong>Data:</strong>
-                <pre className="swpl__print">
+                <data className="swpl__data">
                   {jsonView(logDetails.context)}
-                </pre>
+                </data>
               </div>
             </div>
           ) : (
