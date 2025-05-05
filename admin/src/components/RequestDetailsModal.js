@@ -38,8 +38,17 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
   const jsonView = (data) => {
     if (!data) return "";
 
+    // check if valid JSON
+    if (typeof data === "string") {
+      try {
+        data = JSON.parse(data);
+      } catch (e) {
+        return <pre className="swpl__data--preview">{data}</pre>;
+      }
+    }
+
     try {
-      JSON.stringify(data, null, 2);
+      // JSON.stringify(data, null, 2);
       return (
         <ReactJsonView
           src={data}
@@ -117,11 +126,11 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
               >
                 {(tab) => (
                   <div className="swpl-request-detail-item">
-                    <pre className="swpl__print">
+                    <div className="swpl__data">
                       {tab.name === "payload"
                         ? jsonView(requestDetails.request_payload)
                         : jsonView(requestDetails.request_headers)}
-                    </pre>
+                    </div>
                   </div>
                 )}
               </TabPanel>
@@ -136,11 +145,11 @@ const RequestDetailsModal = ({ requestId, onClose }) => {
               >
                 {(tab) => (
                   <div className="swpl-request-detail-item">
-                    <pre className="swpl__print">
+                    <div className="swpl__data">
                       {tab.name === "data"
                         ? jsonView(requestDetails.response_data)
                         : jsonView(requestDetails.response_headers)}
-                    </pre>
+                    </div>
                   </div>
                 )}
               </TabPanel>
