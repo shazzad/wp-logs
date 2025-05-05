@@ -152,15 +152,13 @@ class LogController extends WP_REST_Controller {
 
 		// Add pagination data to response
 		$response->set_data( [
-			'data'       => $data,
-			'meta'       => [
+			'data' => $data,
+			'meta' => [
 				'total'       => $total,
 				'total_pages' => $total_pages,
 				'page'        => (int) $query_args['page'],
 				'per_page'    => (int) $query_args['per_page'],
 			],
-			'query'      => $query,
-			'query_args' => $query_args,
 		] );
 
 		return $response;
@@ -238,9 +236,6 @@ class LogController extends WP_REST_Controller {
 
 		} else {
 			$sql = "DELETE FROM {$table}";
-			if ( $request['source'] ) {
-				$sql .= " WHERE source IN ('" . implode( "','", $request['source'] ) . "')";
-			}
 
 			$wpdb->query( $sql );
 
