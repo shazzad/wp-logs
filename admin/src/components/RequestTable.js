@@ -86,31 +86,31 @@ const RequestTable = ({
               <td colSpan="8">No requests found.</td>
             </tr>
           ) : (
-            requests.map((log) => (
-              <tr key={log.id}>
+            requests.map((request) => (
+              <tr key={request.id}>
                 <th className="manage-column column-cb check-column">
                   <input
                     type="checkbox"
-                    onChange={() => onToggleLogSelection(log.id)}
-                    checked={selectedLogs.includes(log.id)}
+                    onChange={() => onToggleLogSelection(request.id)}
+                    checked={selectedLogs.includes(request.id)}
                   />
                 </th>
-                <td>{log.request_url}</td>
+                <td>{decodeURIComponent(request.request_url)}</td>
                 <td>
                   <span
-                    className={`request__method request__method--${log.request_method.toLowerCase()}`}
+                    className={`request__method request__method--${request.request_method.toLowerCase()}`}
                   >
-                    {log.request_method}
+                    {request.request_method}
                   </span>
                 </td>
-                <td>{log.response_code}</td>
-                <td>{formatDate(log.date_created)}</td>
-                <td>{log.response_size}</td>
-                <td>{log.id}</td>
+                <td>{request.response_code}</td>
+                <td>{formatDate(request.date_created)}</td>
+                <td>{request.response_size}</td>
+                <td>{request.id}</td>
                 <td>
                   <button
                     className="button button-small"
-                    onClick={() => onViewDetails(log.id)}
+                    onClick={() => onViewDetails(request.id)}
                   >
                     View Details
                   </button>

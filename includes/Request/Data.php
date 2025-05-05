@@ -226,6 +226,11 @@ class Data extends AbstractData {
 			$this->set_date_created( current_time( 'mysql', true ) );
 		}
 
+		if ( strlen( $this->get_request_url() ) > 255 ) {
+			// Trim url to 255 characters.
+			$this->set_request_url( substr( $this->get_request_url(), 0, 255 ) );
+		}
+
 		// Generate hostname from url.
 		$parsed_url = parse_url( $this->get_request_url() );
 		if ( ! empty( $parsed_url['host'] ) ) {

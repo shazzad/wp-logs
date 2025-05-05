@@ -43,8 +43,21 @@ class DbAdapter {
 	 */
 	public static function insert( $table, $data ) {
 		global $wpdb;
+
+		// Enable error logging.
+		// $wpdb->show_errors();
+
 		if ( ! $wpdb->insert( $table, $data ) ) {
-			throw new Exception( 'Unable to insert into database' );
+			// Log the error message.
+			// $error_message = $wpdb->last_error;
+			// $error_code    = $wpdb->last_error;
+			// $error_query   = $wpdb->last_query;
+			// $error_data    = $wpdb->last_result;
+			// $error_message = "Error Code: {$error_code}, Error Message: {$error_message}, Query: {$error_query}, Data: " . json_encode( $error_data );
+
+			// throw new Exception( "Unable to insert into {$table}: {$error_message}. Data:" . json_encode( $data ) );
+
+			throw new Exception( "Unable to insert into {$table}" );
 		}
 		return $wpdb->insert_id;
 	}
