@@ -108,7 +108,7 @@ class Hooks {
 		];
 
 		// Check if request payload is JSON, and decode it if necessary.
-		if ( ! is_array( $props['request_payload'] ) ) {
+		if ( ! empty( $props['request_payload'] ) && ! is_array( $props['request_payload'] ) ) {
 			$props['request_payload'] = json_decode( $props['request_payload'], true );
 
 			// If decoding fails, set it to an error message.
