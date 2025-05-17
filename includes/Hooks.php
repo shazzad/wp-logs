@@ -95,17 +95,17 @@ class Hooks {
 			if ( ! isset( $response['response'] ) ) {
 				return;
 			}
-		}
 
-		$props = [
-			'request_method'   => $parsed_args['method'],
-			'request_url'      => $url,
-			'request_headers'  => $parsed_args['headers'],
-			'request_payload'  => $parsed_args['body'],
-			'response_code'    => $response['response']['code'],
-			'response_headers' => $response['headers']->getAll(),
-			'response_data'    => $response['body'],
-		];
+			$props = [
+				'request_method'   => $parsed_args['method'],
+				'request_url'      => $url,
+				'request_headers'  => $parsed_args['headers'],
+				'request_payload'  => $parsed_args['body'],
+				'response_code'    => $response['response']['code'],
+				'response_headers' => $response['headers']->getAll(),
+				'response_data'    => $response['body'],
+			];
+		}
 
 		// Check if request payload is JSON, and decode it if necessary.
 		if ( ! empty( $props['request_payload'] ) && ! is_array( $props['request_payload'] ) ) {
