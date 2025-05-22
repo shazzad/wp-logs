@@ -84,12 +84,13 @@ class Hooks {
 
 		if ( is_wp_error( $response ) ) {
 			$props = [
-				'request_method'  => $parsed_args['method'],
-				'request_url'     => $url,
-				'request_headers' => $parsed_args['headers'],
-				'request_payload' => $parsed_args['body'],
-				'response_code'   => 0,
-				'response_data'   => $response,
+				'request_method'   => $parsed_args['method'],
+				'request_url'      => $url,
+				'request_headers'  => $parsed_args['headers'],
+				'request_payload'  => $parsed_args['body'],
+				'response_code'    => 0,
+				'response_headers' => [],
+				'response_data'    => $response,
 			];
 		} else {
 			if ( ! isset( $response['response'] ) ) {
@@ -105,6 +106,20 @@ class Hooks {
 				'response_headers' => $response['headers']->getAll(),
 				'response_data'    => $response['body'],
 			];
+
+			if ( ! empty( $props['response_headers'] ) ) {
+				$headers = $props['response_headers'];
+				if ( is_array( $headers ) ) {
+					$headers = array_change_key_case( $headers );
+				}
+
+				$content_type = ! empty( $headers['content-type'] ) ? $headers['content-type'] : '';
+
+				// If response header content type is json, decode it.
+				if ( strpos( $content_type, 'application/json' ) !== false ) {
+					$props['response_data'] = json_decode( $props['response_data'], true );
+				}
+			}
 		}
 
 		// Check if request payload is JSON, and decode it if necessary.
@@ -115,20 +130,6 @@ class Hooks {
 			// json_last_error() will return JSON_ERROR_NONE if decoding was successful.
 			if ( json_last_error() !== JSON_ERROR_NONE || null === $props['request_payload'] ) {
 				$props['request_payload'] = [ 'error' => 'Invalid JSON' ];
-			}
-		}
-
-		if ( ! empty( $props['response_headers'] ) ) {
-			$headers = $props['response_headers'];
-			if ( is_array( $headers ) ) {
-				$headers = array_change_key_case( $headers );
-			}
-
-			$content_type = ! empty( $headers['content-type'] ) ? $headers['content-type'] : '';
-
-			// If response header content type is json, decode it.
-			if ( strpos( $content_type, 'application/json' ) !== false ) {
-				$props['response_data'] = json_decode( $props['response_data'], true );
 			}
 		}
 
