@@ -32,6 +32,7 @@ class Installer {
 		self::rename_tables();
 		self::install_tables();
 		self::update_tables();
+		self::update_settings();
 
 		update_option( 'swpl_version', SWPL_VERSION );
 	}
@@ -146,7 +147,7 @@ class Installer {
 	public static function update_tables() {
 		global $wpdb;
 
-		$logs_table      = DbAdapter::prefix_table( 'logs' );
+		$logs_table = DbAdapter::prefix_table( 'logs' );
 		$logs_table_cols = $wpdb->get_col( "DESC {$logs_table}", 0 );
 
 		if ( ! in_array( 'message_raw', $logs_table_cols ) ) {
@@ -158,7 +159,7 @@ class Installer {
 			$wpdb->query( "ALTER TABLE {$logs_table} CHANGE `timestamp` `date_created` DATETIME NOT NULL" );
 		}
 
-		$requests_table       = DbAdapter::prefix_table( 'requests' );
+		$requests_table = DbAdapter::prefix_table( 'requests' );
 		$lrequests_table_cols = $wpdb->get_col( "DESC {$requests_table}", 0 );
 
 		// Delete the source column if it exists.
@@ -169,5 +170,19 @@ class Installer {
 		// if ( in_array( 'context', $logs_table_cols ) ) {
 		// 	$wpdb->query( "ALTER TABLE {$logs_table} CHANGE `context` `data` LONGTEXT NULL DEFAULT ''" );
 		// }
+	}
+
+	/**
+	 * Updates the plugin settings to match the latest schema.
+	 *
+	 * This method is a placeholder for any logic required to update existing plugin settings
+	 * during plugin upgrades.
+	 *
+	 * @since 2.8
+	 * @return void
+	 */
+	public static function update_settings() {
+		add_option( 'swpl_log_retention_days', 7 );
+		add_option( 'swpl_request_retention_days', 7 );
 	}
 }

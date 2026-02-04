@@ -1,25 +1,47 @@
-name: Release Plugin
+name: Production Release Zip
 
 on:
-  push:
-    branches: ["master", "main"]
+  release:
+    types: [published] # Only run after you manually publish a Release in GitHub
+
+permissions:
+  contents: write
 
 jobs:
   release-plugin:
-    name: Release Plugin
-    runs-on: ubuntu-latest
+    name: Release Plugin Zip
+    runs-on: ubuntu-22.04
+    if: github.event.release.target_commitish == 'main' # Only run if the release is based on the 'main' branch
+
     steps:
-      - name: Checkout code
+      - name: Set up PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: mbstring, intl, pdo, bcmath, tokenizer, xml, curl, json
+          ini-values: |
+            memory_limit=3G
+          tools: composer
+
+      - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Setup Package Json Env
-        run: echo "PACKAGE_JSON=$(jq -c . < package.json)" >> $GITHUB_ENV
+      # Extract the release tag (e.g. "v2.4.5") and store it in GITHUB_ENV
+      - name: Set PLUGIN_VERSION from release tag
+        run: |
+          # e.g. if the release tag is "v2.4.5", remove the "v"
+          TAG_NAME="${{ github.event.release.tag_name }}"
+          PLUGIN_VERSION="${TAG_NAME#v}"  # removes leading "v" if present
+          echo "PLUGIN_VERSION=$PLUGIN_VERSION" >> $GITHUB_ENV
 
-      - name: Setup Plugin Version Env
-        run: echo "PLUGIN_VERSION=${{ fromJson(env.PACKAGE_JSON).version }}" >> $GITHUB_ENV
+      - name: Show derived version
+        run: echo "Derived plugin version = $PLUGIN_VERSION"
 
-      - name: Show Plugin Version
-        run: echo '$PLUGIN_VERSION'
+      # OPTIONAL: Update package.json version from the release tag
+      - name: Update package.json version
+        run: |
+          jq ".version = \"$PLUGIN_VERSION\"" package.json > package.json.tmp
+          mv package.json.tmp package.json
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
@@ -33,29 +55,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
 
-      - name: Install dependencies (production only)
+      - name: Install Composer dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      - name: Setup node v20
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.18.0
-      - name: Install Deps
+          node-version: 20
+
+      - name: Install NPM dependencies
         run: npm ci
 
-      - name: Build Admin
-        run: npm run build-admin
-
       - name: Build Plugin Zip
-        run: npm run build
+        run: |
+          npm run build-admin
+          npm run build
 
-      - name: Create Release
-        uses: ncipollo/release-action@v1
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.PLUGIN_VERSION }}
-          name: v${{ env.PLUGIN_VERSION }}
-          draft: false
-          prerelease: false
-          artifacts: build/shazzad-wp-logs.v${{ env.PLUGIN_VERSION }}.zip
-          artifactContentType: application/zip
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: build/shazzad-wp-logs.v${{ env.PLUGIN_VERSION }}.zip
+          asset_name: shazzad-wp-logs.v${{ env.PLUGIN_VERSION }}.zip
+          asset_content_type: application/zip
