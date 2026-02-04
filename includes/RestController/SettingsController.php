@@ -91,6 +91,10 @@ class SettingsController extends WP_REST_Controller {
 	public function get_settings( WP_REST_Request $request ) {
 		$setting_class = $this->get_setting_class( $request );
 
+		if ( is_wp_error( $setting_class ) ) {
+			return $setting_class;
+		}
+
 		return $setting_class::instance()->get_settings();
 	}
 
@@ -98,8 +102,11 @@ class SettingsController extends WP_REST_Controller {
 	 * Update settings value.
 	 */
 	public function update_settings( $request ) {
-
 		$setting_class = $this->get_setting_class( $request );
+
+		if ( is_wp_error( $setting_class ) ) {
+			return $setting_class;
+		}
 
 		if ( $request->is_json_content_type() ) {
 			// Decode JSON body into an associative array
@@ -117,6 +124,10 @@ class SettingsController extends WP_REST_Controller {
 	public function get_settings_schema( $request ) {
 		$setting_class = $this->get_setting_class( $request );
 
+		if ( is_wp_error( $setting_class ) ) {
+			return $setting_class;
+		}
+
 		return $setting_class::instance()->get_schema();
 	}
 
@@ -125,8 +136,9 @@ class SettingsController extends WP_REST_Controller {
 	 */
 	public function get_settings_permission_callback( $request ) {
 		$setting_class = $this->get_setting_class( $request );
-		if ( is_null( $setting_class ) ) {
-			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'swpl' ), array( 'status' => 404 ) );
+
+		if ( is_wp_error( $setting_class ) ) {
+			return $setting_class;
 		}
 
 		return current_user_can( 'manage_options' );
@@ -137,8 +149,9 @@ class SettingsController extends WP_REST_Controller {
 	 */
 	public function update_settings_permission_callback( $request ) {
 		$setting_class = $this->get_setting_class( $request );
-		if ( is_null( $setting_class ) ) {
-			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'swpl' ), array( 'status' => 404 ) );
+
+		if ( is_wp_error( $setting_class ) ) {
+			return $setting_class;
 		}
 
 		return current_user_can( 'manage_options' );
@@ -151,9 +164,14 @@ class SettingsController extends WP_REST_Controller {
 		return current_user_can( 'manage_options' );
 	}
 
+	/**
+	 * Get settings class.
+	 * 
+	 * @param mixed $request
+	 * @return WP_Error|mixed
+	 */
 	protected function get_setting_class( $request ) {
-		$url_params  = $request->get_url_params();
-		$settings_id = $url_params['id'];
+		$settings_id = $request->get_param( 'id' );
 
 		if ( empty( $settings_id ) ) {
 			return new WP_Error( 'invalid_settings_id', __( 'Invalid settings id.', 'swpl' ), array( 'status' => 404 ) );
@@ -168,6 +186,10 @@ class SettingsController extends WP_REST_Controller {
 				$setting_class = $class;
 				break;
 			}
+		}
+
+		if ( null === $setting_class ) {
+			return new WP_Error( 'invalid_settings_class', __( 'Invalid settings id.', 'swpl' ), array( 'status' => 404 ) );
 		}
 
 		return $setting_class;

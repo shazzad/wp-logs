@@ -46,11 +46,13 @@ class WpDebugLog {
 			return;
 		}
 
+		$ver = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : SWPL_VERSION;
+
 		wp_register_script(
 			'swpl-wp-debug-log',
 			SWPL_URL . 'assets/js/wp-debug-log.js',
 			[],
-			SWPL_VERSION,
+			$ver,
 			true
 		);
 
@@ -58,7 +60,7 @@ class WpDebugLog {
 			'swpl-wp-debug-log',
 			SWPL_URL . 'assets/css/wp-debug-log.css',
 			[],
-			SWPL_VERSION
+			$ver
 		);
 
 		wp_localize_script(
