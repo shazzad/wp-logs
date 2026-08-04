@@ -5,7 +5,7 @@
 	"license": "GPL-2.0-or-later",
 	"require": {
 		"mustache/mustache": "^2.12",
-		"shazzad/github-plugin-updater": "dev-main"
+		"shazzad/github-plugin-updater": "^0.0.5"
 	},
 	"autoload": {
 		"psr-4": {

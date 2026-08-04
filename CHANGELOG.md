@@ -1,3 +1,8 @@
+**#### 2.0.10 2026-08-05**
+
+- [FIXED] The update notice kept showing "You have version X installed. Update to X." after a successful update, until the next full update check.
+- [UPDATED] `shazzad/github-plugin-updater` to 0.0.5, and pinned it to a tagged release instead of tracking `dev-main`.
+
 **#### 2.0.9 2026-08-05**
 
 - [FIXED] Update notifications never appeared. `shazzad/github-plugin-updater` treated the optional `tested`, `requires` and `requires_php` fields as mandatory, so releases without them were silently discarded and no site was ever offered an update.
