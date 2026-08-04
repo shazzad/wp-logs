@@ -53,6 +53,6 @@ All logs can be viewed at `Wp Admin > Logs` page.
 
 ### Requirements
 
-- WordPress: 5.0
-- PHP: 7.4
-- Tested: 6.8.1
+* WordPress: 5.0
+* PHP: 7.4
+* Tested: 6.8.1

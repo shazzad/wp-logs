@@ -1,3 +1,9 @@
+**#### 2.0.9 2026-08-05**
+
+- [FIXED] Update notifications never appeared. `shazzad/github-plugin-updater` treated the optional `tested`, `requires` and `requires_php` fields as mandatory, so releases without them were silently discarded and no site was ever offered an update.
+- [UPDATED] Bumped `shazzad/github-plugin-updater` to the release carrying that fix.
+- [UPDATED] README requirements list uses `*` bullets so older installs running the unpatched updater can also resolve the metadata.
+
 **#### 2.0.1 2025-05-04**
 
 - [IMPROVEMENT] Trim request url before storing in database
