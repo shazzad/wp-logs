@@ -112,12 +112,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shazzad/github-plugin-updater.git",
-                "reference": "63c5637c84242036b43775110da5f82e56b657aa"
+                "reference": "8c66ef8da3898b2ba481c16d6ac8bfcc3a1d94fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/63c5637c84242036b43775110da5f82e56b657aa",
-                "reference": "63c5637c84242036b43775110da5f82e56b657aa",
+                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/8c66ef8da3898b2ba481c16d6ac8bfcc3a1d94fe",
+                "reference": "8c66ef8da3898b2ba481c16d6ac8bfcc3a1d94fe",
                 "shasum": ""
             },
             "require": {
@@ -131,12 +131,15 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "description": "Helper library to implement wordpress plugin update from github repo.",
             "support": {
                 "issues": "https://github.com/shazzad/github-plugin-updater/issues",
                 "source": "https://github.com/shazzad/github-plugin-updater/tree/main"
             },
-            "time": "2022-09-18T00:09:41+00:00"
+            "time": "2026-08-04T23:02:09+00:00"
         }
     ],
     "packages-dev": [
@@ -331,7 +334,7 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
