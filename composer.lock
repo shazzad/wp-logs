@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f8bd362bbcccfbf920c7055ed03b9e49",
+    "content-hash": "bef38de504c4b031dfabf91cfac0c87e",
     "packages": [
         {
             "name": "erusev/parsedown",
@@ -108,22 +108,21 @@
         },
         {
             "name": "shazzad/github-plugin-updater",
-            "version": "dev-main",
+            "version": "0.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shazzad/github-plugin-updater.git",
-                "reference": "8c66ef8da3898b2ba481c16d6ac8bfcc3a1d94fe"
+                "reference": "6c7d0fa1a372a5517b6e417eda8dc344a80dcca6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/8c66ef8da3898b2ba481c16d6ac8bfcc3a1d94fe",
-                "reference": "8c66ef8da3898b2ba481c16d6ac8bfcc3a1d94fe",
+                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/6c7d0fa1a372a5517b6e417eda8dc344a80dcca6",
+                "reference": "6c7d0fa1a372a5517b6e417eda8dc344a80dcca6",
                 "shasum": ""
             },
             "require": {
                 "erusev/parsedown": "^1.7"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -137,9 +136,9 @@
             "description": "Helper library to implement wordpress plugin update from github repo.",
             "support": {
                 "issues": "https://github.com/shazzad/github-plugin-updater/issues",
-                "source": "https://github.com/shazzad/github-plugin-updater/tree/main"
+                "source": "https://github.com/shazzad/github-plugin-updater/tree/0.0.5"
             },
-            "time": "2026-08-04T23:02:09+00:00"
+            "time": "2026-08-04T23:48:22+00:00"
         }
     ],
     "packages-dev": [
@@ -329,9 +328,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "shazzad/github-plugin-updater": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
