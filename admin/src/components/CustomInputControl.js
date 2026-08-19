@@ -1,7 +1,7 @@
 import React from "react";
 import ControlSlot from "./ControlSlot";
 
-const CustomInputControl = ({ name, value, type = "text", ...props }) => {
+const CustomInputControl = ({ name, value, type = "text", min, ...props }) => {
   if (!props.onChange) {
     if (props.setSetting) {
       props.onChange = (e) => props.setSetting(name, e.target.value);
@@ -21,6 +21,7 @@ const CustomInputControl = ({ name, value, type = "text", ...props }) => {
       <input
         type={type}
         value={value}
+        min={min}
         disabled={props.disabled}
         onChange={props.onChange}
       />

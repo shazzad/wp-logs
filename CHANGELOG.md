@@ -1,3 +1,10 @@
+**#### 2.1.0 2026-08-19**
+
+- [CHANGED] Retention of 0 ("infinite") is no longer valid: logs and requests are now always purged, default 7 days, minimum 1. Sites that want long retention can set a high number of days.
+- [FIXED] Sites that installed the plugin before 2.0.8 and updated never received the retention settings, so the hourly cleanup jobs ran but deleted nothing. Upgrades now seed the defaults and migrate stored values below 1 to 7 days; valid values are untouched.
+- [FIXED] Settings save now sanitizes the retention fields — non-numeric, zero or negative input is stored as the 7-day default instead of silently disabling cleanup.
+- [IMPROVEMENT] The retention fields in the settings screen are now real number inputs with a minimum of 1.
+
 **#### 2.0.10 2026-08-05**
 
 - [FIXED] The update notice kept showing "You have version X installed. Update to X." after a successful update, until the next full update check.
