@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bef38de504c4b031dfabf91cfac0c87e",
+    "content-hash": "248558053adf160bcd8b4106ea06a2df",
     "packages": [
         {
             "name": "erusev/parsedown",
@@ -108,16 +108,16 @@
         },
         {
             "name": "shazzad/github-plugin-updater",
-            "version": "0.0.5",
+            "version": "0.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shazzad/github-plugin-updater.git",
-                "reference": "6c7d0fa1a372a5517b6e417eda8dc344a80dcca6"
+                "reference": "f9566050b6fa6412896dad2d728f5b88bea9e49d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/6c7d0fa1a372a5517b6e417eda8dc344a80dcca6",
-                "reference": "6c7d0fa1a372a5517b6e417eda8dc344a80dcca6",
+                "url": "https://api.github.com/repos/shazzad/github-plugin-updater/zipball/f9566050b6fa6412896dad2d728f5b88bea9e49d",
+                "reference": "f9566050b6fa6412896dad2d728f5b88bea9e49d",
                 "shasum": ""
             },
             "require": {
@@ -136,9 +136,9 @@
             "description": "Helper library to implement wordpress plugin update from github repo.",
             "support": {
                 "issues": "https://github.com/shazzad/github-plugin-updater/issues",
-                "source": "https://github.com/shazzad/github-plugin-updater/tree/0.0.5"
+                "source": "https://github.com/shazzad/github-plugin-updater/tree/0.0.6"
             },
-            "time": "2026-08-04T23:48:22+00:00"
+            "time": "2026-08-19T16:28:00+00:00"
         }
     ],
     "packages-dev": [
