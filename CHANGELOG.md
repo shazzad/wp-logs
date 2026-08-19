@@ -1,3 +1,9 @@
+**#### 2.1.2 2026-08-19**
+
+- [FIXED] After updating from the plugins screen, the update nag reappeared offering an "update" to the version already installed, until a second (redundant) reinstall. 2.0.10's fix ran too late: its cleanup fired on `upgrader_process_complete` at priority 20, while WordPress rebuilds the update transient on the same action at priority 10 — so the rebuild still compared the release against the pre-update version it had memoised. `shazzad/github-plugin-updater` 0.0.6 resets the memoised header at priority 5, before the rebuild.
+- [FIXED] The updater's `after_install` handler ran on every plugin/theme install and update on the site, attempting to move foreign packages into this plugin's directory (harmless only because the filesystem move fails silently). It now acts only on this plugin's own updates.
+- [UPDATED] `shazzad/github-plugin-updater` to 0.0.6.
+
 **#### 2.1.1 2026-08-19**
 
 - [FIXED] The Logs and Requests filter toolbars rendered every control at a different height — the plugin's stylesheet was squeezing the search input to 30px and the dropdowns to 32px inside their 40px `@wordpress/components` wrappers while the buttons stretched to 40px. The overrides are gone; all controls now share the standard 40px height.
