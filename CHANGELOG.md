@@ -1,3 +1,8 @@
+**#### 2.1.1 2026-08-19**
+
+- [FIXED] The Logs and Requests filter toolbars rendered every control at a different height — the plugin's stylesheet was squeezing the search input to 30px and the dropdowns to 32px inside their 40px `@wordpress/components` wrappers while the buttons stretched to 40px. The overrides are gone; all controls now share the standard 40px height.
+- [FIXED] The filter dropdowns were forced to share the toolbar width equally, truncating their own labels ("10 per pa…") at narrower windows. Each dropdown now sizes to its content, and the toolbar wraps instead of overflowing.
+
 **#### 2.1.0 2026-08-19**
 
 - [CHANGED] Retention of 0 ("infinite") is no longer valid: logs and requests are now always purged, default 7 days, minimum 1. Sites that want long retention can set a high number of days.

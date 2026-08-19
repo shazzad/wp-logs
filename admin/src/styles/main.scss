@@ -80,16 +80,11 @@ $mobile-breakpoint: 782px;
 
 .swpl__admin .button {
 	margin: 0;
-
-	@media (max-width: $mobile-breakpoint) {
-		height: 32px !important;
-		min-height: 32px !important;
-		line-height: 32px !important;
-	}
 }
 
 .swpl__filter__controls {
 	display: flex;
+	flex-wrap: wrap;
 	gap: $spacing-sm;
 
 	@media (max-width: $mobile-breakpoint) {
@@ -98,7 +93,11 @@ $mobile-breakpoint: 782px;
 }
 
 .swpl__filter--select {
-	width: 100%;
+	flex: 0 0 auto;
+
+	@media (max-width: $mobile-breakpoint) {
+		width: 100%;
+	}
 }
 
 // =============================================================================
@@ -503,14 +502,7 @@ button .components-spinner {
 
 .swpl__admin {
 
-	.swpl__filter--select select {
-		height: 32px !important;
-		min-height: 32px !important;
-	}
-
 	.swpl__filter--search input {
-		height: 30px !important;
-		min-height: 30px !important;
 		min-width: 250px;
 	}
 
