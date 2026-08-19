@@ -33,22 +33,26 @@ const PluginSettings = () => {
         <CustomInputControl
           label={__("Retain Logs For", "swpl")}
           desc={__(
-            "Set the maximum number of days to retain logs. Default is 0, infinite.",
+            "Set the maximum number of days to retain logs. Default is 7 days, minimum 1.",
             "swpl"
           )}
           value={settings?.swpl_log_retention_days || ""}
           name={"swpl_log_retention_days"}
+          type="number"
+          min="1"
           setSetting={setSetting}
         />
 
         <CustomInputControl
           label={__("Retain Requests for", "swpl")}
           desc={__(
-            "Set the maximum number of days to retain requests. Default is 0, infinite.",
+            "Set the maximum number of days to retain requests. Default is 7 days, minimum 1.",
             "swpl"
           )}
           value={settings?.swpl_request_retention_days || ""}
           name={"swpl_request_retention_days"}
+          type="number"
+          min="1"
           setSetting={setSetting}
         />
 

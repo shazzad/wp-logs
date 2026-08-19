@@ -67,17 +67,17 @@ class PluginSettings extends Settings {
 						'id'    => 'swpl_log_retention_days',
 						'name'  => 'swpl_log_retention_days',
 						'label' => __( 'Retain Logs For', 'swpl' ),
-						'desc'  => __( 'Set the maximum number of days to retain logs. Default is 0, infinite.', 'swpl' ),
+						'desc'  => __( 'Set the maximum number of days to retain logs. Default is 7 days, minimum 1.', 'swpl' ),
 						'type'  => 'number',
-						'min'   => 0,
+						'min'   => 1,
 					],
 					[
 						'id'    => 'swpl_request_retention_days',
 						'name'  => 'swpl_request_retention_days',
 						'label' => __( 'Retain Requests For', 'swpl' ),
-						'desc'  => __( 'Set the maximum number of days to retain requests. Default is 0, infinite.', 'swpl' ),
+						'desc'  => __( 'Set the maximum number of days to retain requests. Default is 7 days, minimum 1.', 'swpl' ),
 						'type'  => 'number',
-						'min'   => 0,
+						'min'   => 1,
 					],
 					[
 						'id'    => 'swpl_logged_request_urls',
@@ -113,9 +113,45 @@ class PluginSettings extends Settings {
 	 */
 	public function get_defaults() {
 		return [
-			'swpl_log_retention_days'     => '0',
-			'swpl_request_retention_days' => '0',
+			'swpl_log_retention_days'     => '7',
+			'swpl_request_retention_days' => '7',
 			'swpl_logged_request_urls'    => '',
 		];
+	}
+
+	/**
+	 * Sanitize the log retention days setting.
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return string Number of days, minimum 1. Invalid input falls back to 7.
+	 */
+	public function sanitize_swpl_log_retention_days( $value ) {
+		return $this->sanitize_retention_days( $value );
+	}
+
+	/**
+	 * Sanitize the request retention days setting.
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return string Number of days, minimum 1. Invalid input falls back to 7.
+	 */
+	public function sanitize_swpl_request_retention_days( $value ) {
+		return $this->sanitize_retention_days( $value );
+	}
+
+	/**
+	 * Sanitize a retention days value.
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return string Number of days, minimum 1. Invalid input falls back to 7.
+	 */
+	private function sanitize_retention_days( $value ) {
+		$days = (int) $value;
+
+		if ( $days < 1 ) {
+			$days = 7;
+		}
+
+		return (string) $days;
 	}
 }

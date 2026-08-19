@@ -49,6 +49,7 @@ class Installer {
 		self::rename_tables();
 		self::install_tables();
 		self::update_tables();
+		self::update_settings();
 
 		update_option( 'swpl_version', SWPL_VERSION );
 	}
@@ -175,14 +176,18 @@ class Installer {
 	/**
 	 * Updates the plugin settings to match the latest schema.
 	 *
-	 * This method is a placeholder for any logic required to update existing plugin settings
-	 * during plugin upgrades.
+	 * Seeds the retention options with the default and migrates legacy
+	 * values below 1 (0 previously meant infinite retention) to the default.
+	 * Valid values are left untouched.
 	 *
 	 * @since 2.8
 	 * @return void
 	 */
 	public static function update_settings() {
-		add_option( 'swpl_log_retention_days', 7 );
-		add_option( 'swpl_request_retention_days', 7 );
+		foreach ( [ 'swpl_log_retention_days', 'swpl_request_retention_days' ] as $option ) {
+			if ( (int) get_option( $option, 0 ) < 1 ) {
+				update_option( $option, 7 );
+			}
+		}
 	}
 }

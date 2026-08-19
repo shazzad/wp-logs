@@ -49,10 +49,10 @@ class Cleanup {
 	 * @return void
 	 */
 	public static function cleanup_logs() {
-		$retention_days = (int) get_option( 'swpl_log_retention_days', 0 );
+		$retention_days = (int) get_option( 'swpl_log_retention_days', 7 );
 
-		if ( ! $retention_days ) {
-			return;
+		if ( $retention_days < 1 ) {
+			$retention_days = 7;
 		}
 
 		global $wpdb;
@@ -73,10 +73,10 @@ class Cleanup {
 	 * @return void
 	 */
 	public static function cleanup_requests() {
-		$retention_days = (int) get_option( 'swpl_request_retention_days', 0 );
+		$retention_days = (int) get_option( 'swpl_request_retention_days', 7 );
 
-		if ( ! $retention_days ) {
-			return;
+		if ( $retention_days < 1 ) {
+			$retention_days = 7;
 		}
 
 		global $wpdb;
