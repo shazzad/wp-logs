@@ -25,7 +25,11 @@ npm run start-admin
 npm run build
 ```
 
-The React app uses `@wordpress/scripts` for build tooling. Grunt handles version stamping and zip compression for releases.
+The React app uses `@wordpress/scripts` for build tooling. Grunt handles version stamping and zip compression for releases; on a GitHub release, `.github/workflows/release-plugin.yml` builds and attaches the ZIP.
+
+### Distribution
+
+WP Logs updates ship straight from GitHub releases via the `shazzad/github-plugin-updater` library — **not** the w4dev repo server. The library reads compatibility metadata from the release notes (fallback: the `### Requirements` block in `README.md`), so every release body must carry an explicit requirements block (Requires at least / Tested up to / Requires PHP).
 
 ## Architecture
 
