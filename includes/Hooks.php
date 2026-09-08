@@ -164,17 +164,44 @@ class Hooks {
 			foreach ( $data as $key => $value ) {
 				if ( is_string( $value ) || is_numeric( $value ) ) {
 					if ( preg_match( $regex, $key ) ) {
-						$data[$key] = substr( $value, 0, 3 ) . str_repeat( '*', strlen( $value ) - 3 ) . ' (masked)';
+						$data[$key] = self::mask( $value );
 					}
 				} elseif ( is_array( $value ) || is_object( $value ) ) {
 					$data[$key] = self::sanitize_data( $value );
 				}
 			}
 		} elseif ( is_string( $data ) && preg_match( $regex, $data ) ) {
-			return substr( $data, 0, 3 ) . str_repeat( '*', strlen( $data ) - 3 ) . ' (masked)';
+			return self::mask( $data );
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Masks a sensitive value, keeping a short prefix so entries stay
+	 * distinguishable in a log.
+	 *
+	 * Values of three characters or fewer are masked whole. At that length the
+	 * prefix IS the value, so the previous expression published the secret
+	 * verbatim under a "(masked)" label; below three characters its repeat
+	 * count also went negative, which PHP 8 rejects with a ValueError.
+	 *
+	 * @param string|int|float $value The value to mask.
+	 * @return string The masked value.
+	 */
+	private static function mask( $value ) {
+		$value  = (string) $value;
+		$length = strlen( $value );
+
+		if ( 0 === $length ) {
+			return '(masked)';
+		}
+
+		if ( $length <= 3 ) {
+			return str_repeat( '*', $length ) . ' (masked)';
+		}
+
+		return substr( $value, 0, 3 ) . str_repeat( '*', $length - 3 ) . ' (masked)';
 	}
 
 	/**
