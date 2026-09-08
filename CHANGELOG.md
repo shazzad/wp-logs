@@ -1,3 +1,12 @@
+**#### 2.1.4 2026-09-08**
+
+- [FIXED] Request logging crashed with `ValueError: str_repeat(): Argument #2 ($times) must be greater than or equal to 0` on PHP 8 whenever a logged key matching `password|secret|token|authorization|x-api-key` carried a value shorter than three characters — an empty field included. `sanitize_data()` masks the request payload, request headers, response data and response headers of every logged outgoing request, so a blank or truncated token fataled the logger on exactly the request someone had turned logging on to inspect.
+- [FIXED] A value of exactly three characters was written to the log in full, labelled `(masked)`. The mask kept a three-character prefix at every length, so at that length the prefix was the whole secret. Values of three characters or fewer are now masked entirely; longer values keep the prefix as before.
+
+**#### 2.1.3 2026-08-20**
+
+- [UPDATED] Tested up to WordPress 7.1.
+
 **#### 2.1.2 2026-08-19**
 
 - [FIXED] After updating from the plugins screen, the update nag reappeared offering an "update" to the version already installed, until a second (redundant) reinstall. 2.0.10's fix ran too late: its cleanup fired on `upgrader_process_complete` at priority 20, while WordPress rebuilds the update transient on the same action at priority 10 — so the rebuild still compared the release against the pre-update version it had memoised. `shazzad/github-plugin-updater` 0.0.6 resets the memoised header at priority 5, before the rebuild.
