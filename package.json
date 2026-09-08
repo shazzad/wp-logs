@@ -16,7 +16,7 @@
 	},
 	"devDependencies": {
 		"@wordpress/scripts": "^30.15.0",
-		"grunt": "^1.6.1",
+		"grunt": "^1.6.3",
 		"grunt-contrib-compress": "^2.0.0",
 		"grunt-string-replace": "^1.2.1",
 		"matchdep": "^2.0.0"
