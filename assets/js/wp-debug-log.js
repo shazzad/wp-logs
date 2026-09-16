@@ -98,7 +98,12 @@
   $(document.body).on(
     "click",
     "#wp-admin-bar-shazzad-wp-logs-debug-log a",
-    function () {
+    function (e) {
+      // Without this the modal opens and the browser then follows the href
+      // away from the page (#53). Every other handler here returns false; this
+      // one never did.
+      e.preventDefault();
+
       $(document.body).trigger("swpl__modal__init");
       $(document.body).trigger("swpl__modal--loading", "Loading...");
       $(document.body).trigger("swpl__modal--show");
