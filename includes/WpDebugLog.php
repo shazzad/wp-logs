@@ -84,12 +84,32 @@ class WpDebugLog {
 	 * @return void
 	 */
 	public static function admin_bar_menu( $wp_admin_bar ) {
+		/*
+		 * The node only ever rendered for administrators because the parent
+		 * group it hangs off is created by AdminBarMenu::admin_bar_menu() at
+		 * priority 1100, which is gated. That is load-bearing coupling across
+		 * two files and two priorities, so guard here as well rather than rely
+		 * on it (#53).
+		 */
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		/*
+		 * Not site_url( '/wp-content/debug.log' ). Handing an administrator the
+		 * raw file URL only works when the log happens to be readable over
+		 * HTTP, and teaches them that it is - which is the opposite of what a
+		 * debugging plugin should be teaching. The viewer in wp-debug-log.js
+		 * intercepts this click and opens the log in a modal, reading it
+		 * through the REST route behind manage_options; the href is where the
+		 * click lands when that script has not loaded.
+		 */
 		$wp_admin_bar->add_node(
 			[
 				'id'     => AdminBarMenu::PARENT_ID . '-debug-log',
 				'parent' => AdminBarMenu::PARENT_ID . '-secondary',
 				'title'  => __( 'WP Debug Log', 'swpl' ),
-				'href'   => site_url( '/wp-content/debug.log' )
+				'href'   => admin_url( 'admin.php?page=' . AdminBarMenu::PARENT_ID ),
 			]
 		);
 	}

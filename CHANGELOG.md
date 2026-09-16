@@ -1,3 +1,9 @@
+**#### 2.1.5 2026-09-16**
+
+- [FIXED] The admin bar's "WP Debug Log" item pointed at `wp-content/debug.log` — the raw file, served by the web server with no capability check of any kind. It only worked at all on sites where the log happens to be publicly fetchable, and it taught the administrator that it was. The item now opens the plugin's own viewer, which reads the log through a REST route behind `manage_options`, and falls back to the plugin's Logs screen when its script has not loaded.
+- [FIXED] Clicking that item opened the log modal and then navigated away from the page anyway — the click handler never cancelled the link's default action, unlike every other handler in the same file.
+- [FIXED] `WpDebugLog::admin_bar_menu()` had no capability check of its own. Nothing was exposed, because the parent menu group it attaches to is created by a gated callback at an earlier priority, but that made a security boundary depend on the relative priority of two callbacks in two files. The check is now explicit.
+
 **#### 2.1.4 2026-09-08**
 
 - [FIXED] Request logging crashed with `ValueError: str_repeat(): Argument #2 ($times) must be greater than or equal to 0` on PHP 8 whenever a logged key matching `password|secret|token|authorization|x-api-key` carried a value shorter than three characters — an empty field included. `sanitize_data()` masks the request payload, request headers, response data and response headers of every logged outgoing request, so a blank or truncated token fataled the logger on exactly the request someone had turned logging on to inspect.
