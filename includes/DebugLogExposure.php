@@ -17,12 +17,15 @@ namespace Shazzad\WpLogs;
  * itself can be answered differently from a request by a visitor (loopback
  * blocks, WAFs, local proxies), so the statuses say what was seen:
  *
- * - answered          HTTP 200 for the log, and a 404-style answer for a
- *                     file that does not exist next to it.
+ * - answered          HTTP 200 for the log, not served as text/html, and
+ *                     HTTP 403, 404 or 410 for a file that does not exist
+ *                     next to it (the control request).
  * - refused           HTTP 401, 403, 404 or 410 for the log.
- * - unknown           Anything else: a transport error, a timeout, another
- *                     status code, or a server that answers 200 for files
- *                     that do not exist. Never read this as "safe".
+ * - unknown           Anything else: a transport error or timeout, another
+ *                     status code for the log, a 200 served as text/html (a
+ *                     custom error or login page), or a control request that
+ *                     failed or got any answer other than 403, 404 or 410.
+ *                     Never read this as "safe".
  * - outside_web_root  The log is not under ABSPATH, WP_CONTENT_DIR or the
  *                     server document root, so it has no URL to request.
  * - no_file           There is no log file at the resolved path.
@@ -64,6 +67,12 @@ class DebugLogExposure {
 	 * Seconds to wait for each HEAD request.
 	 */
 	const TIMEOUT = 5;
+
+	/**
+	 * Control answers that show the server does not serve 200 for every path.
+	 * 403 counts: a server that forbids a missing file is not a catch-all.
+	 */
+	const CONTROL_NOT_FOUND_CODES = [ 403, 404, 410 ];
 
 	/**
 	 * Whether the check should run at all.
@@ -270,22 +279,55 @@ class DebugLogExposure {
 		}
 
 		/*
-		 * A 200 only means something if the server does not also answer 200
-		 * for a file that does not exist. Some hosts serve a soft 404 or a
-		 * login page for every path; reading that as "exposed" would be a
-		 * false alarm.
+		 * A log file is served as text/plain or application/octet-stream. A
+		 * 200 served as HTML is a page - typically a custom access-denied or
+		 * login page some hosts send with a 200 - not the log. A header sent
+		 * more than once comes back as an array; any HTML value counts.
 		 */
-		$control_url      = trailingslashit( dirname( $url ) ) . 'swpl-probe-' . strtolower( wp_generate_password( 12, false ) ) . '.log';
-		$control_response = self::head( $control_url );
-		$control_code     = is_wp_error( $control_response ) ? 0 : (int) wp_remote_retrieve_response_code( $control_response );
+		$content_types = [];
+		foreach ( (array) wp_remote_retrieve_header( $response, 'content-type' ) as $content_type ) {
+			$content_types[] = strtolower( trim( explode( ';', (string) $content_type )[0] ) );
+		}
 
-		if ( 200 === $control_code ) {
+		if ( in_array( 'text/html', $content_types, true ) ) {
 			return self::make_result(
 				self::STATUS_UNKNOWN,
 				$path,
 				$url,
 				$code,
-				'The server also answered HTTP 200 for a file that does not exist, so a 200 tells nothing here.'
+				'The server answered HTTP 200 with text/html, which is a web page, not a log file.'
+			);
+		}
+
+		/*
+		 * A 200 only means something if the same server says "no such file"
+		 * for a file that does not exist. Some hosts serve a soft 404 or a
+		 * login page for every path; a control request that fails, is rate
+		 * limited or errors says nothing about that either, so only a 403,
+		 * 404 or 410 lets the 200 stand.
+		 */
+		$control_url      = trailingslashit( dirname( $url ) ) . 'swpl-probe-' . strtolower( wp_generate_password( 12, false ) ) . '.log';
+		$control_response = self::head( $control_url );
+
+		if ( is_wp_error( $control_response ) ) {
+			return self::make_result(
+				self::STATUS_UNKNOWN,
+				$path,
+				$url,
+				$code,
+				sprintf( 'The request for a file that does not exist failed: %s', $control_response->get_error_message() )
+			);
+		}
+
+		$control_code = (int) wp_remote_retrieve_response_code( $control_response );
+
+		if ( ! in_array( $control_code, self::CONTROL_NOT_FOUND_CODES, true ) ) {
+			return self::make_result(
+				self::STATUS_UNKNOWN,
+				$path,
+				$url,
+				$code,
+				sprintf( 'The server answered HTTP %d for a file that does not exist, so its HTTP 200 for the log tells nothing here.', $control_code )
 			);
 		}
 
