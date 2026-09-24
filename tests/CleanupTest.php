@@ -293,16 +293,70 @@ class CleanupTest extends WP_UnitTestCase {
 		$this->insert_logs( 3, 10 );
 		wp_schedule_event( time() + MINUTE_IN_SECONDS, 'hourly', 'swpl_cleanup_logs' );
 
+		// Core also refuses an identical event within 10 minutes, so counting
+		// events alone cannot tell whether the purge tried to add one.
+		$attempts = $this->spy_on_scheduling( 'swpl_cleanup_logs' );
 		Cleanup::cleanup_logs();
 
-		$crons  = _get_cron_array();
+		$this->assertSame( 0, $attempts->count );
+		$this->assertSame( 1, $this->count_events( 'swpl_cleanup_logs' ) );
+	}
+
+	public function test_repeated_paused_runs_keep_a_single_follow_up() {
+		$this->batch_size( 1 );
+		$this->ticking_clock( 100 );
+		$this->insert_logs( 5, 10 );
+
+		Cleanup::cleanup_logs();
+		$attempts = $this->spy_on_scheduling( 'swpl_cleanup_logs' );
+		Cleanup::cleanup_logs();
+
+		$this->assertSame( 0, $attempts->count );
+		$this->assertSame( 1, $this->count_events( 'swpl_cleanup_logs' ) );
+	}
+
+	public function test_a_zero_time_budget_still_runs_one_batch() {
+		$this->batch_size( 1 );
+		add_filter( 'swpl_purge_time_budget', '__return_zero' );
+		$this->insert_logs( 3, 10 );
+
+		$result = Cleanup::cleanup_logs();
+
+		$this->assertSame( 1, $result['batches'] );
+		$this->assertSame( 1, $result['deleted'] );
+		$this->assertFalse( $result['complete'] );
+	}
+
+	/**
+	 * Count attempts to schedule $hook, whether or not core accepts them.
+	 */
+	private function spy_on_scheduling( $hook ) {
+		$attempts = (object) [ 'count' => 0 ];
+		add_filter(
+			'pre_schedule_event',
+			function ( $pre, $event ) use ( $attempts, $hook ) {
+				if ( $hook === $event->hook ) {
+					++$attempts->count;
+				}
+				return $pre;
+			},
+			10,
+			2
+		);
+		return $attempts;
+	}
+
+	/**
+	 * Number of scheduled events for $hook.
+	 */
+	private function count_events( $hook ) {
 		$events = 0;
-		foreach ( $crons as $hooks ) {
-			if ( isset( $hooks['swpl_cleanup_logs'] ) ) {
-				$events += count( $hooks['swpl_cleanup_logs'] );
+		foreach ( _get_cron_array() as $hooks ) {
+			if ( isset( $hooks[ $hook ] ) ) {
+				$events += count( $hooks[ $hook ] );
 			}
 		}
-		$this->assertSame( 1, $events );
+		return $events;
 	}
 
 	public function test_an_interrupted_purge_is_logged() {
