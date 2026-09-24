@@ -225,6 +225,47 @@ class DebugLogExposureTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Core returns a header sent more than once as an array of its values.
+	 */
+	public function test_200_with_a_repeated_html_content_type_is_unknown() {
+		$this->responses = [
+			[
+				'code'    => 200,
+				'headers' => [ 'Content-Type' => [ 'text/plain', 'text/html; charset=UTF-8' ] ],
+			],
+		];
+
+		$result = DebugLogExposure::get_result();
+
+		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, $result['status'] );
+		$this->assertStringContainsString( 'text/html', $result['reason'] );
+		$this->assertCount( 1, $this->requests );
+	}
+
+	public function test_200_with_a_repeated_plain_content_type_is_answered() {
+		$this->responses = [
+			[
+				'code'    => 200,
+				'headers' => [ 'Content-Type' => [ 'text/plain', 'text/plain; charset=UTF-8' ] ],
+			],
+			404,
+		];
+
+		$this->assertSame( DebugLogExposure::STATUS_ANSWERED, DebugLogExposure::get_result()['status'] );
+	}
+
+	public function test_failed_control_request_result_is_cached() {
+		$this->responses = [ 200, new WP_Error( 'http_request_failed', 'cURL error 28: Operation timed out' ) ];
+
+		DebugLogExposure::get_result();
+		$second = DebugLogExposure::get_result();
+
+		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, $second['status'] );
+		$this->assertTrue( $second['cached'] );
+		$this->assertCount( 2, $this->requests, 'No new requests until the day-long cache runs out.' );
+	}
+
+	/**
 	 * @dataProvider log_file_content_types
 	 */
 	public function test_200_as_a_log_file_type_is_answered( $content_type ) {

@@ -281,11 +281,15 @@ class DebugLogExposure {
 		/*
 		 * A log file is served as text/plain or application/octet-stream. A
 		 * 200 served as HTML is a page - typically a custom access-denied or
-		 * login page some hosts send with a 200 - not the log.
+		 * login page some hosts send with a 200 - not the log. A header sent
+		 * more than once comes back as an array; any HTML value counts.
 		 */
-		$content_type = strtolower( trim( explode( ';', (string) wp_remote_retrieve_header( $response, 'content-type' ) )[0] ) );
+		$content_types = [];
+		foreach ( (array) wp_remote_retrieve_header( $response, 'content-type' ) as $content_type ) {
+			$content_types[] = strtolower( trim( explode( ';', (string) $content_type )[0] ) );
+		}
 
-		if ( 'text/html' === $content_type ) {
+		if ( in_array( 'text/html', $content_types, true ) ) {
 			return self::make_result(
 				self::STATUS_UNKNOWN,
 				$path,
