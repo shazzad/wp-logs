@@ -8,3 +8,6 @@ build/
 *.sql
 *.sqlite
 *.Thumb
+vendor-dev/
+wp/
+.phpunit.result.cache

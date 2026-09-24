@@ -62,6 +62,15 @@ class AdminPage {
 	public static function render_page() {
 		?>
 		<div class="wrap swpl-wrap">
+			<?php
+			/*
+			 * Core moves admin notices after .wp-header-end, or after the first
+			 * h1/h2 in .wrap. The React app renders its headings after that
+			 * script runs, so without this marker notices land wherever the
+			 * race leaves them.
+			 */
+			?>
+			<hr class="wp-header-end">
 			<div id="homerunner-react-app"></div>
 		</div>
 		<?php

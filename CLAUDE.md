@@ -27,6 +27,18 @@ npm run build
 
 The React app uses `@wordpress/scripts` for build tooling. Grunt handles version stamping and zip compression for releases; on a GitHub release, `.github/workflows/release-plugin.yml` builds and attaches the ZIP.
 
+### Tests
+
+PHPUnit (wp-phpunit) against the w4dev stack's MySQL. Dev deps live in `composer-dev.json` →
+`vendor-dev/` + `wp/`, kept apart from the shipped `composer.json` (the release ZIP is an explicit
+include list, so neither ships). This checkout is not mounted into the stack, so `bin/test` runs
+the suite in a throwaway container from the `w4dev_wp` image on the stack network.
+
+```bash
+COMPOSER=composer-dev.json composer install   # once
+bin/test
+```
+
 ### Distribution
 
 WP Logs updates ship straight from GitHub releases via the `shazzad/github-plugin-updater` library — **not** the w4dev repo server. The library reads compatibility metadata from the release notes (fallback: the `### Requirements` block in `README.md`), so every release body must carry an explicit requirements block (Requires at least / Tested up to / Requires PHP).

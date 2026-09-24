@@ -1,3 +1,8 @@
+**#### Unreleased**
+
+- [ADDED] The Logs screen warns when the debug log answers HTTP requests. Once a day at most, the site sends a HEAD request (never a GET, so the log body is not downloaded) to the log's URL, plus one to a file that does not exist beside it. Only a 200 for the log and a non-200 for the missing file raises the notice, so hosts that answer 200 for every path do not produce a false alarm. The notice says what was observed, shows Apache and nginx deny rules, and has "Check again" and "Dismiss" links. Dismissal is stored per site and is cleared if the log is later seen refusing requests, so the notice comes back if the fix comes undone. The plugin does not write server configuration. Turn the check off with the `swpl_debug_log_exposure_check` filter; override the requested URL with `swpl_debug_log_exposure_url`.
+- [FIXED] The debug log viewer looked for the default log at `ABSPATH/wp-content/debug.log` instead of `WP_CONTENT_DIR/debug.log`, which is a different folder on sites that move `wp-content`. It also read `WP_DEBUG_LOG` set to the string `'true'` or `'1'` as a file path; WordPress treats those as the default location, and the viewer now does too.
+
 **#### 2.1.5 2026-09-16**
 
 - [FIXED] The admin bar's "WP Debug Log" item pointed at `wp-content/debug.log` — the raw file, served by the web server with no capability check of any kind. It only worked at all on sites where the log happens to be publicly fetchable, and it taught the administrator that it was. The item now opens the plugin's own viewer, which reads the log through a REST route behind `manage_options`, and falls back to the plugin's Logs screen when its script has not loaded.

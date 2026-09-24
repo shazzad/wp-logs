@@ -1,0 +1,24 @@
+{
+    "name": "shazzad/wp-logs-dev",
+    "description": "Dev-only tooling (tests). Separate from the shipped plugin composer.json so the release build never sees it.",
+    "license": "GPL-2.0-or-later",
+    "config": {
+        "vendor-dir": "vendor-dev",
+        "platform": {
+            "php": "7.4.33"
+        },
+        "allow-plugins": {
+            "johnpbloch/wordpress-core-installer": true
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "wp-phpunit/wp-phpunit": "~7.0.0",
+        "yoast/phpunit-polyfills": "^2.0",
+        "johnpbloch/wordpress-core-installer": "^2.0",
+        "johnpbloch/wordpress-core": "~7.0.0, !=7.0.5"
+    },
+    "extra": {
+        "wordpress-install-dir": "wp"
+    }
+}

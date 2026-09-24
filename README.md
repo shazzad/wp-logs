@@ -47,6 +47,29 @@ add_filter( 'swpl_log_request', function ( $enabled, $url ) {
 }, 10, 2 );
 ```
 
+## Debug Log Exposure Check
+
+On the `Wp Admin > Logs` screen, the plugin sends a HEAD request from the site to the URL of
+`debug.log` (resolved from `WP_DEBUG_LOG`, mapped to a URL only when the file sits under
+`WP_CONTENT_DIR`, `ABSPATH` or the server document root). If the log answers HTTP 200 while a
+file that does not exist next to it does not, a dismissible notice says so and shows Apache and
+nginx deny rules. The plugin never writes server configuration. Results are cached for a day.
+
+A request from the site to itself can be answered differently from a visitor's, so turn the
+check off on hosts where that makes it meaningless:
+
+```php
+add_filter( 'swpl_debug_log_exposure_check', '__return_false' );
+```
+
+Override the URL that is requested (return an empty string to treat the log as not web-reachable):
+
+```php
+add_filter( 'swpl_debug_log_exposure_url', function ( $url, $path ) {
+	return $url;
+}, 10, 2 );
+```
+
 ## View Log
 
 All logs can be viewed at `Wp Admin > Logs` page.

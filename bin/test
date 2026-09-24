@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Run the PHPUnit suite against the w4dev stack's MySQL.
+#
+# This checkout is not mounted into the w4dev stack (the installed copy is the
+# update-path test bed), so the suite runs in a throwaway container from the
+# same PHP image, on the stack's network, with this checkout mounted at /app.
+#
+# First run: COMPOSER=composer-dev.json composer install  (writes vendor-dev/ and wp/)
+set -euo pipefail
+PLUGIN_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+DB_NAME=swpl_tests
+MYSQL_ROOT_PASSWORD="$(docker exec w4dev_mysql printenv MYSQL_ROOT_PASSWORD)"
+IMAGE="$(docker inspect w4dev_wp --format '{{.Config.Image}}')"
+
+docker exec -e MYSQL_PWD="$MYSQL_ROOT_PASSWORD" w4dev_mysql mysql -uroot \
+  -e "CREATE DATABASE IF NOT EXISTS $DB_NAME"
+
+docker run --rm -u "$(id -u)" \
+  --network w4dev_default \
+  -e WP_TESTS_DB_HOST=mysql \
+  -e WP_TESTS_DB_NAME="$DB_NAME" \
+  -e WP_TESTS_DB_USER=root \
+  -e WP_TESTS_DB_PASSWORD="$MYSQL_ROOT_PASSWORD" \
+  -v "$PLUGIN_DIR":/app -w /app \
+  "$IMAGE" ./vendor-dev/bin/phpunit "$@"
