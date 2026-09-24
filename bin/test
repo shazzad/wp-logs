@@ -8,7 +8,7 @@
 # First run: COMPOSER=composer-dev.json composer install  (writes vendor-dev/ and wp/)
 set -euo pipefail
 PLUGIN_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-DB_NAME=swpl_tests
+DB_NAME="${SWPL_TESTS_DB_NAME:-swpl_tests}"
 MYSQL_ROOT_PASSWORD="$(docker exec w4dev_mysql printenv MYSQL_ROOT_PASSWORD)"
 IMAGE="$(docker inspect w4dev_wp --format '{{.Config.Image}}')"
 
