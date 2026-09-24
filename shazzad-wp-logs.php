@@ -4,7 +4,7 @@
  * Plugin URI: https://w4dev.com
  * Description: Store and view logs for debugging.
  * Version: 2.1.5
- * Requires at least: 4.4.0
+ * Requires at least: 6.2
  * Requires PHP: 7.4
  * Author: Shazzad Hossain Khan
  * Author URI: https://shazzad.me

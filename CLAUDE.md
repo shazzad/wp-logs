@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 WordPress plugin (PHP + React) that stores and displays runtime logs and HTTP request data in custom database tables. Logs are viewed in a React SPA at **WP Admin > Logs**.
 
 - **PHP namespace:** `Shazzad\WpLogs\` (PSR-4 autoloaded from `includes/`)
-- **Requirements:** WordPress 5.0+, PHP 7.4+
+- **Requirements:** WordPress 6.2+ (the React admin uses `createRoot`), PHP 7.4+. Plugin header: `Requires at least: 6.2`, `Requires PHP: 7.4`.
 
 ## Build Commands
 
@@ -42,6 +42,8 @@ bin/test
 ### Distribution
 
 WP Logs updates ship straight from GitHub releases via the `shazzad/github-plugin-updater` library — **not** the w4dev repo server. The library reads compatibility metadata from the release notes (fallback: the `### Requirements` block in `README.md`), so every release body must carry an explicit requirements block (Requires at least / Tested up to / Requires PHP).
+
+The library's parsers only know certain labels. From the release body it reads `Tested up to:` (or `Tested:`), `Requires:` (or `WordPress:`) and `Requires PHP:` (or `PHP:`); a `Requires at least:` line is **not** matched, so the WordPress minimum then comes from the README fallback. In the README `### Requirements` block it reads `WordPress:`, `PHP:` and `Tested:` — keep those labels there, since `Requires at least:` in the README would be silently ignored. Keep the README minimum equal to the plugin header's `Requires at least`.
 
 ## Architecture
 

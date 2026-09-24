@@ -75,8 +75,15 @@ class DebugLogExposureTest extends WP_UnitTestCase {
 			return $next;
 		}
 
+		$headers = [];
+		if ( is_array( $next ) ) {
+			$headers = $next['headers'];
+			$next    = $next['code'];
+		}
+
 		return [
-			'headers'  => [],
+			// Same header container core's HTTP API returns: case-insensitive keys.
+			'headers'  => new WpOrg\Requests\Utility\CaseInsensitiveDictionary( $headers ),
 			'body'     => '',
 			'response' => [
 				'code'    => $next,
@@ -128,6 +135,119 @@ class DebugLogExposureTest extends WP_UnitTestCase {
 
 		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, $result['status'] );
 		$this->assertStringContainsString( 'does not exist', $result['reason'] );
+	}
+
+	/**
+	 * A control answer that says "no such file" is what makes a 200 for the
+	 * log mean something.
+	 *
+	 * @dataProvider not_a_catch_all_codes
+	 */
+	public function test_200_with_not_found_style_control_is_answered( $control_code ) {
+		$this->responses = [ 200, $control_code ];
+
+		$result = DebugLogExposure::get_result();
+
+		$this->assertSame( DebugLogExposure::STATUS_ANSWERED, $result['status'] );
+		$this->assertSame( 200, $result['code'] );
+	}
+
+	public function not_a_catch_all_codes() {
+		return [
+			'404' => [ 404 ],
+			'410' => [ 410 ],
+			'403' => [ 403 ],
+		];
+	}
+
+	/**
+	 * Any other control answer proves nothing about how the server treats
+	 * files that do not exist, so the 200 for the log proves nothing either.
+	 *
+	 * @dataProvider inconclusive_control_codes
+	 */
+	public function test_200_with_inconclusive_control_status_is_unknown( $control_code ) {
+		$this->responses = [ 200, $control_code ];
+
+		$result = DebugLogExposure::get_result();
+
+		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, $result['status'] );
+		$this->assertSame( 200, $result['code'] );
+		$this->assertStringContainsString( sprintf( 'HTTP %d', $control_code ), $result['reason'] );
+	}
+
+	public function inconclusive_control_codes() {
+		return [
+			'500' => [ 500 ],
+			'502' => [ 502 ],
+			'503' => [ 503 ],
+			'429' => [ 429 ],
+			'401' => [ 401 ],
+			'302' => [ 302 ],
+		];
+	}
+
+	public function test_200_with_failed_control_request_is_unknown() {
+		$this->responses = [ 200, new WP_Error( 'http_request_failed', 'cURL error 28: Operation timed out' ) ];
+
+		$result = DebugLogExposure::get_result();
+
+		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, $result['status'] );
+		$this->assertSame( 200, $result['code'] );
+		$this->assertStringContainsString( 'timed out', $result['reason'] );
+	}
+
+	public function test_200_as_html_is_unknown_without_a_control_request() {
+		$this->responses = [
+			[
+				'code'    => 200,
+				'headers' => [ 'Content-Type' => 'text/html; charset=UTF-8' ],
+			],
+		];
+
+		$result = DebugLogExposure::get_result();
+
+		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, $result['status'] );
+		$this->assertSame( 200, $result['code'] );
+		$this->assertStringContainsString( 'text/html', $result['reason'] );
+		$this->assertCount( 1, $this->requests, 'An HTML answer settles it; no control request.' );
+	}
+
+	public function test_200_as_html_in_upper_case_is_unknown() {
+		$this->responses = [
+			[
+				'code'    => 200,
+				'headers' => [ 'content-type' => 'TEXT/HTML' ],
+			],
+		];
+
+		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, DebugLogExposure::get_result()['status'] );
+	}
+
+	/**
+	 * @dataProvider log_file_content_types
+	 */
+	public function test_200_as_a_log_file_type_is_answered( $content_type ) {
+		$this->responses = [
+			[
+				'code'    => 200,
+				'headers' => [ 'Content-Type' => $content_type ],
+			],
+			404,
+		];
+
+		$result = DebugLogExposure::get_result();
+
+		$this->assertSame( DebugLogExposure::STATUS_ANSWERED, $result['status'] );
+		$this->assertCount( 2, $this->requests );
+	}
+
+	public function log_file_content_types() {
+		return [
+			'text/plain'               => [ 'text/plain' ],
+			'text/plain with charset'  => [ 'text/plain; charset=UTF-8' ],
+			'application/octet-stream' => [ 'application/octet-stream' ],
+		];
 	}
 
 	public function test_403_is_refused() {
