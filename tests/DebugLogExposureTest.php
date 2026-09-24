@@ -35,6 +35,13 @@ class DebugLogExposureTest extends WP_UnitTestCase {
 	 */
 	private $log_file;
 
+	/**
+	 * Args of the last request the stub saw.
+	 *
+	 * @var array
+	 */
+	private $last_args = [];
+
 	public function set_up() {
 		parent::set_up();
 
@@ -49,6 +56,7 @@ class DebugLogExposureTest extends WP_UnitTestCase {
 
 	public function tear_down() {
 		remove_filter( 'pre_http_request', [ $this, 'stub_http' ], 10 );
+		unset( $_REQUEST['_wpnonce'] );
 		if ( file_exists( $this->log_file ) ) {
 			unlink( $this->log_file );
 		}
@@ -57,6 +65,7 @@ class DebugLogExposureTest extends WP_UnitTestCase {
 
 	public function stub_http( $pre, $args, $url ) {
 		$this->requests[] = [ $url, $args['method'] ];
+		$this->last_args  = $args;
 
 		$next = array_shift( $this->responses );
 		if ( null === $next ) {
@@ -303,5 +312,98 @@ class DebugLogExposureTest extends WP_UnitTestCase {
 		ob_start();
 		DebugLogExposureNotice::render();
 		$this->assertSame( '', ob_get_clean() );
+	}
+
+	public function test_unknown_result_is_cached_too() {
+		$this->responses = [ new WP_Error( 'http_request_failed', 'cURL error 28: Operation timed out' ) ];
+
+		$first  = DebugLogExposure::get_result();
+		$second = DebugLogExposure::get_result();
+
+		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, $first['status'] );
+		$this->assertSame( DebugLogExposure::STATUS_UNKNOWN, $second['status'] );
+		$this->assertTrue( $second['cached'], 'A failed probe must not re-run on every Logs screen load.' );
+		$this->assertCount( 1, $this->requests );
+	}
+
+	public function test_request_is_bounded() {
+		$this->responses = [ 403 ];
+
+		DebugLogExposure::get_result();
+
+		$this->assertSame( 5, $this->last_args['timeout'] );
+		$this->assertSame( 3, $this->last_args['redirection'] );
+	}
+
+	/**
+	 * Make wp_redirect() throw, so a handler's exit is never reached.
+	 */
+	private function catch_redirect() {
+		add_filter(
+			'wp_redirect',
+			function ( $location ) {
+				throw new RuntimeException( 'redirect:' . $location );
+			}
+		);
+	}
+
+	private function run_handler( $callback ) {
+		try {
+			call_user_func( $callback );
+		} catch ( RuntimeException $e ) {
+			return $e->getMessage();
+		}
+		$this->fail( 'Handler did not redirect.' );
+	}
+
+	public function test_dismiss_handler_stores_dismissal_and_redirects_to_logs_screen() {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$_REQUEST['_wpnonce'] = wp_create_nonce( DebugLogExposureNotice::DISMISS_ACTION );
+		$this->responses      = [ 200, 404 ];
+		$this->catch_redirect();
+
+		$location = $this->run_handler( [ DebugLogExposureNotice::class, 'handle_dismiss' ] );
+
+		$this->assertSame( 'redirect:' . admin_url( 'admin.php?page=shazzad-wp-logs' ), $location );
+		$this->assertTrue( DebugLogExposure::is_dismissed( $this->expected_url() ) );
+	}
+
+	public function test_recheck_handler_skips_the_cache() {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$this->responses = [ 200, 404, 403 ];
+		DebugLogExposure::get_result();
+
+		$_REQUEST['_wpnonce'] = wp_create_nonce( DebugLogExposureNotice::RECHECK_ACTION );
+		$this->catch_redirect();
+
+		$location = $this->run_handler( [ DebugLogExposureNotice::class, 'handle_recheck' ] );
+
+		$this->assertSame( 'redirect:' . admin_url( 'admin.php?page=shazzad-wp-logs' ), $location );
+		$this->assertCount( 3, $this->requests );
+		$this->assertSame( DebugLogExposure::STATUS_REFUSED, DebugLogExposure::get_result()['status'] );
+	}
+
+	public function test_handlers_refuse_non_admins() {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'editor' ] ) );
+		$_REQUEST['_wpnonce'] = wp_create_nonce( DebugLogExposureNotice::DISMISS_ACTION );
+
+		try {
+			DebugLogExposureNotice::handle_dismiss();
+			$this->fail( 'A non-admin reached the dismiss handler.' );
+		} catch ( WPDieException $e ) {
+			$this->assertCount( 0, $this->requests );
+			$this->assertFalse( get_option( DebugLogExposure::DISMISSED_OPTION ) );
+		}
+	}
+
+	public function test_handlers_refuse_a_missing_nonce() {
+		wp_set_current_user( self::factory()->user->create( [ 'role' => 'administrator' ] ) );
+
+		try {
+			DebugLogExposureNotice::handle_recheck();
+			$this->fail( 'The recheck handler ran without a nonce.' );
+		} catch ( WPDieException $e ) {
+			$this->assertCount( 0, $this->requests );
+		}
 	}
 }
