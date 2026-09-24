@@ -27,6 +27,7 @@ class Main {
 	 */
 	public static function setup() {
 		AdminPage::setup();
+		DebugLogExposureNotice::setup();
 
 		add_filter( 'plugin_action_links_' . SWPL_BASENAME, [ __CLASS__, 'plugin_action_links' ] );
 	}

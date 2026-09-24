@@ -117,17 +117,29 @@ class WpDebugLog {
 	/**
 	 * Get the path to the WordPress debug log file.
 	 *
-	 * Checks if WP_DEBUG_LOG is defined as a string path, otherwise
-	 * uses the default WordPress location.
+	 * Mirrors wp_debug_mode(): the strings 'true' and '1' mean the default
+	 * location, any other string is a custom path, and the default location is
+	 * WP_CONTENT_DIR/debug.log - not ABSPATH/wp-content, which is a different
+	 * folder on sites that move wp-content.
 	 *
 	 * @since 1.0.0
 	 * @return string Path to the debug log file.
 	 */
 	public static function get_log_file() {
-		if ( is_string( WP_DEBUG_LOG ) ) {
-			return WP_DEBUG_LOG;
-		} else {
-			return ABSPATH . 'wp-content/debug.log';
+		$default = WP_CONTENT_DIR . '/debug.log';
+
+		if ( ! defined( 'WP_DEBUG_LOG' ) ) {
+			return $default;
 		}
+
+		if ( in_array( strtolower( (string) WP_DEBUG_LOG ), [ 'true', '1' ], true ) ) {
+			return $default;
+		}
+
+		if ( is_string( WP_DEBUG_LOG ) && '' !== WP_DEBUG_LOG ) {
+			return WP_DEBUG_LOG;
+		}
+
+		return $default;
 	}
 }
