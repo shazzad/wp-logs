@@ -53,6 +53,14 @@ class Cleanup {
 	private static $clock = null;
 
 	/**
+	 * Seconds this request has already spent purging. Cron runs both cleanup
+	 * events in the same request, so they share one time budget.
+	 *
+	 * @var float
+	 */
+	private static $spent = 0.0;
+
+	/**
 	 * Set up cleanup hooks and scheduled events
 	 *
 	 * @return void
@@ -81,6 +89,19 @@ class Cleanup {
 	}
 
 	/**
+	 * Remove every scheduled cleanup event, hourly and follow-up. Runs on
+	 * deactivation; register_events() adds the hourly ones back on the next
+	 * init once the plugin is active again.
+	 *
+	 * @return void
+	 */
+	public static function clear_events() {
+		foreach ( self::TABLES as $table ) {
+			wp_clear_scheduled_hook( $table['hook'] );
+		}
+	}
+
+	/**
 	 * Purge logs older than the log retention period.
 	 *
 	 * @return array See purge().
@@ -104,13 +125,15 @@ class Cleanup {
 	 * Each batch is its own statement, so locks are released between batches.
 	 * The run stops when a batch comes back short (nothing left), when a query
 	 * fails, or when the time budget is spent. In the last case a follow-up run
-	 * is scheduled, and the next run picks up where this one stopped.
+	 * is scheduled, and the next run picks up where this one stopped. The
+	 * budget is shared by every purge in the same request.
 	 *
 	 * @param string $type 'logs' or 'requests'.
 	 * @return array {
-	 *     @type int  $deleted  Rows deleted by this run.
-	 *     @type int  $batches  DELETE statements run.
-	 *     @type bool $complete True when no expired rows are left.
+	 *     @type int    $deleted  Rows deleted by this run.
+	 *     @type int    $batches  DELETE statements run.
+	 *     @type bool   $complete True when no expired rows are left.
+	 *     @type string $error    Database error that stopped the run, or ''.
 	 * }
 	 */
 	public static function purge( $type ) {
@@ -119,13 +142,15 @@ class Cleanup {
 		$table      = DbAdapter::prefix_table( $type );
 		$cutoff     = gmdate( 'Y-m-d H:i:s', time() - self::get_retention_days( $type ) * DAY_IN_SECONDS );
 		$batch_size = self::get_batch_size( $type );
-		$budget     = self::get_time_budget( $type );
+		$budget     = self::get_time_budget( $type ) - self::$spent;
 		$started    = self::now();
+		$elapsed    = 0.0;
 
 		$result = [
 			'deleted'  => 0,
 			'batches'  => 0,
 			'complete' => false,
+			'error'    => '',
 		];
 
 		while ( true ) {
@@ -138,15 +163,18 @@ class Cleanup {
 					$batch_size
 				)
 			);
+			$elapsed = self::now() - $started;
 
 			if ( false === $deleted ) {
+				$result['error'] = $wpdb->last_error;
+
 				do_action(
 					'swpl_log',
 					'WP Logs',
 					'Retention purge of the {{table}} table failed: {{error}}',
 					[
 						'table' => $type,
-						'error' => $wpdb->last_error,
+						'error' => $result['error'],
 					],
 					'error'
 				);
@@ -161,10 +189,12 @@ class Cleanup {
 				break;
 			}
 
-			if ( self::now() - $started >= $budget ) {
+			if ( $elapsed >= $budget ) {
 				break;
 			}
 		}
+
+		self::$spent += $elapsed;
 
 		if ( ! $result['complete'] && false !== $deleted ) {
 			self::schedule_follow_up( $type );
@@ -186,7 +216,7 @@ class Cleanup {
 		 * Fires after a retention purge run.
 		 *
 		 * @param string $type   'logs' or 'requests'.
-		 * @param array  $result deleted, batches, complete.
+		 * @param array  $result deleted, batches, complete, error.
 		 */
 		do_action( 'swpl_purged', $type, $result );
 
@@ -245,11 +275,14 @@ class Cleanup {
 	/**
 	 * Replace the clock the time budget is measured with. Tests only.
 	 *
+	 * Also forgets the time already spent, so each test starts with a full budget.
+	 *
 	 * @param callable|null $clock Returns seconds as a float; null restores microtime( true ).
 	 * @return void
 	 */
 	public static function set_clock( $clock ) {
 		self::$clock = $clock;
+		self::$spent = 0.0;
 	}
 
 	/**

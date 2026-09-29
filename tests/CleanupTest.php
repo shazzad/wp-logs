@@ -327,6 +327,73 @@ class CleanupTest extends WP_UnitTestCase {
 		$this->assertFalse( $result['complete'] );
 	}
 
+	public function test_both_tables_share_one_time_budget_per_request() {
+		$this->batch_size( 1 );
+		$this->ticking_clock( 8 );
+		$this->insert_logs( 10, 10 );
+		$this->insert_requests( 10, 10 );
+
+		// Cron runs both cleanup events in the same request. The logs purge
+		// spends the 20s budget (batches end at 8s, 16s, 24s), so the requests
+		// purge gets one batch instead of another 20 seconds.
+		$logs     = Cleanup::cleanup_logs();
+		$requests = Cleanup::cleanup_requests();
+
+		$this->assertSame( 3, $logs['batches'] );
+		$this->assertSame( 1, $requests['batches'] );
+		$this->assertFalse( $requests['complete'] );
+	}
+
+	public function test_a_failed_query_is_logged_and_schedules_nothing() {
+		$this->insert_logs( 3, 10 );
+		$break = function ( $query ) {
+			if ( 0 === strpos( $query, 'DELETE FROM ' . DbAdapter::prefix_table( 'logs' ) ) ) {
+				return str_replace( 'swpl_logs', 'swpl_missing', $query );
+			}
+			return $query;
+		};
+
+		$logged = [];
+		$spy    = function ( $source, $message, $context, $level ) use ( &$logged ) {
+			$logged[] = compact( 'context', 'level' );
+		};
+		add_action( 'swpl_log', $spy, 5, 4 );
+		add_filter( 'query', $break );
+		global $wpdb;
+		$suppress = $wpdb->suppress_errors( true );
+		$result   = Cleanup::cleanup_logs();
+		$wpdb->suppress_errors( $suppress );
+		remove_filter( 'query', $break );
+		remove_action( 'swpl_log', $spy, 5 );
+
+		$this->assertSame( 0, $result['batches'] );
+		$this->assertFalse( $result['complete'] );
+		$this->assertStringContainsString( 'swpl_missing', $result['error'] );
+		$this->assertCount( 1, $logged );
+		$this->assertSame( 'error', $logged[0]['level'] );
+		$this->assertFalse( wp_next_scheduled( 'swpl_cleanup_logs' ) );
+		$this->assertSame( 3, $this->count_rows( 'logs' ) );
+	}
+
+	public function test_a_successful_run_reports_no_error() {
+		$this->insert_logs( 1, 10 );
+
+		$this->assertSame( '', Cleanup::cleanup_logs()['error'] );
+	}
+
+	public function test_deactivation_clears_the_hourly_and_follow_up_events() {
+		Cleanup::register_events();
+		// Past core's 10-minute duplicate window around the hourly event.
+		wp_schedule_single_event( time() + 30 * MINUTE_IN_SECONDS, 'swpl_cleanup_logs' );
+		$this->assertSame( 2, $this->count_events( 'swpl_cleanup_logs' ) );
+
+		$this->assertNotFalse( has_action( 'deactivate_' . plugin_basename( SWPL_PLUGIN_FILE ), 'swpl_deactivate' ) );
+		swpl_deactivate();
+
+		$this->assertSame( 0, $this->count_events( 'swpl_cleanup_logs' ) );
+		$this->assertSame( 0, $this->count_events( 'swpl_cleanup_requests' ) );
+	}
+
 	/**
 	 * Count attempts to schedule $hook, whether or not core accepts them.
 	 */

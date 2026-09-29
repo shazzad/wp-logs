@@ -73,6 +73,14 @@ function swpl_install() {
 }
 register_activation_hook( SWPL_PLUGIN_FILE, 'swpl_install' );
 
+/**
+ * Stop the scheduled cleanup events while the plugin is inactive.
+ */
+function swpl_deactivate() {
+	Shazzad\WpLogs\Cleanup::clear_events();
+}
+register_deactivation_hook( SWPL_PLUGIN_FILE, 'swpl_deactivate' );
+
 // Dev cli command.
 if ( defined( 'WP_CLI' )
 	&& WP_CLI
