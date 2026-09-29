@@ -39,6 +39,11 @@ COMPOSER=composer-dev.json composer install   # once
 bin/test
 ```
 
+`bin/test` uses the `swpl_tests` database. Two runs against the same database corrupt each other,
+so a parallel run (e.g. from a worktree) sets its own: `SWPL_TESTS_DB_NAME=swpl_tests_mylane bin/test`.
+A worktree needs real copies of `vendor/`, `vendor-dev/` and `wp/` (gitignored), not symlinks:
+the checkout is mounted into the container, so a symlink pointing outside it does not resolve.
+
 ### Distribution
 
 WP Logs updates ship straight from GitHub releases via the `shazzad/github-plugin-updater` library — **not** the w4dev repo server. The library reads compatibility metadata from the release notes (fallback: the `### Requirements` block in `README.md`), so every release body must carry an explicit requirements block (Requires at least / Tested up to / Requires PHP).
