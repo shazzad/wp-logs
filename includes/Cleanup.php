@@ -53,12 +53,25 @@ class Cleanup {
 	private static $clock = null;
 
 	/**
-	 * Seconds this request has already spent purging. Cron runs both cleanup
-	 * events in the same request, so they share one time budget.
+	 * Seconds the current cron pass has already spent purging. Cron usually
+	 * runs both cleanup events in one pass, so they share one time budget.
 	 *
 	 * @var float
 	 */
 	private static $spent = 0.0;
+
+	/**
+	 * Clock time the last purge in this process ended, or null.
+	 *
+	 * @var float|null
+	 */
+	private static $last_ended = null;
+
+	/**
+	 * A purge that starts within this many seconds of the previous one, while
+	 * cron is running, belongs to the same cron pass.
+	 */
+	const SAME_PASS_GAP = MINUTE_IN_SECONDS;
 
 	/**
 	 * Set up cleanup hooks and scheduled events
@@ -125,8 +138,11 @@ class Cleanup {
 	 * Each batch is its own statement, so locks are released between batches.
 	 * The run stops when a batch comes back short (nothing left), when a query
 	 * fails, or when the time budget is spent. In the last case a follow-up run
-	 * is scheduled, and the next run picks up where this one stopped. The
-	 * budget is shared by every purge in the same request.
+	 * is scheduled, and the next run picks up where this one stopped.
+	 *
+	 * Purges in the same cron pass share one time budget. When the other
+	 * table's purge is due in the same pass, this one takes half, so both
+	 * tables make progress while the pass stays within the budget.
 	 *
 	 * @param string $type 'logs' or 'requests'.
 	 * @return array {
@@ -142,9 +158,18 @@ class Cleanup {
 		$table      = DbAdapter::prefix_table( $type );
 		$cutoff     = gmdate( 'Y-m-d H:i:s', time() - self::get_retention_days( $type ) * DAY_IN_SECONDS );
 		$batch_size = self::get_batch_size( $type );
-		$budget     = self::get_time_budget( $type ) - self::$spent;
 		$started    = self::now();
 		$elapsed    = 0.0;
+
+		if ( ! self::in_same_cron_pass( $started ) ) {
+			self::$spent = 0.0;
+		}
+
+		$budget = self::get_time_budget( $type );
+		if ( self::other_purge_is_due( $type ) ) {
+			$budget /= 2;
+		}
+		$budget -= self::$spent;
 
 		$result = [
 			'deleted'  => 0,
@@ -194,7 +219,8 @@ class Cleanup {
 			}
 		}
 
-		self::$spent += $elapsed;
+		self::$spent     += $elapsed;
+		self::$last_ended = $started + $elapsed;
 
 		if ( ! $result['complete'] && false !== $deleted ) {
 			self::schedule_follow_up( $type );
@@ -281,8 +307,9 @@ class Cleanup {
 	 * @return void
 	 */
 	public static function set_clock( $clock ) {
-		self::$clock = $clock;
-		self::$spent = 0.0;
+		self::$clock      = $clock;
+		self::$spent      = 0.0;
+		self::$last_ended = null;
 	}
 
 	/**
@@ -292,6 +319,44 @@ class Cleanup {
 	 */
 	private static function now() {
 		return self::$clock ? (float) call_user_func( self::$clock ) : microtime( true );
+	}
+
+	/**
+	 * Whether a purge starting now continues the cron pass of the last one.
+	 *
+	 * Outside cron, or after a gap (a long-lived process running a later
+	 * pass), the purge starts with a full budget.
+	 *
+	 * @param float $now Clock time the purge starts.
+	 * @return bool
+	 */
+	private static function in_same_cron_pass( $now ) {
+		return wp_doing_cron()
+			&& null !== self::$last_ended
+			&& $now - self::$last_ended < self::SAME_PASS_GAP;
+	}
+
+	/**
+	 * Whether the other table's cleanup event is due, so cron runs it in the
+	 * same pass as this one. Cron moves an event on before running it, so the
+	 * purge that runs second never sees the first as due.
+	 *
+	 * @param string $type 'logs' or 'requests'.
+	 * @return bool
+	 */
+	private static function other_purge_is_due( $type ) {
+		foreach ( self::TABLES as $other => $table ) {
+			if ( $other === $type ) {
+				continue;
+			}
+
+			$next = wp_next_scheduled( $table['hook'] );
+			if ( false !== $next && $next <= time() ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

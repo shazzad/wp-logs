@@ -327,21 +327,94 @@ class CleanupTest extends WP_UnitTestCase {
 		$this->assertFalse( $result['complete'] );
 	}
 
-	public function test_both_tables_share_one_time_budget_per_request() {
+	/**
+	 * A clock that advances $step seconds per read. Returns the current time
+	 * by reference so a test can jump it forward.
+	 */
+	private function &jumpable_clock( $step ) {
+		$now = 0.0;
+		Cleanup::set_clock(
+			function () use ( &$now, $step ) {
+				$current = $now;
+				$now    += $step;
+				return $current;
+			}
+		);
+		return $now;
+	}
+
+	public function test_purges_in_one_cron_pass_share_the_time_budget() {
+		add_filter( 'wp_doing_cron', '__return_true' );
 		$this->batch_size( 1 );
 		$this->ticking_clock( 8 );
 		$this->insert_logs( 10, 10 );
 		$this->insert_requests( 10, 10 );
 
-		// Cron runs both cleanup events in the same request. The logs purge
-		// spends the 20s budget (batches end at 8s, 16s, 24s), so the requests
-		// purge gets one batch instead of another 20 seconds.
+		// The requests event was not due with the logs one, so the logs purge
+		// takes the whole 20s (batches end at 8s, 16s, 24s) and the requests
+		// purge right after it in the same pass gets its one-batch minimum.
 		$logs     = Cleanup::cleanup_logs();
 		$requests = Cleanup::cleanup_requests();
 
 		$this->assertSame( 3, $logs['batches'] );
 		$this->assertSame( 1, $requests['batches'] );
 		$this->assertFalse( $requests['complete'] );
+	}
+
+	public function test_purges_outside_cron_each_get_the_full_budget() {
+		$this->batch_size( 1 );
+		$this->ticking_clock( 8 );
+		$this->insert_logs( 10, 10 );
+		$this->insert_requests( 10, 10 );
+
+		$this->assertSame( 3, Cleanup::cleanup_logs()['batches'] );
+		$this->assertSame( 3, Cleanup::cleanup_requests()['batches'] );
+	}
+
+	public function test_a_later_cron_pass_in_the_same_process_gets_a_full_budget() {
+		add_filter( 'wp_doing_cron', '__return_true' );
+		$this->batch_size( 1 );
+		$now = &$this->jumpable_clock( 8 );
+		$this->insert_requests( 20, 10 );
+
+		$this->assertSame( 3, Cleanup::cleanup_requests()['batches'] );
+
+		// A long-lived process (a worker, a WP-CLI loop) runs the next pass
+		// minutes later; the first pass's spending must not carry over.
+		$now += 5 * MINUTE_IN_SECONDS;
+		$this->assertSame( 3, Cleanup::cleanup_requests()['batches'] );
+	}
+
+	public function test_when_both_tables_are_due_the_first_purge_takes_half_the_budget() {
+		add_filter( 'wp_doing_cron', '__return_true' );
+		$this->batch_size( 1 );
+		$this->ticking_clock( 4 );
+		$this->insert_logs( 20, 10 );
+		$this->insert_requests( 20, 10 );
+		Cleanup::register_events(); // Both hourly events due now.
+
+		// Half of 20s: logs batches end at 4s, 8s, 12s.
+		$logs = Cleanup::cleanup_logs();
+
+		// Cron moves the logs event on before running the requests one.
+		wp_clear_scheduled_hook( 'swpl_cleanup_logs' );
+		wp_schedule_event( time() + HOUR_IN_SECONDS, 'hourly', 'swpl_cleanup_logs' );
+
+		// The rest of the pass's 20s: 8s left, batches end at 4s, 8s.
+		$requests = Cleanup::cleanup_requests();
+
+		$this->assertSame( 3, $logs['batches'] );
+		$this->assertSame( 2, $requests['batches'] );
+	}
+
+	public function test_the_first_purge_keeps_the_full_budget_when_the_other_is_not_due() {
+		$this->batch_size( 1 );
+		$this->ticking_clock( 4 );
+		$this->insert_logs( 20, 10 );
+		wp_schedule_event( time() + HOUR_IN_SECONDS, 'hourly', 'swpl_cleanup_requests' );
+
+		// Batches end at 4s ... 20s.
+		$this->assertSame( 5, Cleanup::cleanup_logs()['batches'] );
 	}
 
 	public function test_a_failed_query_is_logged_and_schedules_nothing() {
