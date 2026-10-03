@@ -31,8 +31,8 @@ The React app uses `@wordpress/scripts` for build tooling. Grunt handles version
 
 PHPUnit (wp-phpunit) against the w4dev stack's MySQL. Dev deps live in `composer-dev.json` →
 `vendor-dev/` + `wp/`, kept apart from the shipped `composer.json` (the release ZIP is an explicit
-include list, so neither ships). This checkout is not mounted into the stack, so `bin/test` runs
-the suite in a throwaway container from the `w4dev_wp` image on the stack network.
+include list, so neither ships). This checkout is bind-mounted into the w4dev stack as the live
+plugin (since 2026-10-03); `bin/test` still runs the suite in a throwaway container from the `w4dev_wp` image on the stack network.
 
 ```bash
 COMPOSER=composer-dev.json composer install   # once
