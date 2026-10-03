@@ -1,3 +1,7 @@
+**#### 2.2.1 2026-10-03**
+
+- [FIXED] The debug log viewer's modal now sets its own font, font size and line height for the log text, so it looks the same in the admin and on the front end instead of picking up each theme's or admin page's `pre` styles.
+
 **#### 2.2.0 2026-09-30**
 
 - [ADDED] The Logs screen warns when the debug log answers HTTP requests. Once a day at most, the site sends a HEAD request (never a GET, so the log body is not downloaded) to the log's URL, plus one to a file that does not exist beside it. Only a 200 for the log and a non-200 for the missing file raises the notice, so hosts that answer 200 for every path do not produce a false alarm. The notice says what was observed, shows Apache and nginx deny rules, and has "Check again" and "Dismiss" links. Dismissal is stored per site and is cleared if the log is later seen refusing requests, so the notice comes back if the fix comes undone. The plugin does not write server configuration. Turn the check off with the `swpl_debug_log_exposure_check` filter; override the requested URL with `swpl_debug_log_exposure_url`.
