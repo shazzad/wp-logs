@@ -105,10 +105,14 @@ body.swpl__modal--active #swpl__modal--inner {
 	border-top: 1px solid #eee;
 }
 
-.swpl__modal--content pre {
+/* Pin the type, or the modal inherits each theme's / admin page's pre styles. */
+#swpl-modal .swpl__modal--content pre {
 	margin: 0;
 	padding: 20px;
 	overflow: auto;
 	max-height: 300px;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 13px;
+	line-height: 1.5;
 	background-color: #f7f7f7;
 }
