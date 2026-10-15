@@ -1,4 +1,4 @@
-**#### Unreleased**
+**#### 2.3.0 2026-10-16**
 
 - [CHANGED] Requires WordPress 6.2 or later (was 4.4). The admin screens already needed 6.2. PHP 7.4 is unchanged.
 - [CHANGED] The debug log exposure notice now needs stronger evidence. The request for a file that does not exist beside the log must get a 403, 404 or 410; before, any answer other than 200 counted. A request that fails, times out, is rate limited or gets any other status is now recorded as "unknown" and shows nothing, and "unknown" is never read as safe.
