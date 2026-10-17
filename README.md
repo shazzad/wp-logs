@@ -51,9 +51,14 @@ add_filter( 'swpl_log_request', function ( $enabled, $url ) {
 
 On the `Wp Admin > Logs` screen, the plugin sends a HEAD request from the site to the URL of
 `debug.log` (resolved from `WP_DEBUG_LOG`, mapped to a URL only when the file sits under
-`WP_CONTENT_DIR`, `ABSPATH` or the server document root). If the log answers HTTP 200 while a
-file that does not exist next to it does not, a dismissible notice says so and shows Apache and
-nginx deny rules. The plugin never writes server configuration. Results are cached for a day.
+`WP_CONTENT_DIR`, `ABSPATH` or the server document root). A dismissible notice with Apache and
+nginx deny rules appears only when the log answers HTTP 200, the answer is not served as
+`text/html`, and a second HEAD request, for a file that does not exist next to the log, gets
+HTTP 403, 404 or 410. Any other outcome is recorded as "unknown" and shows nothing: a 200 served
+as HTML is usually a custom error or login page, and a control request that fails, times out, is
+rate limited or returns another status cannot show that the server does not answer 200 for every
+path. "Unknown" never means safe. The plugin never writes server configuration. Results are
+cached for a day.
 
 A request from the site to itself can be answered differently from a visitor's, so turn the
 check off on hosts where that makes it meaningless:
@@ -76,6 +81,6 @@ All logs can be viewed at `Wp Admin > Logs` page.
 
 ### Requirements
 
-* WordPress: 5.0
+* WordPress: 6.2
 * PHP: 7.4
 * Tested: 7.1
