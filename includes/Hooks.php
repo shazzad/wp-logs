@@ -6,7 +6,6 @@
  */
 namespace Shazzad\WpLogs;
 
-use Exception;
 use Mustache\Engine as MustacheEngine;
 use Throwable;
 
@@ -52,7 +51,7 @@ class Hooks {
 			$log->set_level( $level );
 			$log->set_message_raw( $message );
 
-			if ( ! empty( $message ) && ! empty( $context ) ) {
+			if ( is_string( $message ) && ! empty( $context ) ) {
 				$message = self::render_message( $message, $context );
 			}
 
@@ -60,7 +59,7 @@ class Hooks {
 
 			$log->save();
 		}
-		catch (Exception $e) {
+		catch (Throwable $e) {
 			error_log( 'Error saving log: ' . $e->getMessage() );
 		}
 	}
@@ -170,7 +169,7 @@ class Hooks {
 
 			$request->save();
 		}
-		catch (Exception $e) {
+		catch (Throwable $e) {
 			error_log( 'Error saving request: ' . $e->getMessage() );
 		}
 	}

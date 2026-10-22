@@ -118,6 +118,32 @@ class HooksTest extends WP_UnitTestCase {
 
 		$this->assertSame( 1, $this->log_count() );
 		$this->assertSame( 'Body was {{#items}} without a close', $this->last_log()['message'] );
+		$this->assertStringContainsString( 'could not render the log message template', file_get_contents( $this->error_log_file ) );
+	}
+
+	/**
+	 * The bundled Mustache 3 ships aliases for the old Mustache_* class names.
+	 * Other plugins bundle Mustache 2 under those names, so WP Logs' autoloader
+	 * must never answer for them, or it would swap their engine for ours.
+	 */
+	public function test_legacy_mustache_class_names_are_not_served() {
+		do_action( 'swpl_log', 'test', 'Hello {{n}}', [ 'n' => 7 ] );
+
+		$this->assertSame( 'Hello 7', $this->last_log()['message'] );
+		$this->assertFalse( class_exists( 'Mustache_Engine' ) );
+		$this->assertFalse( interface_exists( 'Mustache_Exception' ) );
+	}
+
+	public function test_a_non_string_source_never_takes_the_request_down() {
+		do_action( 'swpl_log', [ 'not', 'a', 'string' ], 'Message' );
+
+		$this->addToAssertionCount( 1 );
+	}
+
+	public function test_a_non_string_message_is_not_rendered() {
+		do_action( 'swpl_log', 'test', 42, [ 'n' => 1 ] );
+
+		$this->assertSame( '42', (string) $this->last_log()['message'] );
 	}
 
 	public function test_render_message_returns_a_string() {

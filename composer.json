@@ -10,7 +10,10 @@
 	"autoload": {
 		"psr-4": {
 			"Shazzad\\WpLogs\\": "includes"
-		}
+		},
+		"exclude-from-classmap": [
+			"vendor/mustache/mustache/src/compat.php"
+		]
 	},
 	"autoload-dev": {
 		"psr-4": {
