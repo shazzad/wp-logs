@@ -1,3 +1,9 @@
+**#### 2.3.1 2026-10-22**
+
+- [FIXED] Logging a message whose placeholder points at an array, such as `{{response}}` with an array in the context, crashed the page with a fatal error on PHP 8. The entry is now saved with the message as written, and a line in the PHP error log says why the placeholders were not filled.
+- [FIXED] A message with a section that is never closed, such as `{{#items}}` without `{{/items}}`, was not saved at all. It is now saved with the message as written.
+- [FIXED] On PHP 8.4, the plugin wrote "Implicitly marking parameter as nullable is deprecated" notices to `debug.log` when it filled a log message's placeholders and when WordPress checked for plugin updates. The bundled template and Markdown libraries are updated (Mustache 3.2, Parsedown 1.8) and the notices are gone. Messages render the same as before.
+
 **#### 2.3.0 2026-10-16**
 
 - [CHANGED] Requires WordPress 6.2 or later (was 4.4). The admin screens already needed 6.2. PHP 7.4 is unchanged.

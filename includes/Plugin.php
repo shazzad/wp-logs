@@ -73,15 +73,12 @@ final class Plugin {
 	/**
 	 * Initialize plugin components.
 	 *
-	 * Sets up Mustache templating and initializes all plugin components.
+	 * Initializes all plugin components.
 	 *
 	 * @since 1.0.0
 	 * @return void
 	 */
 	private function initialize() {
-		// Load mustache, it is used for parsing message.
-		\Mustache_Autoloader::register();
-
 		Cleanup::setup();
 		RestApi::setup();
 

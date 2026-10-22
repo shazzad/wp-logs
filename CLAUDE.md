@@ -67,7 +67,7 @@ DbAdapter (includes/DbAdapter.php) → WordPress $wpdb
 ### Key components
 
 - **`shazzad-wp-logs.php`** — Entry point. Creates `Plugin` singleton, registers activation hook, registers WP-CLI commands.
-- **`Plugin.php`** — Singleton that loads autoloader, initializes Mustache engine, triggers setup of all subsystems on `init`.
+- **`Plugin.php`** — Singleton that loads the Composer autoloader (Mustache 3, namespaced `Mustache\Engine`) and triggers setup of all subsystems on `init`.
 - **`Hooks.php`** — Registers the `swpl_log` action and the `http_api_debug` filter for capturing HTTP requests. Sanitizes sensitive data (passwords, tokens, keys).
 - **`Installer.php`** — Creates/upgrades `{prefix}swpl_logs` and `{prefix}swpl_requests` database tables. Called on activation and on version change via `Plugin::maybe_upgrade_db()`.
 - **`RestApi.php`** — Registers REST routes under namespace `swpl/v1`. All endpoints require `manage_options` capability.
