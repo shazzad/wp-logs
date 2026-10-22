@@ -6,8 +6,8 @@
  */
 namespace Shazzad\WpLogs;
 
-use Exception;
-use Mustache_Engine;
+use Mustache\Engine as MustacheEngine;
+use Throwable;
 
 /**
  * Hooks class for Shazzad WP Logs.
@@ -51,17 +51,40 @@ class Hooks {
 			$log->set_level( $level );
 			$log->set_message_raw( $message );
 
-			if ( ! empty( $message ) && ! empty( $context ) ) {
-				$mustache = new Mustache_Engine();
-				$message  = $mustache->render( $message, $context );
+			if ( is_string( $message ) && ! empty( $context ) ) {
+				$message = self::render_message( $message, $context );
 			}
 
 			$log->set_message( $message );
 
 			$log->save();
 		}
-		catch (Exception $e) {
+		catch (Throwable $e) {
 			error_log( 'Error saving log: ' . $e->getMessage() );
+		}
+	}
+
+	/**
+	 * Renders a log message template with its context.
+	 *
+	 * A template that cannot be rendered, such as a placeholder that points at an
+	 * array or a section that is never closed, falls back to the message as
+	 * written, so the log entry is still saved and the request carries on.
+	 *
+	 * @param string $message Message template.
+	 * @param array  $context Values for the template's placeholders.
+	 * @return string Rendered message, or the template itself when rendering fails.
+	 */
+	public static function render_message( $message, $context ) {
+		try {
+			$mustache = new MustacheEngine();
+
+			return (string) $mustache->render( $message, $context );
+		}
+		catch (Throwable $e) {
+			error_log( 'WP Logs: could not render the log message template, saved it unrendered: ' . $e->getMessage() );
+
+			return $message;
 		}
 	}
 
@@ -146,7 +169,7 @@ class Hooks {
 
 			$request->save();
 		}
-		catch (Exception $e) {
+		catch (Throwable $e) {
 			error_log( 'Error saving request: ' . $e->getMessage() );
 		}
 	}

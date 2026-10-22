@@ -4,13 +4,16 @@
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"require": {
-		"mustache/mustache": "^2.12",
+		"mustache/mustache": "^3.2",
 		"shazzad/github-plugin-updater": "^0.0.6"
 	},
 	"autoload": {
 		"psr-4": {
 			"Shazzad\\WpLogs\\": "includes"
-		}
+		},
+		"exclude-from-classmap": [
+			"vendor/mustache/mustache/src/compat.php"
+		]
 	},
 	"autoload-dev": {
 		"psr-4": {
