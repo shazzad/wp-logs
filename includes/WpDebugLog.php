@@ -48,10 +48,12 @@ class WpDebugLog {
 
 		$ver = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : SWPL_VERSION;
 
+		// The viewer is written against jQuery. wp-admin always loads it, but
+		// many front-end themes do not, so it has to be declared (#87).
 		wp_register_script(
 			'swpl-wp-debug-log',
 			SWPL_URL . 'assets/js/wp-debug-log.js',
-			[],
+			[ 'jquery' ],
 			$ver,
 			true
 		);

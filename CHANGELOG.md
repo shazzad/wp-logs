@@ -1,3 +1,7 @@
+**#### 2.3.2 2026-11-07**
+
+- [FIXED] On themes that do not load jQuery, such as Twenty Twenty-Five, the debug log viewer threw "jQuery is not defined" on every front-end page for administrators, and the admin bar's WP Debug Log item opened the Logs screen instead of the viewer. The viewer now loads jQuery itself.
+
 **#### 2.3.1 2026-10-22**
 
 - [FIXED] Logging a message whose placeholder points at an array, such as `{{response}}` with an array in the context, crashed the page with a fatal error on PHP 8. The entry is now saved with the message as written, and a line in the PHP error log says why the placeholders were not filled.
